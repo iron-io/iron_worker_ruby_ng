@@ -1,4 +1,3 @@
-
 require_relative '../lib/iron_worker_ng'
 require 'yaml'
 
@@ -16,4 +15,3 @@ client.upload do |code|
 end
 
 client.queue('HelloWorker')
-

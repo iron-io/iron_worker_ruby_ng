@@ -25,5 +25,4 @@ client.upload do |code|
 end
 
 client.queue('MyWorker')
-
 ```
