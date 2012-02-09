@@ -1,7 +1,7 @@
 require 'tmpdir'
 require 'zip/zip'
 
-require 'iron_worker_ng/mergers'
+require_relative 'mergers'
 
 module IronWorkerNG
   class Code

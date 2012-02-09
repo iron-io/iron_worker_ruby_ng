@@ -1,4 +1,4 @@
-require 'iron_worker_ng/simple_gem'
+require_relative '../simple_gem'
 
 module IronWorkerNG
   module Mergers
