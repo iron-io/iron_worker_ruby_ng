@@ -1,5 +1,5 @@
-require 'iron_worker_ng/api_client'
-require 'iron_worker_ng/code'
+require_relative 'api_client'
+require_relative 'code'
 
 module IronWorkerNG
   class Client
