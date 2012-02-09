@@ -2,6 +2,7 @@ require 'iron_worker_ng/mergers/base_merger'
 require 'iron_worker_ng/mergers/file_merger'
 require 'iron_worker_ng/mergers/dir_merger'
 require 'iron_worker_ng/mergers/gem_merger'
+require 'iron_worker_ng/mergers/worker_merger'
 
 module IronWorkerNG
   module Mergers

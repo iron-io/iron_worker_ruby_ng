@@ -1,6 +1,9 @@
 module IronWorkerNG
   module Mergers
     class FileMerger < IronWorkerNG::Mergers::BaseMerger
+      attr_reader :path
+      attr_reader :dest
+
       def initialize(path, dest)
         @path = File.expand_path(path)
         @dest = dest

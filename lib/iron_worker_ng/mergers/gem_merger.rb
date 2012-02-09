@@ -3,6 +3,8 @@ require 'iron_worker_ng/simple_gem'
 module IronWorkerNG
   module Mergers
     class GemMerger < IronWorkerNG::Mergers::BaseMerger
+      attr_reader :gem
+
       def initialize(gem)
         @gem = gem
       end

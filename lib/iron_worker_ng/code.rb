@@ -7,9 +7,11 @@ module IronWorkerNG
   class Code
     include IronWorkerNG::Mergers::InstanceMethods
 
-    def create_zip(worker_file, worker_class)
-      merge_file worker_file
+    attr_reader :merges
+    attr_reader :merged_gems
+    attr_reader :main_worker
 
+    def create_zip
       zip_name = Dir.tmpdir + '/' + Dir::Tmpname.make_tmpname("iron-worker-ng-", "code.zip")
       
       Zip::ZipFile.open(zip_name, Zip::ZipFile::CREATE) do |zip|
@@ -26,11 +28,11 @@ root = '.'
 end
 
 #{init_code}
-$: << "\#{root}"
+$:.unshift("\#{root}")
 
-require '#{worker_file.sub(/\.rb$/, '')}'
+require '#{File.basename(@main_worker.path).sub(/\.rb$/, '')}'
 
-worker = #{worker_class}.new
+worker = #{@main_worker.name}.new
 worker.run
 RUNNER
         end
