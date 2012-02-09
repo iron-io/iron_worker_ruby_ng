@@ -28,20 +28,31 @@ module IronWorkerNG
 
     def post(method, params = {})
       request_hash = common_request_hash
-      request_hash[:body] = params
 
-      RestClient.post(@url + method, request_hash) 
+      RestClient.post(@url + method, params.to_json, request_hash) 
+    end
+
+    def post_file(method, file, params = {})
+      request_hash = common_request_hash
+      request_hash[:data] = params.to_json
+      request_hash[:file] = file
+
+      RestClient.post(@url + method + "?oauth=#{@token}", request_hash) 
     end
 
     def codes_list
-      response = get("/projects/#{@project_id}/codes")
+      response = get("projects/#{@project_id}/codes")
 
       return nil if response.code != 200
       JSON.parse(response.to_s)['codes']
     end
 
     def codes_create(name, file)
-      response = post("/projects/#{@project_id}/codes", {:name => name, :file => File.new(file, 'rb'), :file_name => 'runner.rb', :runtime => 'ruby'})
+      post_file("projects/#{@project_id}/codes", File.new(file, 'rb'), {:name => name, :file_name => 'runner.rb', :runtime => 'ruby'})
+    end
+
+    def tasks_create(name)
+      post("projects/#{@project_id}/tasks", {:tasks => [{:name => name, :code_name => name, :payload => ''}]})
     end
   end
 end

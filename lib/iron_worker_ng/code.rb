@@ -10,21 +10,20 @@ module IronWorkerNG
     def create_zip(worker_file, worker_class)
       merge_file worker_file
 
-      zip_name = Dir.tmpdir + '/' + Dir::Tmpname.make_tmpname("iron-worker-ng", "zip")
+      zip_name = Dir.tmpdir + '/' + Dir::Tmpname.make_tmpname("iron-worker-ng-", "code.zip")
       
       Zip::ZipFile.open(zip_name, Zip::ZipFile::CREATE) do |zip|
         init_code = execute_merge(zip)
 
         zip.get_output_stream('runner.rb') do |runner|
           runner.write <<RUNNER
-# IronWorgerNG #{File.read(File.dirname(__FILE__) + '/../../VERSION').gsub("\n", '')}
-
-require 'optparse'
+# IronWorker NG #{File.read(File.dirname(__FILE__) + '/../../VERSION').gsub("\n", '')}
 
 root = '.'
-OptionParser.new do |opts|
-  opts.on('-d', '--directory [DIRECTORY]') { |v| root = v }
-end.parse!
+
+0.upto($*.size - 2) do |i|
+  root = $*[i + 1] if $*[i] == '-d'
+end
 
 #{init_code}
 $: << "\#{root}"
