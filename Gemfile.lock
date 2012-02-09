@@ -22,5 +22,6 @@ PLATFORMS
 DEPENDENCIES
   bundler (~> 1.0.0)
   jeweler (~> 1.8.3)
+  json
   rest-client
   zip
