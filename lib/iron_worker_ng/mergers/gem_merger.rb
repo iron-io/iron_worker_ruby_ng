@@ -10,18 +10,24 @@ module IronWorkerNG
       end
 
       def merge(zip)
-        zip.add('./merged_gems/' + @gem.to_s, @gem.path)
+        zip.add('./gems/' + @gem.to_s, @gem.path)
         Dir.glob(@gem.path + '/**/**') do |path|
-          zip.add('./merged_gems/' + @gem.to_s + path[@gem.path.length .. -1], path)
+          zip.add('./gems/' + @gem.to_s + path[@gem.path.length .. -1], path)
         end
       end
 
+      def hash_string
+        Digest::MD5.hexdigest(@gem.to_s)
+      end
+
       def init_code
-        '$:.unshift("#{root}/merged_gems/' + @gem.to_s + '/lib")'
+        '$:.unshift("#{root}/gems/' + @gem.to_s + '/lib")'
       end
     end
 
     module InstanceMethods
+      attr_reader :merged_gems
+
       def merge_gem(name, version = nil)
         @merges ||= []
         @merged_gems ||= []

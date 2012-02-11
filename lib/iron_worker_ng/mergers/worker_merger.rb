@@ -12,11 +12,16 @@ module IronWorkerNG
       def merge(zip)
         zip.add('./' + File.basename(@path), @path)
       end
+
+      def hash_string
+        Digest::MD5.hexdigest(@path + @name)
+      end
     end
 
     module InstanceMethods
+      attr_reader :main_worker
+
       def merge_worker(path, name, force_main = false)
-        @merges ||= []
         @merges << IronWorkerNG::Mergers::WorkerMerger.new(path, name)
 
         @main_worker = @merges[-1] if @main_worker.nil? || force_main

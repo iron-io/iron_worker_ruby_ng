@@ -1,5 +1,7 @@
 # Basic Usage
 
+Visit http://iron.io for more details.
+
 ## Create Worker
 
 ```ruby
@@ -19,10 +21,13 @@ require 'iron_worker_ng'
 
 client = IronWorkerNG::Client.new('PROJECT_ID', 'TOKEN')
 
-client.upload do |code|
-  code.merge_gem 'activerecord'
-  code.merge_worker 'my_worker.rb', 'MyWorker'
-end
+package = IronWorkerNG::Package.new
+package.merge_gem 'activerecord'
+package.merge_worker 'my_worker.rb', 'MyWorker'
+
+puts package.hash_string # you can use it to check if reupload needed
+
+client.upload(package)
 
 client.queue('MyWorker')
 ```

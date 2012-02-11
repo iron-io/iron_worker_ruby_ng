@@ -4,12 +4,8 @@ require 'zip/zip'
 require_relative 'mergers'
 
 module IronWorkerNG
-  class Code
+  class Package
     include IronWorkerNG::Mergers::InstanceMethods
-
-    attr_reader :merges
-    attr_reader :merged_gems
-    attr_reader :main_worker
 
     def create_zip
       zip_name = Dir.tmpdir + '/' + Dir::Tmpname.make_tmpname("iron-worker-ng-", "code.zip")
@@ -26,6 +22,8 @@ root = '.'
 0.upto($*.size - 2) do |i|
   root = $*[i + 1] if $*[i] == '-d'
 end
+
+Dir.chdir(root)
 
 #{init_code}
 $:.unshift("\#{root}")

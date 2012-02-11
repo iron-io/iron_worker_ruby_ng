@@ -12,6 +12,10 @@ module IronWorkerNG
       def merge(zip)
         zip.add(@dest + '/' + File.basename(@path), @path)
       end
+
+      def hash_string
+        Digest::MD5.hexdigest(@path + @dest + File.mtime(@path).to_i.to_s)
+      end
     end
 
     module InstanceMethods

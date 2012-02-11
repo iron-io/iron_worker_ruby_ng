@@ -14,6 +14,16 @@ module IronWorkerNG
           zip.add(@dest + '/' + File.basename(@path) + path[@path.length .. -1], path)
         end
       end
+
+      def hash_string
+        s = @path + @dest + File.mtime(@path).to_i.to_s
+
+        Dir.glob(@path + '/**/**') do |path|
+          s += path + File.mtime(path).to_i.to_s
+        end
+
+        Digest::MD5.hexdigest(s)
+      end
     end
 
     module InstanceMethods

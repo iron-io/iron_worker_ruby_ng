@@ -4,6 +4,10 @@ module IronWorkerNG
       def merge(zip)
       end
 
+      def hash_string
+        nil
+      end
+
       def init_code
         nil
       end
