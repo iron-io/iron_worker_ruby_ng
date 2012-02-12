@@ -51,8 +51,8 @@ module IronWorkerNG
       post_file("projects/#{@project_id}/codes", File.new(file, 'rb'), {:name => name, :file_name => 'runner.rb', :runtime => 'ruby'})
     end
 
-    def tasks_create(name)
-      post("projects/#{@project_id}/tasks", {:tasks => [{:name => name, :code_name => name, :payload => ''}]})
+    def tasks_create(code_name, payload = {})
+      post("projects/#{@project_id}/tasks", {:tasks => [{:code_name => code_name, :payload => payload.to_json}]})
     end
   end
 end

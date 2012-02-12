@@ -9,12 +9,12 @@ module IronWorkerNG
 
     def upload(package)
       zip_file = package.create_zip
-      @api.codes_create(package.main_worker.name, zip_file)
+      @api.codes_create(package.name, zip_file)
       File.unlink(zip_file)
     end
 
-    def queue(name)
-      @api.tasks_create(name)
+    def queue(package_name, worker_name = nil)
+      @api.tasks_create(package_name, {:worker_name => worker_name})
     end
   end
 end

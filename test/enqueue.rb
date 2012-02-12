@@ -11,7 +11,7 @@ end
 client = IronWorkerNG::Client.new(@config['iron_worker']['project_id'], @config['iron_worker']['token'])
 
 package = IronWorkerNG::Package.new
-package.merge_worker 'hello_worker.rb', 'HelloWorker'
+package.merge_worker 'hello_worker.rb'
 
 client.upload(package)
 

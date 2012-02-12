@@ -16,15 +16,19 @@ module IronWorkerNG
       def hash_string
         Digest::MD5.hexdigest(@path + @name)
       end
+
+      def init_code
+        "workers << ['#{File.basename(@path)}', '#{@name}']"
+      end
     end
 
     module InstanceMethods
-      attr_reader :main_worker
+      def merge_worker(path, name = nil)
+        if name == nil
+          name = File.basename(path).gsub(/\.rb$/, '').capitalize.gsub(/_./) { |x| x[1].upcase }
+        end
 
-      def merge_worker(path, name, force_main = false)
         @merges << IronWorkerNG::Mergers::WorkerMerger.new(path, name)
-
-        @main_worker = @merges[-1] if @main_worker.nil? || force_main
       end
     end
   end
