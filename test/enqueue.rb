@@ -15,4 +15,4 @@ package.merge_worker 'hello_worker.rb'
 
 client.upload(package)
 
-client.queue('HelloWorker')
+client.queue('HelloWorker', :params => {'name' => 'world'})

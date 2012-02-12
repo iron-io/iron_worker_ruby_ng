@@ -1,5 +1,6 @@
 class HelloWorker
   def run
-    puts 'Hello World!'
+    name = params['name'] || 'world'
+    puts "Hello #{name}!"
   end
 end

@@ -3,6 +3,9 @@ require 'json'
 
 module IronWorkerNG
   class APIClient
+    attr_reader :project_id
+    attr_reader :token
+
     def initialize(project_id, token)
       @project_id = project_id
       @token = token

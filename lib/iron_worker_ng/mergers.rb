@@ -11,13 +11,11 @@ module IronWorkerNG
     module InstanceMethods
       attr_reader :merges
 
-      @merges = []
-
       def hash_string
         Digest::MD5.hexdigest(@merges.map { |m| m.hash_string }.join)
       end
 
-      def execute_merge(zip)
+      def execute_merges(zip)
         init_code = ''
 
         @merges.each do |merge|

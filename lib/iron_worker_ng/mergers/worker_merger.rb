@@ -18,12 +18,17 @@ module IronWorkerNG
       end
 
       def init_code
-        "workers << ['#{File.basename(@path)}', '#{@name}']"
+        "worker_file_name = '#{File.basename(@path)}'\nworker_class_name='#{@name}'"
       end
     end
 
     module InstanceMethods
       def merge_worker(path, name = nil)
+        @merges ||= []
+
+        worker = @merges.find { |m| m.class == IronWorkerNG::Mergers::WorkerMerger }
+        return unless worker.nil?
+
         if name == nil
           name = File.basename(path).gsub(/\.rb$/, '').capitalize.gsub(/_./) { |x| x[1].upcase }
         end
