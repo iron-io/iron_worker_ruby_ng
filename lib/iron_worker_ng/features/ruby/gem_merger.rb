@@ -1,4 +1,4 @@
-require_relative '../../simple_gem'
+require_relative '../../util/simple_gem'
 
 module IronWorkerNG
   module Features
@@ -35,7 +35,7 @@ module IronWorkerNG
 
           blacklist = ['tzinfo']
 
-          gem = IronWorkerNG::SimpleGem.find(name, version)[-1]
+          gem = IronWorkerNG::Util::SimpleGem.find(name, version)[-1]
 
           return if gem.nil?
           return if gem.native?
