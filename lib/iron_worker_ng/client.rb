@@ -1,5 +1,6 @@
 require_relative 'api_client'
 require_relative 'package'
+require_relative 'ruby_package'
 
 module IronWorkerNG
   class Client
@@ -9,7 +10,7 @@ module IronWorkerNG
 
     def upload(package)
       zip_file = package.create_zip
-      @api.codes_create(package.name, zip_file)
+      @api.codes_create(package.name, zip_file, package.runtime, package.runner)
       File.unlink(zip_file)
     end
 

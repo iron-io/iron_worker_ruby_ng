@@ -50,8 +50,8 @@ module IronWorkerNG
       JSON.parse(response.to_s)['codes']
     end
 
-    def codes_create(name, file)
-      post_file("projects/#{@project_id}/codes", File.new(file, 'rb'), {:name => name, :file_name => 'runner.rb', :runtime => 'ruby'})
+    def codes_create(name, file, runtime, runner)
+      post_file("projects/#{@project_id}/codes", File.new(file, 'rb'), {:name => name, :runtime => runtime, :file_name => runner})
     end
 
     def tasks_create(code_name, payload = {})

@@ -22,7 +22,7 @@ require 'iron_worker_ng'
 
 client = IronWorkerNG::Client.new('PROJECT_ID', 'TOKEN')
 
-package = IronWorkerNG::Package.new('MyWorkerPackage') # package name defaults to merged worker name
+package = IronWorkerNG::RubyPackage.new('MyWorkerPackage') # package name defaults to merged worker name
 package.merge_gem 'activerecord'
 package.merge_worker 'my_worker.rb', 'MyWorker' # if worker name is omited, it'll be guessed from file name
 

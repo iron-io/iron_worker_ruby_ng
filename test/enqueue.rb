@@ -10,9 +10,9 @@ end
 
 client = IronWorkerNG::Client.new(@config['iron_worker']['project_id'], @config['iron_worker']['token'])
 
-package = IronWorkerNG::Package.new
+package = IronWorkerNG::RubyPackage.new
 package.merge_worker 'hello_worker.rb'
 
 client.upload(package)
 
-client.queue('HelloWorker', :params => {'name' => 'world'})
+client.queue('HelloWorker', 'name' => 'world')
