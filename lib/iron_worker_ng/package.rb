@@ -10,10 +10,6 @@ module IronWorkerNG
 
     attr_reader :name
 
-    def initialize(name = nil)
-      @name = name
-    end
-
     def create_zip
       zip_name = Dir.tmpdir + '/' + Dir::Tmpname.make_tmpname("iron-worker-ng-", "code.zip")
       

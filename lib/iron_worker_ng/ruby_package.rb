@@ -7,6 +7,10 @@ module IronWorkerNG
   class RubyPackage < IronWorkerNG::Package
     include IronWorkerNG::Features::Ruby::InstanceMethods
 
+    def initialize(worker_path = nil)
+      merge_worker(worker_path) unless worker_path.nil?
+    end
+
     def create_runner(zip)
       init_code = ''
 
