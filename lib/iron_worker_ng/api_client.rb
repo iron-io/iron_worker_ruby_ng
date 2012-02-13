@@ -1,4 +1,5 @@
-require 'rest_client'
+require 'rest-client'
+require 'rest'
 require 'json'
 
 module IronWorkerNG
@@ -11,28 +12,32 @@ module IronWorkerNG
       @token = token
 
       @url = 'https://worker-aws-us-east-1.iron.io/2/'
+
+      @rest = Rest::Client.new
     end
 
     def common_request_hash
       {
-        :accept => 'json',
-        :content_type => 'json',
-        :authorization => "OAuth #{@token}",
-        :user_agent => 'IronWorker Ruby Client NG'
+        'Content-Type' => 'application/json',
+        'Authorization' => "OAuth #{@token}",
+        'User-Agent' => 'IronWorker Ruby Client NG'
       }
     end
 
     def get(method, params = {})
-      request_hash = common_request_hash
+      request_hash = {}
+      request_hash[:headers] = common_request_hash
       request_hash[:params] = params
 
-      RestClient.get(@url + method, request_hash) 
+      @rest.get(@url + method, request_hash)
     end
 
     def post(method, params = {})
-      request_hash = common_request_hash
+      request_hash = {}
+      request_hash[:headers] = common_request_hash
+      request_hash[:body] = params.to_json
 
-      RestClient.post(@url + method, params.to_json, request_hash) 
+      @rest.post(@url + method, request_hash)
     end
 
     def post_file(method, file, params = {})
@@ -47,7 +52,7 @@ module IronWorkerNG
       response = get("projects/#{@project_id}/codes")
 
       return nil if response.code != 200
-      JSON.parse(response.to_s)['codes']
+      JSON.parse(response.body)['codes']
     end
 
     def codes_create(name, file, runtime, runner)

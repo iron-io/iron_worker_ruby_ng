@@ -2,6 +2,7 @@ source "http://rubygems.org"
 
 gem 'zip'
 gem 'rest-client'
+gem 'rest'
 gem 'json'
 
 group :development do

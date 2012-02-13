@@ -4,6 +4,8 @@ require_relative 'ruby_package'
 
 module IronWorkerNG
   class Client
+    attr_reader :api
+
     def initialize(project_id, token)
       @api = IronWorkerNG::APIClient.new(project_id, token)
     end
