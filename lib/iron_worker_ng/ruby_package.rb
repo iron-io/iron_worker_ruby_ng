@@ -34,8 +34,6 @@ task_id = nil
   task_id = $*[i + 1] if $*[i] == '-id'
 end
 
-workers = []
-
 Dir.chdir(root)
 
 #{init_code}
