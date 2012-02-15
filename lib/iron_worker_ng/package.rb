@@ -21,7 +21,7 @@ module IronWorkerNG
       zip_name
     end
 
-    def create_runner
+    def create_runner(zip)
     end
 
     def runtime

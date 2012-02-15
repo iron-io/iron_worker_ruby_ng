@@ -1,6 +1,3 @@
-require 'tmpdir'
-require 'zip/zip'
-
 require_relative 'features/ruby'
 
 module IronWorkerNG

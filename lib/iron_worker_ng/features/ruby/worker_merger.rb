@@ -38,7 +38,8 @@ module IronWorkerNG
 
           @name ||= name
 
-          @features << IronWorkerNG::Features::Ruby::WorkerMerger.new(path, name)
+          @worker = IronWorkerNG::Features::Ruby::WorkerMerger.new(path, name)
+          @features << @worker
         end
       end
     end
