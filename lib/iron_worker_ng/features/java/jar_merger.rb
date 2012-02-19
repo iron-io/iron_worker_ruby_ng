@@ -15,19 +15,11 @@ module IronWorkerNG
         end
 
         def bundle(zip)
-          Zip::ZipFile.open(@path) do |jar|
-            jar.entries.each do |entry|
-              next if entry.name.start_with?('META-INF')
+          zip.add(File.basename(@path), @path)
+        end
 
-              next unless zip.find_entry(entry.name).nil?
-              
-              if entry.ftype == :directory
-                zip.mkdir(entry.name)
-              elsif entry.ftype == :file
-                zip.get_output_stream(entry.name) { |f| f.write(jar.read(entry.name)) }
-              end
-            end
-          end
+        def code_for_classpath
+          File.basename(@path)
         end
       end
 

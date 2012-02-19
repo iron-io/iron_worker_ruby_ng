@@ -17,7 +17,7 @@ module IronWorkerNG
       File.unlink(zip_file)
     end
 
-    def queue(package_name, params)
+    def queue(package_name, params = {})
       @api.tasks_create(package_name, {:project_id => @api.project_id, :token => @api.token, :params => params})
     end
   end
