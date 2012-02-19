@@ -71,3 +71,5 @@ RUNNER
     end
   end
 end
+
+IronWorkerNG::Package.register_type('ruby', IronWorkerNG::RubyPackage)

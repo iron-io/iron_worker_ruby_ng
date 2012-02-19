@@ -1,0 +1,105 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+require 'json'
+require 'iron_worker_ng'
+
+if $*.size == 0 || (not ['create', 'queue'].include?($*[0]))
+  puts 'Usage: iron_worker_ng COMMAND [OPTIONS]'
+  puts '    COMMAND: create, queue'
+  puts '    Run iron_worker_ng COMMAND --help to get more information about each command'
+  exit
+end
+
+command = $*[0]
+$*.shift
+
+if ENV['IRON_IO_PROJECT_ID'].nil? || ENV['IRON_IO_TOKEN'].nil?
+  puts "Please set $IRON_IO_PROJECT_ID and $IRON_IO_TOKEN environment variables"
+  exit
+end
+
+client = IronWorkerNG::Client.new(ENV['IRON_IO_PROJECT_ID'], ENV['IRON_IO_TOKEN'])
+
+if command == 'create'
+  platforms = IronWorkerNG::Package.registered_types
+  platforms_help = platforms[0][0] + ' (default)' + (platforms.size == 1 ? '' : ', ') + platforms.map { |p| p[0] }[1 .. -1].join(', ')
+
+  features = []
+
+  IronWorkerNG::Features.registered_features_methods.each do |f|
+    fp = platforms.reject { |p| not p[1].instance_methods.include?(f.to_sym) }
+    next if fp.size == 0
+
+    fps = fp.size == platforms.size ? 'all platforms' : (fp.map { |p| p[0] }.join(', ') + ' platform' + (fp.size == 1 ? '' : 's'))
+    features << [f, fps]
+  end
+  
+  platform = nil
+  execute_features = []
+
+  opts = OptionParser.new do |opts|
+    opts.banner = 'Usage: iron_worker_ng create [OPTIONS]'
+
+    opts.on('-p', '--platform PLATFORM', platforms.map { |p| p[0] }, "runtime platform: #{platforms_help}") do |v|
+      platform = v
+    end
+
+    features.each do |f|
+      opts.on("--#{f[0].gsub('_', '-')} [ARGS]...", Array, "valid for #{f[1]}") do |v|
+        execute_features << [f[0], v]
+      end
+    end
+  end
+
+  begin
+    opts.parse!
+  rescue OptionParser::ParseError
+    puts $!.to_s
+    exit
+  end
+
+  if execute_features.size == 0
+    puts opts
+    exit
+  end
+
+  platform = platforms[0][0] if platform.nil?
+
+  package = platforms.find { |p| p[0] == platform }[1].new
+
+  execute_features.each do |f|
+    package.send(f[0], *f[1])
+  end
+
+  client.upload(package)
+elsif command == 'queue'
+  worker = nil
+  params = '{}'
+
+  opts = OptionParser.new do |opts|
+    opts.banner = 'Usage: iron_worker_ng queue [OPTIONS]'
+
+    opts.on('-w', '--worker NAME', 'worker name') do |v|
+      worker = v 
+    end
+
+    opts.on('-p', '--params [PARAMS]', 'json string with parameters') do |v|
+      params = v
+    end
+  end
+
+  begin
+    opts.parse!
+  rescue OptionParser::ParseError
+    puts $!.to_s
+    exit
+  end
+
+  if worker.nil?
+    puts opts
+    exit
+  end
+
+  client.queue(worker, JSON.parse(params))
+end

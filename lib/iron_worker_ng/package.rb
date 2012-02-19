@@ -10,6 +10,16 @@ module IronWorkerNG
 
     attr_reader :name
 
+    @@registered_types = []
+    
+    def self.registered_types
+      @@registered_types
+    end
+    
+    def self.register_type(name, klass)
+      @@registered_types << [name, klass]
+    end
+
     def create_zip
       zip_name = Dir.tmpdir + '/' + Dir::Tmpname.make_tmpname("iron-worker-ng-", "code.zip")
       

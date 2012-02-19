@@ -33,3 +33,5 @@ module IronWorkerNG
     end
   end
 end
+
+IronWorkerNG::Features.register_feature_method('merge_jar')

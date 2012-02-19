@@ -45,3 +45,5 @@ RUNNER
     end
   end
 end
+
+IronWorkerNG::Package.register_type('java', IronWorkerNG::JavaPackage)
