@@ -7,15 +7,7 @@ module IronWorkerNG
       include IronWorkerNG::Feature::Ruby::MergeGem::InstanceMethods
       include IronWorkerNG::Feature::Ruby::MergeWorker::InstanceMethods
 
-      def create_runner(zip)
-        init_code = ''
-
-        @features.each do |f|
-          if f.respond_to?(:code_for_init)
-            init_code += f.send(:code_for_init) + "\n"
-          end
-        end
-
+      def create_runner(zip, init_code)
         zip.get_output_stream('runner.rb') do |runner|
           runner.write <<RUNNER
 # IronWorker NG #{File.read(File.dirname(__FILE__) + '/../../../VERSION').gsub("\n", '')}

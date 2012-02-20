@@ -50,11 +50,19 @@ module IronWorkerNG
       end
 
       def create_zip
+        init_code = ''
+
+        @features.each do |f|
+          if f.respond_to?(:code_for_init)
+            init_code += f.send(:code_for_init) + "\n"
+          end
+        end
+
         zip_name = Dir.tmpdir + '/' + Dir::Tmpname.make_tmpname("iron-worker-ng-", "code.zip")
       
         Zip::ZipFile.open(zip_name, Zip::ZipFile::CREATE) do |zip|
           bundle(zip)
-          create_runner(zip)
+          create_runner(zip, init_code)
         end
 
         zip_name
