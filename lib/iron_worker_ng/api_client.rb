@@ -117,7 +117,7 @@ module IronWorkerNG
       parse_response(get("projects/#{@project_id}/tasks/#{id}/log"), false)
     end
 
-    def tasks_set_progress(id, params)
+    def tasks_set_progress(id, params = {})
       parse_response(post("projects/#{@project_id}/tasks/#{id}/progress", params))
     end
 
