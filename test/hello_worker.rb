@@ -1,6 +1,2 @@
-class HelloWorker
-  def run
-    name = params['name'] || 'world'
-    puts "Hello #{name}!"
-  end
-end
+name = @params['name'] || 'world'
+puts "Hello #{name}!"

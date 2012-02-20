@@ -1,6 +1,6 @@
 module IronWorkerNG
-  module Features
-    class Feature
+  module Feature
+    class Base
       def hash_string
         ''
       end

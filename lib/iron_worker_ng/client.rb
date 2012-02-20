@@ -1,7 +1,4 @@
 require_relative 'api_client'
-require_relative 'package'
-require_relative 'ruby_package'
-require_relative 'java_package'
 
 module IronWorkerNG
   class Client

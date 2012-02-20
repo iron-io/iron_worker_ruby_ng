@@ -4,17 +4,13 @@ Visit http://iron.io for more details.
 
 ## Create Worker
 
-Worker's class name must match file name (e.g MyWorker class in my_worker.rb).
+You can just put any code into worker or can create class with name matching file name (e.g MyWorker class in my_worker.rb) and run method.
 
 ```ruby
 require 'active_record'
 
-class MyWorker
-  def run
-    # params hash is available here
-    # do something fun
-  end
-end
+# @params hash is available here
+# do something fun
 ```
 
 ## Create Runner
@@ -22,9 +18,10 @@ end
 ```ruby
 require 'iron_worker_ng'
 
-client = IronWorkerNG::Client.new('PROJECT_ID', 'TOKEN')
+client = IronWorkerNG::Client.new('IRON_IO_PROJECT_ID', 'IRON_IO_TOKEN')
 
-package = IronWorkerNG::RubyPackage.new('path/to/my_worker.rb') # package name will be set to worker's class name
+package = IronWorkerNG::Package::Ruby.new
+package.merge_gem 'path/to/my_worker.rb'
 package.merge_gem 'activerecord'
 
 # you can use hash_string to check if you need to reupload package

@@ -4,10 +4,10 @@ require 'optparse'
 require 'json'
 require 'iron_worker_ng'
 
-if $*.size == 0 || (not ['create', 'queue'].include?($*[0]))
-  puts 'Usage: iron_worker_ng COMMAND [OPTIONS]'
-  puts '    COMMAND: create, queue'
-  puts '    Run iron_worker_ng COMMAND --help to get more information about each command'
+if $*.size == 0 || (not ['upload', 'queue'].include?($*[0]))
+  puts 'usage: iron_worker_ng COMMAND [OPTIONS]'
+  puts '    COMMAND: upload, queue'
+  puts '    run iron_worker_ng COMMAND --help to get more information about each command'
   exit
 end
 
@@ -15,39 +15,42 @@ command = $*[0]
 $*.shift
 
 if ENV['IRON_IO_PROJECT_ID'].nil? || ENV['IRON_IO_TOKEN'].nil?
-  puts "Please set $IRON_IO_PROJECT_ID and $IRON_IO_TOKEN environment variables"
+  puts "please set $IRON_IO_PROJECT_ID and $IRON_IO_TOKEN environment variables"
   exit
 end
 
 client = IronWorkerNG::Client.new(ENV['IRON_IO_PROJECT_ID'], ENV['IRON_IO_TOKEN'])
 
-if command == 'create'
-  platforms = IronWorkerNG::Package.registered_types
-  platforms_help = platforms[0][0] + ' (default)' + (platforms.size == 1 ? '' : ', ') + platforms.map { |p| p[0] }[1 .. -1].join(', ')
+if command == 'upload'
+  runtimes = IronWorkerNG::Package::Base.registered_types
+  runtimes_help = runtimes[0][:name] + ' (default)' + (runtimes.size == 1 ? '' : ', ') + runtimes.map { |r| r[:name] }[1 .. -1].join(', ')
 
   features = []
 
-  IronWorkerNG::Features.registered_features_methods.each do |f|
-    fp = platforms.reject { |p| not p[1].instance_methods.include?(f.to_sym) }
-    next if fp.size == 0
-
-    fps = fp.size == platforms.size ? 'all platforms' : (fp.map { |p| p[0] }.join(', ') + ' platform' + (fp.size == 1 ? '' : 's'))
-    features << [f, fps]
-  end
-  
-  platform = nil
+  name = nil
+  runtime = nil
   execute_features = []
 
   opts = OptionParser.new do |opts|
-    opts.banner = 'Usage: iron_worker_ng create [OPTIONS]'
+    opts.banner = 'usage: iron_worker_ng upload [OPTIONS]'
 
-    opts.on('-p', '--platform PLATFORM', platforms.map { |p| p[0] }, "runtime platform: #{platforms_help}") do |v|
-      platform = v
+    opts.on('-r', '--runtime RUNTIME', runtimes.map { |r| r[:name] }, "RUNTIME: #{runtimes_help}") do |v|
+      runtime = v
     end
 
-    features.each do |f|
-      opts.on("--#{f[0].gsub('_', '-')} [ARGS]...", Array, "valid for #{f[1]}") do |v|
-        execute_features << [f[0], v]
+    opts.on('-n', '--name NAME', 'package name') do |v|
+      name = v
+    end
+
+    IronWorkerNG::Package::Base.registered_features.each do |f|
+      prefix = ''
+
+      if f[:for_klass] != IronWorkerNG::Package::Base
+        prefix = runtimes.find { |r| r[:klass] == f[:for_klass] }[:name] + '-'
+      end
+
+      opts.on("--#{prefix}#{f[:name].gsub('_', '-')} #{f[:args]}", Array) do |v|
+        execute_features << {:name => f[:name], :args => v}
       end
     end
   end
@@ -64,27 +67,27 @@ if command == 'create'
     exit
   end
 
-  platform = platforms[0][0] if platform.nil?
+  runtime = runtimes[0][:name] if runtime.nil?
 
-  package = platforms.find { |p| p[0] == platform }[1].new
+  package = runtimes.find { |r| r[:name] == runtime }[:klass].new(name)
 
   execute_features.each do |f|
-    package.send(f[0], *f[1])
+    package.send(f[:name], *f[:args])
   end
 
   client.upload(package)
 elsif command == 'queue'
-  worker = nil
+  name = nil
   params = '{}'
 
   opts = OptionParser.new do |opts|
     opts.banner = 'Usage: iron_worker_ng queue [OPTIONS]'
 
-    opts.on('-w', '--worker NAME', 'worker name') do |v|
-      worker = v 
+    opts.on('-n', '--name NAME', 'package name') do |v|
+      name = v 
     end
 
-    opts.on('-p', '--params [PARAMS]', 'json string with parameters') do |v|
+    opts.on('-p', '--params PARAMS', 'json string with parameters') do |v|
       params = v
     end
   end
@@ -96,10 +99,10 @@ elsif command == 'queue'
     exit
   end
 
-  if worker.nil?
+  if name.nil?
     puts opts
     exit
   end
 
-  client.queue(worker, JSON.parse(params))
+  client.queue(name, JSON.parse(params))
 end

@@ -1,25 +1,24 @@
-require_relative 'features/ruby'
+require_relative '../feature/ruby/merge_gem'
+require_relative '../feature/ruby/merge_worker'
 
 module IronWorkerNG
-  class RubyPackage < IronWorkerNG::Package
-    include IronWorkerNG::Features::Ruby::InstanceMethods
+  module Package
+    class Ruby < IronWorkerNG::Package::Base
+      include IronWorkerNG::Feature::Ruby::MergeGem::InstanceMethods
+      include IronWorkerNG::Feature::Ruby::MergeWorker::InstanceMethods
 
-    def initialize(worker_path = nil)
-      merge_worker(worker_path) unless worker_path.nil?
-    end
+      def create_runner(zip)
+        init_code = ''
 
-    def create_runner(zip)
-      init_code = ''
-
-      @features.each do |f|
-        if f.respond_to?(:code_for_init)
-          init_code += f.send(:code_for_init) + "\n"
+        @features.each do |f|
+          if f.respond_to?(:code_for_init)
+            init_code += f.send(:code_for_init) + "\n"
+          end
         end
-      end
 
-      zip.get_output_stream('runner.rb') do |runner|
-        runner.write <<RUNNER
-# IronWorker NG #{File.read(File.dirname(__FILE__) + '/../../VERSION').gsub("\n", '')}
+        zip.get_output_stream('runner.rb') do |runner|
+          runner.write <<RUNNER
+# IronWorker NG #{File.read(File.dirname(__FILE__) + '/../../../VERSION').gsub("\n", '')}
 
 root = nil
 payload_file = nil
@@ -72,17 +71,18 @@ unless worker_class.nil?
   worker_inst.run
 end
 RUNNER
+        end
       end
-    end
 
-    def runtime
-      'ruby'
-    end
+      def runtime
+        'ruby'
+      end
 
-    def runner
-      'runner.rb'
+      def runner
+        'runner.rb'
+      end
     end
   end
 end
 
-IronWorkerNG::Package.register_type('ruby', IronWorkerNG::RubyPackage)
+IronWorkerNG::Package::Base.register_type(:name => 'ruby', :klass => IronWorkerNG::Package::Ruby)
