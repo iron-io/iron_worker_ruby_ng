@@ -10,7 +10,7 @@ module IronWorkerNG
       def create_runner(zip, init_code)
         zip.get_output_stream('runner.rb') do |runner|
           runner.write <<RUNNER
-# IronWorker NG #{File.read(File.dirname(__FILE__) + '/../../../VERSION').gsub("\n", '')}
+# iron_worker_ng-#{IronWorkerNG.version}
 
 root = nil
 payload_file = nil
