@@ -39,7 +39,17 @@ module IronWorkerNG
         @features = []
       end
 
+      def fixate
+        IronWorkerNG::Code::Base.registered_features.each do |rf|
+          if rf[:for_klass] == self.class && respond_to?(rf[:name] + '_fixate')
+            send(rf[:name] + '_fixate')
+          end
+        end
+      end
+
       def hash_string
+        fixate
+
         Digest::MD5.hexdigest(@features.map { |f| f.hash_string }.join)
       end
 
@@ -50,11 +60,7 @@ module IronWorkerNG
       end
 
       def create_zip
-        IronWorkerNG::Code::Base.registered_features.each do |rf|
-          if rf[:for_klass] == self.class && respond_to?(rf[:name] + '_fixate')
-            send(rf[:name] + '_fixate')
-          end
-        end
+        fixate
 
         init_code = ''
 

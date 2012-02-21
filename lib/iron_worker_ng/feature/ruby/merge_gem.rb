@@ -43,6 +43,10 @@ module IronWorkerNG
           end
 
           def merge_gem_fixate
+            @merge_gem_reqs ||= []
+
+            @features.reject! { |f| f.class == IronWorkerNG::Feature::Ruby::MergeGem::Feature }
+
             if @merge_gem_reqs.length > 0
               reqs = @merge_gem_reqs.map { |req| Bundler::DepProxy.new(req, Gem::Platform::RUBY) }
 
