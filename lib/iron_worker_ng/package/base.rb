@@ -40,7 +40,7 @@ module IronWorkerNG
       end
 
       def hash_string
-        Digest::MD5.hexdigest(@feaures.map { |f| f.hash_string }.join)
+        Digest::MD5.hexdigest(@features.map { |f| f.hash_string }.join)
       end
 
       def bundle(zip)

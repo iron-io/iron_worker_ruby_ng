@@ -14,7 +14,7 @@ module IronWorkerNG
           end
 
           def hash_string
-            Digest::MD5.hexdigest(@path + File.mtime(@path).to_i.to_s + (File.exists?(@path + '.lock') ? File.mtime(@path + '.lock').to_i.to_s : '') + @groups.join(''))
+            Digest::MD5.hexdigest(@path + File.mtime(@path).to_i.to_s + (File.exists?(@path + '.lock') ? File.mtime(@path + '.lock').to_i.to_s : '') + @groups.join)
           end
         end
 
