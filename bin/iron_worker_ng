@@ -1,14 +1,13 @@
 #!/usr/bin/env ruby
 
 require 'optparse'
-require 'json'
 require 'iron_worker_ng'
 
-if $*.size == 0 || (not ['upload', 'queue'].include?($*[0]))
+if $*.size == 0 || (not ['upload', 'queue', 'schedule'].include?($*[0]))
   puts 'usage: iron_worker_ng COMMAND [OPTIONS]'
-  puts '    COMMAND: upload, queue'
+  puts '    COMMAND: upload, queue, schedule'
   puts '    run iron_worker_ng COMMAND --help to get more information about each command'
-  exit
+  exit 1
 end
 
 command = $*[0]
@@ -16,7 +15,7 @@ $*.shift
 
 if ENV['IRON_IO_PROJECT_ID'].nil? || ENV['IRON_IO_TOKEN'].nil?
   puts "please set $IRON_IO_PROJECT_ID and $IRON_IO_TOKEN environment variables"
-  exit
+  exit 1
 end
 
 client = IronWorkerNG::Client.new(ENV['IRON_IO_PROJECT_ID'], ENV['IRON_IO_TOKEN'])
@@ -34,7 +33,7 @@ if command == 'upload'
   opts = OptionParser.new do |opts|
     opts.banner = 'usage: iron_worker_ng upload [OPTIONS]'
 
-    opts.on('-r', '--runtime RUNTIME', runtimes.map { |r| r[:name] }, "RUNTIME: #{runtimes_help}") do |v|
+    opts.on('-r', '--runtime RUNTIME', runtimes.map { |r| r[:name] }, "#{runtimes_help}") do |v|
       runtime = v
     end
 
@@ -59,12 +58,12 @@ if command == 'upload'
     opts.parse!
   rescue OptionParser::ParseError
     puts $!.to_s
-    exit
+    exit 1
   end
 
   if execute_features.size == 0
     puts opts
-    exit
+    exit 1
   end
 
   runtime = runtimes[0][:name] if runtime.nil?
@@ -76,19 +75,35 @@ if command == 'upload'
   end
 
   client.upload(package)
-elsif command == 'queue'
+elsif command == 'queue' || command == 'schedule'
   name = nil
-  params = '{}'
+  params = {}
+
+  priority = nil
+  timeout = nil
+  delay = nil
 
   opts = OptionParser.new do |opts|
-    opts.banner = 'Usage: iron_worker_ng queue [OPTIONS]'
+    opts.banner = "usage: iron_worker_ng #{command} [OPTIONS]"
 
     opts.on('-n', '--name NAME', 'package name') do |v|
       name = v 
     end
 
-    opts.on('-p', '--params PARAMS', 'json string with parameters') do |v|
-      params = v
+    opts.on('-p', '--param NAME,VALUE', Array, 'parameters to pass') do |v|
+      params[v[0]] = v[1]
+    end
+
+    opts.on('--priority PRIORITY', [0, 1, 2], '0 (default), 1, 2') do |v|
+      priority = v
+    end
+
+    opts.on('--timeout TIMEOUT', Integer, 'maximum run time in seconds from 0 to 3600 (default)') do |v|
+      timeout = v
+    end
+
+    opts.on('--delay DELAY', Integer, 'delay before start in seconds') do |v|
+      delay = v
     end
   end
 
@@ -96,13 +111,23 @@ elsif command == 'queue'
     opts.parse!
   rescue OptionParser::ParseError
     puts $!.to_s
-    exit
+    exit 1
   end
 
   if name.nil?
     puts opts
-    exit
+    exit 1
   end
 
-  client.queue(name, JSON.parse(params))
+  options = {}
+
+  options[:priority] = priority unless priority.nil?
+  options[:timeout] = timeout unless timeout.nil?
+  options[:delay] = delay unless delay.nil?
+
+  if command == 'queue'
+    client.queue(name, params, options)
+  else
+    client.schedule(name, params, options)
+  end
 end
