@@ -1,10 +1,12 @@
 require_relative '../feature/ruby/merge_gem'
+require_relative '../feature/ruby/merge_gemfile'
 require_relative '../feature/ruby/merge_worker'
 
 module IronWorkerNG
   module Package
     class Ruby < IronWorkerNG::Package::Base
       include IronWorkerNG::Feature::Ruby::MergeGem::InstanceMethods
+      include IronWorkerNG::Feature::Ruby::MergeGemfile::InstanceMethods
       include IronWorkerNG::Feature::Ruby::MergeWorker::InstanceMethods
 
       def create_runner(zip, init_code)

@@ -11,28 +11,24 @@ module IronWorkerNG
             @spec = spec
           end
 
-          def full_name
-            @spec.name + '-' + @spec.version.to_s
-          end
-
           def hash_string
-            Digest::MD5.hexdigest(full_name)
+            Digest::MD5.hexdigest(@spec.full_name)
           end
 
           def bundle(zip)
             if @spec.extensions.length == 0
-              zip.add('./gems/' + full_name, @spec.full_gem_path)
+              zip.add('./gems/' + @spec.full_name, @spec.full_gem_path)
               Dir.glob(@spec.full_gem_path + '/**/**') do |path|
-                zip.add('./gems/' + full_name + path[@spec.full_gem_path.length .. -1], path)
+                zip.add('./gems/' + @spec.full_name + path[@spec.full_gem_path.length .. -1], path)
               end
             end
           end
 
           def code_for_init
             if @spec.extensions.length == 0
-              '$:.unshift("#{root}/gems/' + full_name + '/lib")'
+              '$:.unshift("#{root}/gems/' + @spec.full_name + '/lib")'
             else
-              '# native gem ' + full_name
+              '# native gem ' + @spec.full_name
             end
           end
         end
