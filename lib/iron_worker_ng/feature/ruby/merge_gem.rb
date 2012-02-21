@@ -58,7 +58,7 @@ module IronWorkerNG
           end
 
           def self.included(base)
-            IronWorkerNG::Package::Base.register_feature(:name => 'merge_gem', :for_klass => base, :args => 'NAME[,VERSION]')
+            IronWorkerNG::Code::Base.register_feature(:name => 'merge_gem', :for_klass => base, :args => 'NAME[,VERSION]')
           end
         end
       end

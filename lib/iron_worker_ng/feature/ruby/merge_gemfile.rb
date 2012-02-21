@@ -33,7 +33,7 @@ module IronWorkerNG
           end
 
           def self.included(base)
-            IronWorkerNG::Package::Base.register_feature(:name => 'merge_gemfile', :for_klass => base, :args => 'PATH[,GROUP...]')
+            IronWorkerNG::Code::Base.register_feature(:name => 'merge_gemfile', :for_klass => base, :args => 'PATH[,GROUP...]')
           end
         end
       end

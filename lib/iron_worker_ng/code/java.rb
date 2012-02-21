@@ -2,8 +2,8 @@ require_relative '../feature/java/merge_jar'
 require_relative '../feature/java/merge_worker'
 
 module IronWorkerNG
-  module Package
-    class Java < IronWorkerNG::Package::Base
+  module Code
+    class Java < IronWorkerNG::Code::Base
       include IronWorkerNG::Feature::Java::MergeJar::InstanceMethods
       include IronWorkerNG::Feature::Java::MergeWorker::InstanceMethods
 
@@ -48,4 +48,4 @@ RUNNER
   end
 end
 
-IronWorkerNG::Package::Base.register_type(:name => 'java', :klass => IronWorkerNG::Package::Java)
+IronWorkerNG::Code::Base.register_type(:name => 'java', :klass => IronWorkerNG::Code::Java)

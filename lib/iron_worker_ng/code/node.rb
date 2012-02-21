@@ -1,8 +1,8 @@
 require_relative '../feature/node/merge_worker'
 
 module IronWorkerNG
-  module Package
-    class Node < IronWorkerNG::Package::Base
+  module Code
+    class Node < IronWorkerNG::Code::Base
       include IronWorkerNG::Feature::Node::MergeWorker::InstanceMethods
 
       def create_runner(zip, init_code)
@@ -36,4 +36,4 @@ RUNNER
   end
 end
 
-IronWorkerNG::Package::Base.register_type(:name => 'node', :klass => IronWorkerNG::Package::Node)
+IronWorkerNG::Code::Base.register_type(:name => 'node', :klass => IronWorkerNG::Code::Node)

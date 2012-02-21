@@ -3,8 +3,8 @@ require_relative '../feature/ruby/merge_gemfile'
 require_relative '../feature/ruby/merge_worker'
 
 module IronWorkerNG
-  module Package
-    class Ruby < IronWorkerNG::Package::Base
+  module Code
+    class Ruby < IronWorkerNG::Code::Base
       include IronWorkerNG::Feature::Ruby::MergeGem::InstanceMethods
       include IronWorkerNG::Feature::Ruby::MergeGemfile::InstanceMethods
       include IronWorkerNG::Feature::Ruby::MergeWorker::InstanceMethods
@@ -79,4 +79,4 @@ RUNNER
   end
 end
 
-IronWorkerNG::Package::Base.register_type(:name => 'ruby', :klass => IronWorkerNG::Package::Ruby)
+IronWorkerNG::Code::Base.register_type(:name => 'ruby', :klass => IronWorkerNG::Code::Ruby)

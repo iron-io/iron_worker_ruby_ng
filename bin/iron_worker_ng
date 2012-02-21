@@ -21,7 +21,7 @@ end
 client = IronWorkerNG::Client.new(ENV['IRON_IO_PROJECT_ID'], ENV['IRON_IO_TOKEN'])
 
 if command == 'upload'
-  runtimes = IronWorkerNG::Package::Base.registered_types
+  runtimes = IronWorkerNG::Code::Base.registered_types
   runtimes_help = runtimes[0][:name] + ' (default)' + (runtimes.size == 1 ? '' : ', ') + runtimes.map { |r| r[:name] }[1 .. -1].join(', ')
 
   features = []
@@ -37,14 +37,14 @@ if command == 'upload'
       runtime = v
     end
 
-    opts.on('-n', '--name NAME', 'package name') do |v|
+    opts.on('-n', '--name NAME', 'code name') do |v|
       name = v
     end
 
-    IronWorkerNG::Package::Base.registered_features.each do |f|
+    IronWorkerNG::Code::Base.registered_features.each do |f|
       prefix = ''
 
-      if f[:for_klass] != IronWorkerNG::Package::Base
+      if f[:for_klass] != IronWorkerNG::Code::Base
         prefix = runtimes.find { |r| r[:klass] == f[:for_klass] }[:name] + '-'
       end
 
@@ -68,13 +68,13 @@ if command == 'upload'
 
   runtime = runtimes[0][:name] if runtime.nil?
 
-  package = runtimes.find { |r| r[:name] == runtime }[:klass].new(name)
+  code = runtimes.find { |r| r[:name] == runtime }[:klass].new(name)
 
   execute_features.each do |f|
-    package.send(f[:name], *f[:args])
+    code.send(f[:name], *f[:args])
   end
 
-  client.upload(package)
+  client.upload(code)
 elsif command == 'queue' || command == 'schedule'
   name = nil
   params = {}
@@ -86,7 +86,7 @@ elsif command == 'queue' || command == 'schedule'
   opts = OptionParser.new do |opts|
     opts.banner = "usage: iron_worker_ng #{command} [OPTIONS]"
 
-    opts.on('-n', '--name NAME', 'package name') do |v|
+    opts.on('-n', '--name NAME', 'code name') do |v|
       name = v 
     end
 

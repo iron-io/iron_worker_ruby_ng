@@ -6,7 +6,7 @@ require_relative '../feature/common/merge_file'
 require_relative '../feature/common/merge_dir'
 
 module IronWorkerNG
-  module Package
+  module Code
     class Base
       attr_reader :name
       attr_reader :features
@@ -50,7 +50,7 @@ module IronWorkerNG
       end
 
       def create_zip
-        IronWorkerNG::Package::Base.registered_features.each do |rf|
+        IronWorkerNG::Code::Base.registered_features.each do |rf|
           if rf[:for_klass] == self.class && respond_to?(rf[:name] + '_fixate')
             send(rf[:name] + '_fixate')
           end

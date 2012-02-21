@@ -26,7 +26,7 @@ module IronWorkerNG
           end
 
           def self.included(base)
-            IronWorkerNG::Package::Base.register_feature(:name => 'merge_file', :for_klass => base, :args => 'PATH[,DEST]')
+            IronWorkerNG::Code::Base.register_feature(:name => 'merge_file', :for_klass => base, :args => 'PATH[,DEST]')
           end
         end
       end
