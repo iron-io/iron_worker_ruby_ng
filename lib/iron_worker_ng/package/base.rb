@@ -50,6 +50,12 @@ module IronWorkerNG
       end
 
       def create_zip
+        IronWorkerNG::Package::Base.registered_features.each do |rf|
+          if rf[:for_klass] == self.class && respond_to?(rf[:name] + '_fixate')
+            send(rf[:name] + '_fixate')
+          end
+        end
+
         init_code = ''
 
         @features.each do |f|

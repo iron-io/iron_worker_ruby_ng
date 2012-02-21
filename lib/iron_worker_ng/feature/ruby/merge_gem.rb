@@ -1,60 +1,64 @@
-require_relative '../../util/simple_gem'
+require 'bundler'
 
 module IronWorkerNG
   module Feature
     module Ruby
       module MergeGem
         class Feature < IronWorkerNG::Feature::Base
-          attr_reader :gem
+          attr_reader :spec
 
-          def initialize(gem)
-            @gem = gem
+          def initialize(spec)
+            @spec = spec
+          end
+
+          def full_name
+            @spec.name + '-' + @spec.version.to_s
           end
 
           def hash_string
-            Digest::MD5.hexdigest(@gem.to_s)
+            Digest::MD5.hexdigest(full_name)
           end
 
           def bundle(zip)
-            zip.add('./gems/' + @gem.to_s, @gem.path)
-            Dir.glob(@gem.path + '/**/**') do |path|
-              zip.add('./gems/' + @gem.to_s + path[@gem.path.length .. -1], path)
+            if @spec.extensions.length == 0
+              zip.add('./gems/' + full_name, @spec.full_gem_path)
+              Dir.glob(@spec.full_gem_path + '/**/**') do |path|
+                zip.add('./gems/' + full_name + path[@spec.full_gem_path.length .. -1], path)
+              end
             end
           end
 
           def code_for_init
-            '$:.unshift("#{root}/gems/' + @gem.to_s + '/lib")'
+            if @spec.extensions.length == 0
+              '$:.unshift("#{root}/gems/' + full_name + '/lib")'
+            else
+              '# native gem ' + full_name
+            end
           end
         end
 
         module InstanceMethods
-          attr_reader :merged_gems
+          attr_reader :merge_gem_reqs
 
-          def merge_gem(name, version = nil)
-            @merged_gems ||= []
+          def merge_gem(name, version = '>= 0')
+            @merge_gem_reqs ||= []
 
-            blacklist = ['tzinfo']
+            @merge_gem_reqs << Bundler::Dependency.new(name, version.split(', '))
+          end
 
-            gem = IronWorkerNG::Util::SimpleGem.find(name, version)[-1]
+          def merge_gem_fixate
+            if @merge_gem_reqs.length > 0
+              reqs = @merge_gem_reqs.map { |req| Bundler::DepProxy.new(req, Gem::Platform::RUBY) }
 
-            return if gem.nil?
-            return if gem.native?
-            return if @merged_gems.include?(gem)
-            return if blacklist.include?(gem.name)
+              source = Bundler::Source::Rubygems.new
+              index = Bundler::Index.build { |index| index.use source.specs }
 
-            deps = gem.deps(true)
+              spec_set = Bundler::Resolver.resolve(reqs, index)
 
-            deps.each do |dep|
-              next if dep.native?
-              next if @merged_gems.include?(dep)
-              next if blacklist.include?(dep.name)
-
-              @features << IronWorkerNG::Feature::Ruby::MergeGem::Feature.new(dep)
-              @merged_gems << dep
+              spec_set.to_a.each do |spec|
+                @features << IronWorkerNG::Feature::Ruby::MergeGem::Feature.new(spec.__materialize__)
+              end
             end
-
-            @features << IronWorkerNG::Feature::Ruby::MergeGem::Feature.new(gem)
-            @merged_gems << gem
           end
 
           def self.included(base)

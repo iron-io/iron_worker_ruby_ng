@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = "iron_worker_ng"
-  s.version = ""
+  s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Andrew Kirilenko"]
@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
     "Rakefile",
     "VERSION",
     "bin/iron_worker_ng",
+    "iron_worker_ng.gemspec",
     "lib/iron_worker_ng.rb",
     "lib/iron_worker_ng/api_client.rb",
     "lib/iron_worker_ng/api_client_error.rb",
@@ -42,7 +43,6 @@ Gem::Specification.new do |s|
     "lib/iron_worker_ng/package/java.rb",
     "lib/iron_worker_ng/package/node.rb",
     "lib/iron_worker_ng/package/ruby.rb",
-    "lib/iron_worker_ng/util/simple_gem.rb",
     "lib/iron_worker_ng/version.rb",
     "test/enqueue.rb",
     "test/hello_worker.rb"
@@ -61,7 +61,7 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<rest-client>, [">= 0"])
       s.add_runtime_dependency(%q<rest>, [">= 0"])
       s.add_runtime_dependency(%q<json>, [">= 0"])
-      s.add_development_dependency(%q<bundler>, ["~> 1.0.0"])
+      s.add_runtime_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.8.3"])
     else
       s.add_dependency(%q<zip>, [">= 0"])

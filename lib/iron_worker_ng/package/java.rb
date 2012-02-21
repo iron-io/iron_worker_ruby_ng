@@ -24,7 +24,7 @@ module IronWorkerNG
 
 root = nil
 
-($*.size - 2).downto(0) do |i|
+($*.length - 2).downto(0) do |i|
   root = $*[i + 1] if $*[i] == '-d'
 end
 
