@@ -14,6 +14,6 @@ client = IronWorkerNG::Client.new(@config['iron_worker']['project_id'], @config[
 code = IronWorkerNG::Code::Ruby.new
 code.merge_worker 'hello_worker.rb'
 
-client.upload(code)
+client.codes.create(code)
 
-client.queue('HelloWorker', 'name' => 'world')
+client.tasks.create('HelloWorker', 'name' => 'world')

@@ -75,7 +75,7 @@ if command == 'upload'
     code.send(f[:name], *f[:args])
   end
 
-  client.upload(code)
+  client.codes.create(code)
 elsif command == 'queue' || command == 'schedule'
   name = nil
   params = {}
@@ -157,8 +157,8 @@ elsif command == 'queue' || command == 'schedule'
   end
 
   if command == 'queue'
-    client.queue(name, params, options)
+    client.tasks.create(name, params, options)
   else
-    client.schedule(name, params, options)
+    client.schedules.create(name, params, options)
   end
 end

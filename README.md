@@ -28,7 +28,7 @@ code.merge_gem 'activerecord'
 # note that hash_string check is fast while code upload can take a while (depends on how much things you merged)
 puts code.hash_string
 
-client.upload(code)
+client.codes.create(code)
 
-client.queue('MyWorker', 'foo' => 'bar')
+client.tasks.create('MyWorker', 'foo' => 'bar')
 ```
