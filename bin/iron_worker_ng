@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'optparse'
+require 'time'
 require 'iron_worker_ng'
 
 if $*.size == 0 || (not ['upload', 'queue', 'schedule'].include?($*[0]))
@@ -83,6 +84,11 @@ elsif command == 'queue' || command == 'schedule'
   timeout = nil
   delay = nil
 
+  start_at = nil
+  end_at = nil
+  run_times = nil
+  run_every = nil
+
   opts = OptionParser.new do |opts|
     opts.banner = "usage: iron_worker_ng #{command} [OPTIONS]"
 
@@ -94,7 +100,7 @@ elsif command == 'queue' || command == 'schedule'
       params[v[0]] = v[1]
     end
 
-    opts.on('--priority PRIORITY', [0, 1, 2], '0 (default), 1, 2') do |v|
+    opts.on('--priority PRIORITY', Integer, '0 (default), 1, 2') do |v|
       priority = v
     end
 
@@ -104,6 +110,24 @@ elsif command == 'queue' || command == 'schedule'
 
     opts.on('--delay DELAY', Integer, 'delay before start in seconds') do |v|
       delay = v
+    end
+
+    if command == 'schedule'
+      opts.on('--start-at TIME', 'start task at specified time') do |v|
+        start_at = Time.parse(v)
+      end
+
+      opts.on('--end-at TIME', 'stop running task at specified time') do |v|
+        end_at = Time.parse(v)
+      end
+
+      opts.on('--run-times RUN_TIMES', Integer, 'run task no more times than specified') do |v|
+        run_times = v
+      end
+
+      opts.on('--run-every RUN_EVERY', Integer, 'run task every RUN_EVERY seconds') do |v|
+        run_every = v
+      end
     end
   end
 
@@ -124,6 +148,13 @@ elsif command == 'queue' || command == 'schedule'
   options[:priority] = priority unless priority.nil?
   options[:timeout] = timeout unless timeout.nil?
   options[:delay] = delay unless delay.nil?
+
+  if command == 'schedule'
+    options[:start_at] = start_at unless start_at.nil?
+    options[:end_at] = end_at unless end_at.nil?
+    options[:run_times] = run_times unless run_times.nil?
+    options[:run_every] = run_every unless run_every.nil?
+  end
 
   if command == 'queue'
     client.queue(name, params, options)
