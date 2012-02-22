@@ -9,24 +9,19 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Andrew Kirilenko"]
-  s.date = "2012-02-21"
-  s.description = "New generation IronWorker gem"
+  s.date = "2012-02-22"
+  s.description = "New generation ruby client for IronWorke"
   s.email = "andrew.kirilenko@gmail.com"
   s.executables = ["iron_worker_ng"]
   s.extra_rdoc_files = [
-    "LICENSE.txt",
+    "LICENSE",
     "README.md"
   ]
   s.files = [
-    ".document",
-    "Gemfile",
-    "Gemfile.lock",
-    "LICENSE.txt",
+    "LICENSE",
     "README.md",
-    "Rakefile",
     "VERSION",
     "bin/iron_worker_ng",
-    "iron_worker_ng.gemspec",
     "lib/iron_worker_ng.rb",
     "lib/iron_worker_ng/api_client.rb",
     "lib/iron_worker_ng/api_client_error.rb",
@@ -44,15 +39,13 @@ Gem::Specification.new do |s|
     "lib/iron_worker_ng/feature/ruby/merge_gem.rb",
     "lib/iron_worker_ng/feature/ruby/merge_gemfile.rb",
     "lib/iron_worker_ng/feature/ruby/merge_worker.rb",
-    "lib/iron_worker_ng/version.rb",
-    "test/enqueue.rb",
-    "test/hello_worker.rb"
+    "lib/iron_worker_ng/version.rb"
   ]
   s.homepage = "http://github.com/iced/iron_worker_ruby_ng"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.15"
-  s.summary = "IronWorker NG"
+  s.summary = "IronWorkerNG"
 
   if s.respond_to? :specification_version then
     s.specification_version = 3

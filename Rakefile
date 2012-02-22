@@ -18,9 +18,11 @@ Jeweler::Tasks.new do |gem|
   gem.name = "iron_worker_ng"
   gem.homepage = "http://github.com/iced/iron_worker_ruby_ng"
   gem.license = "MIT"
-  gem.summary = %Q{IronWorker NG}
-  gem.description = %Q{New generation IronWorker gem}
+  gem.summary = %Q{IronWorkerNG}
+  gem.description = %Q{New generation ruby client for IronWorke}
   gem.email = "andrew.kirilenko@gmail.com"
   gem.authors = ["Andrew Kirilenko"]
+  gem.files.exclude('.document', 'Gemfile', 'Gemfile.lock', 'Rakefile', 'iron_worker_ng.gemspec', 'sample/**')
 end
+
 Jeweler::RubygemsDotOrgTasks.new
