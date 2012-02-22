@@ -29,6 +29,10 @@ Dir.chdir(root)
 #{init_code}
 $:.unshift("\#{root}")
 
+def log(*args)
+  puts *args
+end
+
 require 'json'
 
 payload = JSON.load(File.open(payload_file))
