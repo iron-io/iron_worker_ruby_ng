@@ -35,12 +35,19 @@ end
 
 require 'json'
 
-payload = JSON.load(File.open(payload_file))
-
-@iron_io_token = payload['token']
-@iron_io_project_id = payload['project_id']
 @iron_worker_task_id = task_id
-@params = payload['params']
+
+@payload = File.read(payload_file)
+
+parsed_payload = {}
+begin
+  parsed_payload = JSON.parse(@payload)
+rescue
+end
+
+@iron_io_token = parsed_payload['token']
+@iron_io_project_id = parsed_payload['project_id']
+@params = parsed_payload['params'] || {}
 
 require worker_file_name
 
