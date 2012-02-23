@@ -20,8 +20,8 @@ module IronWorkerNG
   class Client
     attr_reader :api
 
-    def initialize(project_id, token, params = {})
-      @api = IronWorkerNG::APIClient.new(project_id, token, params)
+    def initialize(token, project_id, params = {})
+      @api = IronWorkerNG::APIClient.new(token, project_id, params)
     end
 
     def method_missing(name, *args, &block)

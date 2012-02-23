@@ -7,12 +7,12 @@ require_relative 'api_client_error'
 
 module IronWorkerNG
   class APIClient
-    attr_reader :project_id
     attr_reader :token
+    attr_reader :project_id
 
-    def initialize(project_id, token, params = {})
-      @project_id = project_id
+    def initialize(token, project_id, params = {})
       @token = token
+      @project_id = project_id
 
       @user_agent = params[:user_agent] || 'iron_worker_ng-' + IronWorkerNG.version
 

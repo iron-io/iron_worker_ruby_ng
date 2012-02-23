@@ -37,8 +37,8 @@ require 'json'
 
 payload = JSON.load(File.open(payload_file))
 
-@iron_io_project_id = payload['project_id']
 @iron_io_token = payload['token']
+@iron_io_project_id = payload['project_id']
 @iron_worker_task_id = task_id
 @params = payload['params']
 
@@ -55,14 +55,14 @@ unless worker_class.nil?
   worker_inst = worker_class.new
 
   class << worker_inst
-    attr_accessor :iron_io_project_id
     attr_accessor :iron_io_token
+    attr_accessor :iron_io_project_id
     attr_accessor :iron_worker_task_id
     attr_accessor :params
   end
 
-  worker_inst.iron_io_project_id = @iron_io_project_id
   worker_inst.iron_io_token = @iron_io_token
+  worker_inst.iron_io_project_id = @iron_io_project_id
   worker_inst.iron_worker_task_id = @iron_worker_task_id
   worker_inst.params = @params
 

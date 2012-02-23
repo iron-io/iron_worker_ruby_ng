@@ -18,7 +18,7 @@ require 'active_record'
 ```ruby
 require 'iron_worker_ng'
 
-client = IronWorkerNG::Client.new('IRON_IO_PROJECT_ID', 'IRON_IO_TOKEN')
+client = IronWorkerNG::Client.new('IRON_IO_TOKEN', 'IRON_IO_PROJECT_ID')
 
 code = IronWorkerNG::Code::Ruby.new
 code.merge_worker 'path/to/my_worker.rb'

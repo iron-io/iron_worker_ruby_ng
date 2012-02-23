@@ -14,12 +14,12 @@ end
 command = $*[0]
 $*.shift
 
-if ENV['IRON_IO_PROJECT_ID'].nil? || ENV['IRON_IO_TOKEN'].nil?
-  puts "please set $IRON_IO_PROJECT_ID and $IRON_IO_TOKEN environment variables"
+if ENV['IRON_IO_TOKEN'].nil? || ENV['IRON_IO_PROJECT_ID'].nil?
+  puts "please set $IRON_IO_TOKEN and $IRON_IO_PROJECT_ID environment variables"
   exit 1
 end
 
-client = IronWorkerNG::Client.new(ENV['IRON_IO_PROJECT_ID'], ENV['IRON_IO_TOKEN'])
+client = IronWorkerNG::Client.new(ENV['IRON_IO_TOKEN'], ENV['IRON_IO_PROJECT_ID'])
 
 if command == 'upload'
   runtimes = IronWorkerNG::Code::Base.registered_types
