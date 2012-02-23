@@ -1,3 +1,5 @@
+require 'ostruct'
+
 require_relative 'api_client'
 
 module IronWorkerNG
@@ -40,16 +42,24 @@ module IronWorkerNG
       true
     end
 
+    def tasks_get(task_id)
+      OpenStruct.new(@api.tasks_get(task_id))
+    end
+
     def tasks_create(code_name, params = {}, options = {})
       res = @api.tasks_create(code_name, {:project_id => @api.project_id, :token => @api.token, :params => params}.to_json, options)
 
-      res['tasks'][0]['id']
+      OpenStruct.new(res['tasks'][0])
+    end
+
+    def tasks_log(task_id)
+      @api.tasks_log(task_id)
     end
 
     def schedules_create(code_name, params = {}, options = {})
       res = @api.schedules_create(code_name, {:project_id => @api.project_id, :token => @api.token, :params => params}.to_json, options)
 
-      res['schedules'][0]['id']
+      OpenStruct.new(res['schedules'][0])
     end
   end
 end

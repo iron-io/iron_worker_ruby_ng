@@ -4,9 +4,9 @@ require 'optparse'
 require 'time'
 require 'iron_worker_ng'
 
-if $*.size == 0 || (not ['upload', 'queue', 'schedule'].include?($*[0]))
+if $*.size == 0 || (not ['codes.create', 'tasks.create', 'schedules.create', 'tasks.log'].include?($*[0]))
   puts 'usage: iron_worker_ng COMMAND [OPTIONS]'
-  puts '    COMMAND: upload, queue, schedule'
+  puts '    COMMAND: codes.create, tasks.create, schedules.create, tasks.log'
   puts '    run iron_worker_ng COMMAND --help to get more information about each command'
   exit 1
 end
@@ -21,7 +21,7 @@ end
 
 client = IronWorkerNG::Client.new(ENV['IRON_IO_TOKEN'], ENV['IRON_IO_PROJECT_ID'])
 
-if command == 'upload'
+if command == 'codes.create'
   runtimes = IronWorkerNG::Code::Base.registered_types
   runtimes_help = runtimes[0][:name] + ' (default)' + (runtimes.size == 1 ? '' : ', ') + runtimes.map { |r| r[:name] }[1 .. -1].join(', ')
 
@@ -32,7 +32,7 @@ if command == 'upload'
   execute_features = []
 
   opts = OptionParser.new do |opts|
-    opts.banner = 'usage: iron_worker_ng upload [OPTIONS]'
+    opts.banner = "usage: iron_worker_ng #{command} [OPTIONS]"
 
     opts.on('-r', '--runtime RUNTIME', runtimes.map { |r| r[:name] }, "#{runtimes_help}") do |v|
       runtime = v
@@ -76,7 +76,7 @@ if command == 'upload'
   end
 
   client.codes.create(code)
-elsif command == 'queue' || command == 'schedule'
+elsif command == 'tasks.create' || command == 'schedules.create'
   name = nil
   params = {}
 
@@ -88,6 +88,8 @@ elsif command == 'queue' || command == 'schedule'
   end_at = nil
   run_times = nil
   run_every = nil
+
+  print_id = false
 
   opts = OptionParser.new do |opts|
     opts.banner = "usage: iron_worker_ng #{command} [OPTIONS]"
@@ -112,7 +114,7 @@ elsif command == 'queue' || command == 'schedule'
       delay = v
     end
 
-    if command == 'schedule'
+    if command == 'schedules.create'
       opts.on('--start-at TIME', 'start task at specified time') do |v|
         start_at = Time.parse(v)
       end
@@ -128,6 +130,10 @@ elsif command == 'queue' || command == 'schedule'
       opts.on('--run-every RUN_EVERY', Integer, 'run task every RUN_EVERY seconds') do |v|
         run_every = v
       end
+    end
+
+    opts.on('--print-id', 'prints result id') do |v|
+      print_id = true
     end
   end
 
@@ -149,16 +155,84 @@ elsif command == 'queue' || command == 'schedule'
   options[:timeout] = timeout unless timeout.nil?
   options[:delay] = delay unless delay.nil?
 
-  if command == 'schedule'
+  if command == 'schedules.create'
     options[:start_at] = start_at unless start_at.nil?
     options[:end_at] = end_at unless end_at.nil?
     options[:run_times] = run_times unless run_times.nil?
     options[:run_every] = run_every unless run_every.nil?
   end
 
-  if command == 'queue'
-    client.tasks.create(name, params, options)
+  id = nil
+
+  if command == 'tasks.create'
+    id = client.tasks.create(name, params, options).id
   else
-    client.schedules.create(name, params, options)
+    id = client.schedules.create(name, params, options).id
+  end
+
+  print id if print_id
+elsif command == 'tasks.log'
+  task_id = nil
+  live = false
+
+  opts = OptionParser.new do |opts|
+    opts.banner = "usage: iron_worker_ng #{command} [OPTIONS]"
+
+    opts.on('-t --task-id ID', 'task id') do |v|
+      task_id = v 
+    end
+
+    opts.on('--live', 'live log session') do |v|
+      live = true
+    end
+  end
+
+  begin
+    opts.parse!
+  rescue OptionParser::ParseError
+    puts $!.to_s
+    exit 1
+  end
+
+  if task_id.nil?
+    puts opts
+    exit 1
+  end
+
+  log = ''
+  if live
+    begin
+      log = client.tasks.log(task_id)
+    rescue IronWorkerNG::APIClientError
+    end
+  else
+    log = client.tasks.log(task_id)
+  end
+
+  print log
+
+  if live
+    status = client.tasks.get(task_id).status
+
+    while status == 'queued' || status == 'running'
+      if status == 'running'
+        begin
+          next_log = client.tasks.log(task_id)
+          print next_log[log.length .. - 1]
+          log = next_log
+        rescue IronWorkerNG::APIClientError
+        end
+      end
+
+      sleep 1
+   
+      status = client.tasks.get(task_id).status
+    end
+
+    begin
+      next_log = client.tasks.log(task_id)
+      print next_log[log.length .. - 1]
+    rescue IronWorkerNG::APIClientError
+    end
   end
 end
