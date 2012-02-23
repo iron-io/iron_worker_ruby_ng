@@ -8,10 +8,10 @@ Gem::Specification.new do |s|
   s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Andrew Kirilenko"]
-  s.date = "2012-02-22"
-  s.description = "New generation ruby client for IronWorke"
-  s.email = "andrew.kirilenko@gmail.com"
+  s.authors = ["Andrew Kirilenko", "Iron.io, Inc"]
+  s.date = "2012-02-23"
+  s.description = "New generation ruby client for IronWorker"
+  s.email = "info@iron.io"
   s.executables = ["iron_worker_ng"]
   s.extra_rdoc_files = [
     "LICENSE",
@@ -41,11 +41,10 @@ Gem::Specification.new do |s|
     "lib/iron_worker_ng/feature/ruby/merge_worker.rb",
     "lib/iron_worker_ng/version.rb"
   ]
-  s.homepage = "http://github.com/iced/iron_worker_ruby_ng"
-  s.licenses = ["MIT"]
+  s.homepage = "http://www.iron.io"
   s.require_paths = ["lib"]
   s.rubygems_version = "1.8.15"
-  s.summary = "IronWorkerNG"
+  s.summary = "New generation ruby client for IronWorker"
 
   if s.respond_to? :specification_version then
     s.specification_version = 3

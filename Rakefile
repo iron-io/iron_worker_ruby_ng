@@ -16,12 +16,11 @@ require 'jeweler'
 
 Jeweler::Tasks.new do |gem|
   gem.name = "iron_worker_ng"
-  gem.homepage = "http://github.com/iced/iron_worker_ruby_ng"
-  gem.license = "MIT"
-  gem.summary = %Q{IronWorkerNG}
-  gem.description = %Q{New generation ruby client for IronWorke}
-  gem.email = "andrew.kirilenko@gmail.com"
-  gem.authors = ["Andrew Kirilenko"]
+  gem.homepage = "http://www.iron.io"
+  gem.description = %Q{New generation ruby client for IronWorker}
+  gem.summary = %Q{New generation ruby client for IronWorker}
+  gem.email = "info@iron.io"
+  gem.authors = ["Andrew Kirilenko", "Iron.io, Inc"]
   gem.files.exclude('.document', 'Gemfile', 'Gemfile.lock', 'Rakefile', 'iron_worker_ng.gemspec', 'sample/**')
 end
 
