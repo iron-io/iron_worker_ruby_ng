@@ -22,7 +22,7 @@ module IronWorkerNG
 
         module InstanceMethods
           def merge_file(path, dest = '.')
-            @features << IronWorkerNG::Feature::Common::MergerFile::Feature.new(path, dest)
+            @features << IronWorkerNG::Feature::Common::MergeFile::Feature.new(path, dest)
           end
 
           def self.included(base)
