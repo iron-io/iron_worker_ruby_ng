@@ -182,9 +182,9 @@ elsif command == 'tasks.log'
       task_id = v 
     end
 
-    opts.on('--live', 'live log session') do |v|
-      live = true
-    end
+    #opts.on('--live', 'live log session') do |v|
+    #  live = true
+    #end
   end
 
   begin
