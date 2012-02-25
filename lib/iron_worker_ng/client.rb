@@ -34,12 +34,42 @@ module IronWorkerNG
       end
     end
 
+    def codes_list(params = {})
+      @api.codes_list(params)['codes'].map { |c| OpenStruct.new(c) }
+    end
+
+    def codes_get(code_id)
+      OpenStruct.new(@api.codes_get(code_id))
+    end
+
     def codes_create(code)
       zip_file = code.create_zip
       @api.codes_create(code.name, zip_file, code.runtime, code.runner)
       File.unlink(zip_file)
 
       true
+    end
+
+    def codes_delete(code_id)
+      @api.codes_delete(code_id)
+
+      true
+    end
+
+    def codes_revisions(code_id, params = {})
+      @api.codes_revisions(code_id, params)['revisions'].map { |c| OpenStruct.new(c) }
+    end
+
+    def codes_download(code_id, params = {})
+      @api.codes_download(code_id, params)
+    end
+
+    def tasks_get(task_id)
+      OpenStruct.new(@api.tasks_get(task_id))
+    end
+
+    def tasks_list(params = {})
+      @api.tasks_list(params)['tasks'].map { |t| OpenStruct.new(t) }
     end
 
     def tasks_get(task_id)
@@ -52,14 +82,57 @@ module IronWorkerNG
       OpenStruct.new(res['tasks'][0])
     end
 
+    def tasks_cancel(task_id)
+      @api.tasks_cancel(task_id)
+
+      true
+    end
+
+    def tasks_cancel_all(code_id)
+      @api.tasks_cancel_all(code_id)
+
+      true
+    end
+
     def tasks_log(task_id)
       @api.tasks_log(task_id)
+    end
+
+    def tasks_set_progress(task_id, params = {})
+      @api.tasks_set_progress(task_id, params)
+
+      true
+    end
+
+    def tasks_wait_for(task_id, params = {})
+      params[:sleep] ||= 5
+
+      task = tasks_get(task_id)
+      while task.status == 'queued' || task.status == 'running'
+        yield task if block_given?
+        sleep params[:sleep]
+        task = tasks_get(task_id)
+      end
+    end
+
+    def schedules_list(params = {})
+      @api.schedules_list(params)['schedules'].map { |s| OpenStruct.new(s) }
+    end
+
+    def schedules_get(schedule_id)
+      OpenStruct.new(@api.schedules_get(schedule_id))
     end
 
     def schedules_create(code_name, params = {}, options = {})
       res = @api.schedules_create(code_name, {:project_id => @api.project_id, :token => @api.token, :params => params}.to_json, options)
 
       OpenStruct.new(res['schedules'][0])
+    end
+
+    def schedules_cancel(schedule_id)
+      @api.schedules_cancel(schedule_id)
+
+      true
     end
   end
 end

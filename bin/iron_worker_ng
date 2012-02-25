@@ -182,9 +182,9 @@ elsif command == 'tasks.log'
       task_id = v 
     end
 
-    #opts.on('--live', 'live log session') do |v|
-    #  live = true
-    #end
+    opts.on('--live', 'live log session') do |v|
+      live = true
+    end
   end
 
   begin
@@ -200,6 +200,7 @@ elsif command == 'tasks.log'
   end
 
   log = ''
+
   if live
     begin
       log = client.tasks.log(task_id)
@@ -212,10 +213,8 @@ elsif command == 'tasks.log'
   print log
 
   if live
-    status = client.tasks.get(task_id).status
-
-    while status == 'queued' || status == 'running'
-      if status == 'running'
+    client.tasks.wait_for(task_id) do |task|
+      if task.status == 'running'
         begin
           next_log = client.tasks.log(task_id)
           print next_log[log.length .. - 1]
@@ -223,10 +222,6 @@ elsif command == 'tasks.log'
         rescue IronWorkerNG::APIClientError
         end
       end
-
-      sleep 1
-   
-      status = client.tasks.get(task_id).status
     end
 
     begin

@@ -113,6 +113,10 @@ module IronWorkerNG
       parse_response(post("projects/#{@project_id}/tasks/#{id}/cancel"))
     end
 
+    def tasks_cancel_all(code_id)
+      parse_response(post("projects/#{@project_id}/codes/#{code_id}/cancel_all"))
+    end
+
     def tasks_log(id)
       parse_response(get("projects/#{@project_id}/tasks/#{id}/log"), false)
     end
