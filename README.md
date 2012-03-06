@@ -32,3 +32,16 @@ client.codes.create(code)
 
 client.tasks.create('MyWorker', 'foo' => 'bar')
 ```
+
+## CLI
+
+Iron Worker NG got nice CLI tool bundled. Here is small example how to get your code running in cloud in few seconds.
+
+```sh
+% cat my_worker.rb
+puts "I got some params - #{@params.inspect}"
+% iron_worker_ng codes.create --ruby-merge-worker my_worker.rb
+% TASK_ID=`iron_worker_ng tasks.create -n MyWorker -p name,worker -p some,value --print-id`
+% iron_worker_ng tasks.log -t $TASK_ID --live
+I got some params - {"name"=>"worker", "some"=>"value"}
+```
