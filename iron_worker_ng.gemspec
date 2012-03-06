@@ -54,14 +54,14 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<rest-client>, [">= 0"])
       s.add_runtime_dependency(%q<rest>, [">= 0"])
       s.add_runtime_dependency(%q<json>, [">= 0"])
-      s.add_runtime_dependency(%q<bundler>, ["~> 1.0.0"])
+      s.add_runtime_dependency(%q<bundler>, ["~> 1.0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.8.3"])
     else
       s.add_dependency(%q<zip>, [">= 0"])
       s.add_dependency(%q<rest-client>, [">= 0"])
       s.add_dependency(%q<rest>, [">= 0"])
       s.add_dependency(%q<json>, [">= 0"])
-      s.add_dependency(%q<bundler>, ["~> 1.0.0"])
+      s.add_dependency(%q<bundler>, ["~> 1.0"])
       s.add_dependency(%q<jeweler>, ["~> 1.8.3"])
     end
   else
@@ -69,7 +69,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<rest-client>, [">= 0"])
     s.add_dependency(%q<rest>, [">= 0"])
     s.add_dependency(%q<json>, [">= 0"])
-    s.add_dependency(%q<bundler>, ["~> 1.0.0"])
+    s.add_dependency(%q<bundler>, ["~> 1.0"])
     s.add_dependency(%q<jeweler>, ["~> 1.8.3"])
   end
 end
