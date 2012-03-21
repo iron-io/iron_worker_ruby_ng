@@ -16,12 +16,12 @@ module IronWorkerNG
           end
 
           def bundle(zip)
-            zip.add(@dest + '/' + File.basename(@path), @path)
+            zip.add(@dest + File.basename(@path), @path)
           end
         end
 
         module InstanceMethods
-          def merge_file(path, dest = '.')
+          def merge_file(path, dest = '')
             @features << IronWorkerNG::Feature::Common::MergeFile::Feature.new(path, dest)
           end
 

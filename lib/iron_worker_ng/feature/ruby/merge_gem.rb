@@ -17,9 +17,9 @@ module IronWorkerNG
 
           def bundle(zip)
             if @spec.extensions.length == 0
-              zip.add('./gems/' + @spec.full_name, @spec.full_gem_path)
+              zip.add('gems/' + @spec.full_name, @spec.full_gem_path)
               Dir.glob(@spec.full_gem_path + '/**/**') do |path|
-                zip.add('./gems/' + @spec.full_name + path[@spec.full_gem_path.length .. -1], path)
+                zip.add('gems/' + @spec.full_name + path[@spec.full_gem_path.length .. -1], path)
               end
             end
           end

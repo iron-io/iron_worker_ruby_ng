@@ -23,13 +23,13 @@ module IronWorkerNG
 
           def bundle(zip)
             Dir.glob(@path + '/**/**') do |path|
-              zip.add(@dest + '/' + File.basename(@path) + path[@path.length .. -1], path)
+              zip.add(@dest + File.basename(@path) + path[@path.length .. -1], path)
             end
           end
         end
 
         module InstanceMethods
-          def merge_dir(path, dest = '.')
+          def merge_dir(path, dest = '')
             @features << IronWorkerNG::Feature::Common::MergeDir::Feature.new(path, dest)
           end
 

@@ -16,7 +16,7 @@ module IronWorkerNG
           end
 
           def bundle(zip)
-            zip.add('./' + File.basename(@path), @path)
+            zip.add(File.basename(@path), @path)
           end
 
           def code_for_init

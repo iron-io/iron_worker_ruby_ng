@@ -7,19 +7,25 @@ require_relative 'api_client_error'
 
 module IronWorkerNG
   class APIClient
-    attr_reader :token
-    attr_reader :project_id
+    AWS_US_EAST_HOST = 'worker-aws-us-east-1.iron.io'
+
+    attr_accessor :token
+    attr_accessor :project_id
+    attr_accessor :scheme
+    attr_accessor :host
+    attr_accessor :port
+    attr_accessor :api_version
+    attr_accessor :user_agent
 
     def initialize(token, project_id, params = {})
       @token = token
       @project_id = project_id
 
+      @scheme = params[:scheme] || 'https'
+      @host = params[:host] || IronWorkerNG::APIClient::AWS_US_EAST_HOST
+      @port = params[:port] || 443
+      @api_version = params[:api_version] || 2
       @user_agent = params[:user_agent] || 'iron_worker_ng-' + IronWorkerNG.version
-
-      scheme = params[:scheme] || 'https'
-      host = params[:host] || 'worker-aws-us-east-1.iron.io'
-      port = params[:port] || 443
-      api_version = params[:api_version] || 2
 
       @url = "#{scheme}://#{host}:#{port}/#{api_version}/"
 
@@ -58,8 +64,10 @@ module IronWorkerNG
       @rest.delete(@url + method, request_hash)
     end
 
+    # FIXME: retries support
+    # FIXME: user agent support
     def post_file(method, file, params = {})
-      request_hash = common_request_hash
+      request_hash = {}
       request_hash[:data] = params.to_json
       request_hash[:file] = file
 
