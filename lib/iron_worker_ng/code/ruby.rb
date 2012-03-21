@@ -49,6 +49,15 @@ end
 @iron_io_project_id = parsed_payload['project_id']
 @params = parsed_payload['params'] || {}
 
+keys = @params.keys
+keys.each do |key|
+  @params[key.to_sym] = @params[key]
+end
+
+def params
+  @params
+end
+
 require worker_file_name
 
 worker_class = nil
