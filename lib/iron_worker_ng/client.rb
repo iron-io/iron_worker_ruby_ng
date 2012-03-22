@@ -22,8 +22,8 @@ module IronWorkerNG
   class Client
     attr_reader :api
 
-    def initialize(token, project_id, params = {})
-      @api = IronWorkerNG::APIClient.new(token, project_id, params)
+    def initialize(token, project_id, options = {})
+      @api = IronWorkerNG::APIClient.new(token, project_id, options)
     end
 
     def method_missing(name, *args, &block)
@@ -34,8 +34,8 @@ module IronWorkerNG
       end
     end
 
-    def codes_list(params = {})
-      @api.codes_list(params)['codes'].map { |c| OpenStruct.new(c) }
+    def codes_list(options = {})
+      @api.codes_list(options)['codes'].map { |c| OpenStruct.new(c) }
     end
 
     def codes_get(code_id)
@@ -56,20 +56,16 @@ module IronWorkerNG
       true
     end
 
-    def codes_revisions(code_id, params = {})
-      @api.codes_revisions(code_id, params)['revisions'].map { |c| OpenStruct.new(c) }
+    def codes_revisions(code_id, options = {})
+      @api.codes_revisions(code_id, options)['revisions'].map { |c| OpenStruct.new(c) }
     end
 
-    def codes_download(code_id, params = {})
-      @api.codes_download(code_id, params)
+    def codes_download(code_id, options = {})
+      @api.codes_download(code_id, options)
     end
 
-    def tasks_get(task_id)
-      OpenStruct.new(@api.tasks_get(task_id))
-    end
-
-    def tasks_list(params = {})
-      @api.tasks_list(params)['tasks'].map { |t| OpenStruct.new(t) }
+    def tasks_list(options = {})
+      @api.tasks_list(options)['tasks'].map { |t| OpenStruct.new(t) }
     end
 
     def tasks_get(task_id)
@@ -77,7 +73,7 @@ module IronWorkerNG
     end
 
     def tasks_create(code_name, params = {}, options = {})
-      res = @api.tasks_create(code_name, {:project_id => @api.project_id, :token => @api.token, :params => params}.to_json, options)
+      res = @api.tasks_create(code_name, {:token => @api.token, :project_id => @api.project_id, :params => params}.to_json, options)
 
       OpenStruct.new(res['tasks'][0])
     end
@@ -98,25 +94,25 @@ module IronWorkerNG
       @api.tasks_log(task_id)
     end
 
-    def tasks_set_progress(task_id, params = {})
-      @api.tasks_set_progress(task_id, params)
+    def tasks_set_progress(task_id, options = {})
+      @api.tasks_set_progress(task_id, options)
 
       true
     end
 
-    def tasks_wait_for(task_id, params = {})
-      params[:sleep] ||= 5
+    def tasks_wait_for(task_id, options = {})
+      options[:sleep] ||= 5
 
       task = tasks_get(task_id)
       while task.status == 'queued' || task.status == 'running'
         yield task if block_given?
-        sleep params[:sleep]
+        sleep options[:sleep]
         task = tasks_get(task_id)
       end
     end
 
-    def schedules_list(params = {})
-      @api.schedules_list(params)['schedules'].map { |s| OpenStruct.new(s) }
+    def schedules_list(options = {})
+      @api.schedules_list(options)['schedules'].map { |s| OpenStruct.new(s) }
     end
 
     def schedules_get(schedule_id)
@@ -124,7 +120,7 @@ module IronWorkerNG
     end
 
     def schedules_create(code_name, params = {}, options = {})
-      res = @api.schedules_create(code_name, {:project_id => @api.project_id, :token => @api.token, :params => params}.to_json, options)
+      res = @api.schedules_create(code_name, {:token => @api.token, :project_id => @api.project_id, :params => params}.to_json, options)
 
       OpenStruct.new(res['schedules'][0])
     end

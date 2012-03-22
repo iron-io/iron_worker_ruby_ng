@@ -17,15 +17,15 @@ module IronWorkerNG
     attr_accessor :api_version
     attr_accessor :user_agent
 
-    def initialize(token, project_id, params = {})
+    def initialize(token, project_id, options = {})
       @token = token
       @project_id = project_id
 
-      @scheme = params[:scheme] || 'https'
-      @host = params[:host] || IronWorkerNG::APIClient::AWS_US_EAST_HOST
-      @port = params[:port] || 443
-      @api_version = params[:api_version] || 2
-      @user_agent = params[:user_agent] || 'iron_worker_ng-' + IronWorkerNG.version
+      @scheme = options[:scheme] || 'https'
+      @host = options[:host] || IronWorkerNG::APIClient::AWS_US_EAST_HOST
+      @port = options[:port] || 443
+      @api_version = options[:api_version] || 2
+      @user_agent = options[:user_agent] || 'iron_worker_ng-' + IronWorkerNG.version
 
       @url = "#{scheme}://#{host}:#{port}/#{api_version}/"
 
@@ -81,8 +81,8 @@ module IronWorkerNG
       JSON.parse(response.body)
     end
 
-    def codes_list(params = {})
-      parse_response(get("projects/#{@project_id}/codes", params))
+    def codes_list(options = {})
+      parse_response(get("projects/#{@project_id}/codes", options))
     end
 
     def codes_get(id)
@@ -97,24 +97,24 @@ module IronWorkerNG
       parse_response(delete("projects/#{@project_id}/codes/#{id}"))
     end
 
-    def codes_revisions(id, params = {})
-      parse_response(get("projects/#{@project_id}/codes/#{id}/revisions", params))
+    def codes_revisions(id, options = {})
+      parse_response(get("projects/#{@project_id}/codes/#{id}/revisions", options))
     end
 
-    def codes_download(id, params = {})
-      parse_response(get("projects/#{@project_id}/codes/#{id}/download", params), false)
+    def codes_download(id, options = {})
+      parse_response(get("projects/#{@project_id}/codes/#{id}/download", options), false)
     end
 
-    def tasks_list(params = {})
-      parse_response(get("projects/#{@project_id}/tasks", params))
+    def tasks_list(options = {})
+      parse_response(get("projects/#{@project_id}/tasks", options))
     end
 
     def tasks_get(id)
       parse_response(get("projects/#{@project_id}/tasks/#{id}"))
     end
 
-    def tasks_create(code_name, payload, params = {})
-      parse_response(post("projects/#{@project_id}/tasks", {:tasks => [{:code_name => code_name, :payload => payload}.merge(params)]}))
+    def tasks_create(code_name, payload, options = {})
+      parse_response(post("projects/#{@project_id}/tasks", {:tasks => [{:code_name => code_name, :payload => payload}.merge(options)]}))
     end
 
     def tasks_cancel(id)
@@ -129,23 +129,23 @@ module IronWorkerNG
       parse_response(get("projects/#{@project_id}/tasks/#{id}/log"), false)
     end
 
-    def tasks_set_progress(id, params = {})
-      parse_response(post("projects/#{@project_id}/tasks/#{id}/progress", params))
+    def tasks_set_progress(id, options = {})
+      parse_response(post("projects/#{@project_id}/tasks/#{id}/progress", options))
     end
 
-    def schedules_list(params = {})
-      parse_response(get("projects/#{@project_id}/schedules", params))
+    def schedules_list(options = {})
+      parse_response(get("projects/#{@project_id}/schedules", options))
     end
 
     def schedules_get(id)
       parse_response(get("projects/#{@project_id}/schedules/#{id}"))
     end
 
-    def schedules_create(code_name, payload, params = {})
-      params[:start_at] = params[:start_at].iso8601 if (not params[:start_at].nil?) && params[:start_at].class == Time
-      params[:end_at] = params[:end_at].iso8601 if (not params[:end_at].nil?) && params[:end_at].class == Time
+    def schedules_create(code_name, payload, options = {})
+      options[:start_at] = options[:start_at].iso8601 if (not options[:start_at].nil?) && options[:start_at].class == Time
+      options[:end_at] = options[:end_at].iso8601 if (not options[:end_at].nil?) && options[:end_at].class == Time
 
-      parse_response(post("projects/#{@project_id}/schedules", {:schedules => [{:code_name => code_name, :payload => payload}.merge(params)]}))
+      parse_response(post("projects/#{@project_id}/schedules", {:schedules => [{:code_name => code_name, :payload => payload}.merge(options)]}))
     end
 
     def schedules_cancel(id)
