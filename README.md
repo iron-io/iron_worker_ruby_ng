@@ -31,7 +31,7 @@ puts "I got '#{params}' parameters"
 
 Everything your worker will output to stdout will be logged and available for your review when worker will finish execution.
 
-# Create Code Package
+# Creating Code Package
 
 As this code will be executed on the cloud, you'll need to supply it with all necessary gems and supplementary data. IronWorkerNG::Code::Ruby will help you to do this.
 
@@ -151,7 +151,7 @@ end
 
 ### codes.get(code_id)
 
-Returns information about uploaded code with specified code_id. Viist http://dev.iron.io/worker/reference/api/#get_info_about_a_code_package for more information about code object format.
+Returns information about uploaded code with specified code_id. Visit http://dev.iron.io/worker/reference/api/#get_info_about_a_code_package for more information about code object format.
 
 ```ruby
 puts client.codes.get('1234567890').name
