@@ -1,3 +1,4 @@
+# -*- coding: undecided -*-
 require_relative '../feature/ruby/merge_gem'
 require_relative '../feature/ruby/merge_gemfile'
 require_relative '../feature/ruby/merge_worker'
@@ -39,11 +40,9 @@ require 'json'
 
 @payload = File.read(payload_file)
 
-parsed_payload = {}
-begin
-  parsed_payload = JSON.parse(@payload)
-rescue
-end
+parsed_payload = JSON.parse(@payload)
+
+raise "Хуй"
 
 @iron_io_token = parsed_payload['token']
 @iron_io_project_id = parsed_payload['project_id']

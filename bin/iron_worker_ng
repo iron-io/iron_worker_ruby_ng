@@ -19,7 +19,7 @@ if ENV['IRON_IO_TOKEN'].nil? || ENV['IRON_IO_PROJECT_ID'].nil?
   exit 1
 end
 
-client = IronWorkerNG::Client.new(ENV['IRON_IO_TOKEN'], ENV['IRON_IO_PROJECT_ID'])
+client = IronWorkerNG::Client.new(:token => ENV['IRON_IO_TOKEN'], :project_id => ENV['IRON_IO_PROJECT_ID'])
 
 if command == 'codes.create'
   runtimes = IronWorkerNG::Code::Base.registered_types
