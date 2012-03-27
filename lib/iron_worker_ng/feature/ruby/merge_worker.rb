@@ -12,7 +12,7 @@ module IronWorkerNG
           end
 
           def hash_string
-            Digest::MD5.hexdigest(@path + @klass)
+            Digest::MD5.hexdigest(@path + @klass + File.mtime(@path).to_i.to_s)
           end
 
           def bundle(zip)
