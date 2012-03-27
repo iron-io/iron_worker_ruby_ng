@@ -287,7 +287,7 @@ schedule = client.schedules.create('MyWorker', {:client => 'Joe'}, {:start_at =>
 puts schedule.id
 ```
 
-### schedules.cancel(schdule_id)
+### schedules.cancel(schedule_id)
 
 Cancels schedule with specified schedule_id.
 
