@@ -1,4 +1,3 @@
-# -*- coding: undecided -*-
 require_relative '../feature/ruby/merge_gem'
 require_relative '../feature/ruby/merge_gemfile'
 require_relative '../feature/ruby/merge_worker'
