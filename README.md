@@ -182,3 +182,11 @@ client.codes.revisions('1234567890').each do |revision|
   puts revision.inspect
 end
 ```
+
+### codes.download(code_id, options = {})
+
+Download code package with specified id and returns it to you as array of bytes. Visit http://dev.iron.io/worker/reference/api/#download_a_code_package for more information about options.
+
+```ruby
+data = client.codes.download('1234567890')
+```
