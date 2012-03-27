@@ -141,7 +141,7 @@ client = IronWorkerNG::Client.new(:token => 'IRON_IO_TOKEN', :project_id => 'IRO
 
 ### codes.list(options = {})
 
-Returns array of information about uploaded codes. Visit http://dev.iron.io/worker/reference/api/#list_code_packages for more information about options and code object format.
+Returns array of information about uploaded codes. Visit http://dev.iron.io/worker/reference/api/#list_code_packages for more information about options and code information object format.
 
 ```ruby
 client.codes.list.each do |code|
@@ -151,7 +151,7 @@ end
 
 ### codes.get(code_id)
 
-Returns information about uploaded code with specified code_id. Visit http://dev.iron.io/worker/reference/api/#get_info_about_a_code_package for more information about code object format.
+Returns information about uploaded code with specified code_id. Visit http://dev.iron.io/worker/reference/api/#get_info_about_a_code_package for more information about code information object format.
 
 ```ruby
 puts client.codes.get('1234567890').name
@@ -189,4 +189,73 @@ Download code package with specified id and returns it to you as array of bytes.
 
 ```ruby
 data = client.codes.download('1234567890')
+```
+
+### tasks.list(options = {})
+
+Returns array of information about tasks. Visit http://dev.iron.io/worker/reference/api/#list_tasks for more information about options and task information object format.
+
+```ruby
+client.tasks.list.each do |task|
+  puts task.inspect
+end
+```
+
+### tasks.get(task_id)
+
+Returns information about task with specified task_id. Visit http://dev.iron.io/worker/reference/api/#get_info_about_a_task for more information about task information object format.
+
+```ruby
+puts client.tasks.get('1234567890').code_name
+```
+
+### tasks.create(code_name, params = {}, options = {})
+
+Queues new task for code with specified code_name and passed params hash to it and returns task information object with only id field filled. Visit http://dev.iron.io/worker/reference/api/#queue_a_task for more information about options.
+
+```ruby
+task = client.tasks.create('MyWorker', {:client => 'Joe'}, {:delay => 180})
+puts task.id
+```
+
+### tasks.cancel(task_id)
+
+Cancels task with specified task_id.
+
+```ruby
+client.tasks.cancel('1234567890')
+```
+
+### tasks.cancel_all(code_id)
+
+Cancels all tasks for code package identified by specified code_id.
+
+```ruby
+client.tasks.cancel_all('1234567890')
+```
+
+### tasks.log(task_id)
+
+Returns full task log for task with specified task_id. Please note that log is available only when task completed execution.
+
+```ruby
+puts client.tasks.log('1234567890')
+```
+
+### tasks.set_progress(task_id, options = {})
+
+Sets task progress information for task with specified task_id. Should be used from within worker to inform you about worker execution status which you'll get via tasks.get call. Visit http://dev.iron.io/worker/reference/api/#set_a_tasks_progress for more information about options.
+
+```ruby
+client.tasks.set_progress('1234567890', {:msg => 'Still running...'})
+```
+
+### tasks.wait_for(task_id, options = {})
+
+Waits while task identified by specified task_id executes. Options can containt :sleep parameter used to sleep between API invocations which defaults to 5 seconds. If block is provided, it'll be yielded after each API call with task information object as parameter.
+
+```ruby
+client.tasks.wait_for('1234567890') do |task|
+  puts task.msg
+end
 ```
