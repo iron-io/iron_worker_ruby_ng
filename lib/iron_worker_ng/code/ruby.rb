@@ -39,10 +39,14 @@ require 'json'
 
 @payload = File.read(payload_file)
 
-parsed_payload = JSON.parse(@payload)
+parsed_payload = {}
+begin
+  parsed_payload = JSON.parse(@payload)
+rescue
+end
 
-@iron_io_token = parsed_payload['token']
-@iron_io_project_id = parsed_payload['project_id']
+@iron_io_token = parsed_payload['token'] || nil
+@iron_io_project_id = parsed_payload['project_id'] || nil
 @params = parsed_payload['params'] || {}
 
 keys = @params.keys
