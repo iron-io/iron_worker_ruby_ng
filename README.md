@@ -46,7 +46,7 @@ code.merge_gem 'activerecord'
 
 ## IronWorkerNG::Code::Ruby API
 
-Complete description of IronWorkerNG::Code::Ruby API.
+Please note that this API will help you to create code package but to upload it to IronWorker servers you'll need to use IronWorkerNG::Client API.
 
 ### initialize(name = nil)
 
@@ -108,10 +108,77 @@ code.merge_gem 'activerecord'
 code.merge_gem 'paperclip', '< 3.0.0,>= 2.1.0'
 ```
 
-### merge_gemfile(path, *grup)
+### merge_gemfile(path, *groups)
 
 Merges all gems from specified groups in Gemfile. Please note that it'll just merge gems and not auto require them when executing worker.
 
 ```ruby
 code.merge_gemfile '../Gemfile', 'common', 'worker' # merges gems from common and worker groups
+```
+
+# Using IronWorker
+
+When you have your code package you are ready to run it on IronWorker servers.
+
+```ruby
+client = IronWorkerNG::Client.new(:token => IRON_IO_TOKEN', :project_id => 'IRON_IO_PROJECT_ID')
+
+client.codes.create(code)
+client.tasks.create('MyWorker', {:client => 'Joe'})
+```
+
+## IronWorker::Client API
+
+You can use IronWorkerNG::Client API to upload code packages, queue tasks, created schedules and more.
+
+### initialize(options = {})
+
+Creates client object used for all interactions with IronWorker servers.
+
+```ruby
+client = IronWorkerNG::Client.new(:token => 'IRON_IO_TOKEN', :project_id => 'IRON_IO_PROJECT_ID')
+```
+
+### codes.list(options = {})
+
+Returns array of information about uploaded codes. Visit http://dev.iron.io/worker/reference/api/#list_code_packages for more information about options and code object format.
+
+```ruby
+client.codes.list.each do |code|
+  puts code.inspect
+end
+```
+
+### codes.get(code_id)
+
+Returns information about uploaded code with specified code_id. Viist http://dev.iron.io/worker/reference/api/#get_info_about_a_code_package for more information about code object format.
+
+```ruby
+puts client.codes.get('1234567890').name
+```
+
+### codes.create(code)
+
+Uploads IronWorkerNG::Code::Ruby object to IronWorker servers.
+
+```ruby
+client.codes.create(code)
+```
+
+### codes.delete(code_id)
+
+Deletes code with specified code_id from IronWorker servers.
+
+```ruby
+client.codes.delete('1234567890')
+```
+
+### codes.revisions(code_id, options = {})
+
+Returns array of revision information for code package with specified code_id. Visit http://dev.iron.io/worker/reference/api/#list_code_package_revisions for more information about options and revision information object.
+
+```ruby
+client.codes.revisions('1234567890').each do |revision|
+  puts revision.inspect
+end
 ```

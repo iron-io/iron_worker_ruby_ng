@@ -22,8 +22,8 @@ module IronWorkerNG
   class Client
     attr_reader :api
 
-    def initialize(token, project_id, options = {})
-      @api = IronWorkerNG::APIClient.new(token, project_id, options)
+    def initialize(options = {})
+      @api = IronWorkerNG::APIClient.new(options)
     end
 
     def method_missing(name, *args, &block)

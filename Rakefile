@@ -16,7 +16,7 @@ require 'jeweler'
 
 Jeweler::Tasks.new do |gem|
   gem.name = "iron_worker_ng"
-  gem.homepage = "http://www.iron.io"
+  gem.homepage = "https://github.com/iron-io/iron_worker_ruby_ng"
   gem.description = %Q{New generation ruby client for IronWorker}
   gem.summary = %Q{New generation ruby client for IronWorker}
   gem.email = "info@iron.io"

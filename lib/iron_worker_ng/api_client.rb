@@ -17,9 +17,9 @@ module IronWorkerNG
     attr_accessor :api_version
     attr_accessor :user_agent
 
-    def initialize(token, project_id, options = {})
-      @token = token
-      @project_id = project_id
+    def initialize(options = {})
+      @token = options[:token] || options['token']
+      @project_id = options[:project_id] || options['project_id']
 
       @scheme = options[:scheme] || 'https'
       @host = options[:host] || IronWorkerNG::APIClient::AWS_US_EAST_HOST
