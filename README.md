@@ -1,18 +1,18 @@
 # Introduction
 
-To run your code in cloud you need to do two things - upload code package to be executed and queue or schedule it for execution. While you can use REST APIs for that, it's always better to use IronWorker library created specificaly for your language of choice such as IronWorkerNG.
+To run your code in cloud you need to do two things - upload code package to be executed and queue or schedule it for execution. While you can use REST APIs for that, it's easier to use an IronWorker library created specifically for your language of choice, such as IronWorkerNG.
 
 # Preparing Environment
 
-You'll need to register at http://iron.io and get your credintials to use IronWorkerNG. Each account can have unlimited number of project, so take advantage of it by creating separate projects for development, testing and production. Each project is identified by unique project_id and requiers access token to do any actions on it like uploading or queueing workers.
+You'll need to register at http://iron.io/ and get your credentials to use IronWorkerNG. Each account can have an unlimited number of projects, so take advantage of it by creating separate projects for development, testing and production. Each project is identified by a unique project_id and requires your access token to do any actions on it, like uploading or queuing workers.
 
-Also you'll need working ruby 1.9 interpreter and IronWorkerNG gem. Install it using following command.
+Also, you'll need a Ruby 1.9 interpreter and the IronWorkerNG gem. Install it using following command.
 
 ```sh
 gem install iron_worker_ng
 ```
 
-It's recommended that you'll install typhoeus gem as well for faster API interaction.
+We recommend that you install typhoeus gem as well for faster API interaction.
 
 ```sh
 gem install typhoeus
@@ -20,7 +20,7 @@ gem install typhoeus
 
 # Creating Worker
 
-IronWorkerNG ruby worker is common ruby code. It can be as simple as show below and as complex as you want.
+IronWorkerNG Ruby worker is common Ruby code. It can be as simple as shown below or as complex as you want.
 
 ```ruby
 puts "I'm worker"
@@ -29,7 +29,7 @@ puts "I'm executing inside #{@iron_io_project_id} and was queued using #{@iron_i
 puts "I got '#{params}' parameters"
 ```
 
-Everything your worker will output to stdout will be logged and available for your review when worker will finish execution.
+All output to stdout will be logged and available for your review when workers finish execution.
 
 # Creating Code Package
 
@@ -50,7 +50,7 @@ Please note that this API will help you to create code package but to upload it 
 
 ### initialize(name = nil)
 
-Will create new code package with specified name. If name is omited, camel-cased worker's file name will be used.
+Will create new code package with specified name. If name is omitted, camel-cased worker's file name will be used.
 
 ```ruby
 code = IronWorkerNG::Code::Ruby.new
@@ -71,7 +71,7 @@ puts code.name
 puts code.hash_string
 ```
 
-Will return code package hash string. If you want prevent uploading unchanged code packages, you can use it to check if any changes were made. As it's verty efficient, it shouldn't cause any performace impact.
+Will return code package hash string. If you want to prevent uploading unchanged code packages, you can use it to check if any changes were made. As it's very efficient, it shouldn't cause any performance impact.
 
 ### merge_file(path, dest = '')
 
@@ -80,11 +80,11 @@ code.merge_file '../config/database.yml' # will be in the same directory as work
 code.merge_file 'clients.csv', 'information/clients' # will be in information/clients subdirectory
 ```
 
-Merges file located at path into the code package. You can use optional dest to set destination directory which will be automatically created.
+Merges file located at path into the code package. You can use the optional dest parameter to set destination directory which will be automatically created.
 
 ### merge_dir(path, dest = '')
 
-Recursively merges directory located at path into the code package. 
+Recursively merges the directory located at path into the code package. 
 
 ```ruby
 code.merge_dir '../config' # will be in the same directory as worker
@@ -93,7 +93,7 @@ code.merge_dir 'lib', 'utils' # will be in utils subdirectory, accessible as uti
 
 ### merge_worker(path, name = nil)
 
-Merges worker located at path. If name is omited, camel-cased file name will be used. You can have only one worker merged per code package.
+Merges worker located at path. If name is omitted, camel-cased file name will be used. You can have only one worker merged per code package.
 
 ```ruby
 code.merge_worker 'my_worker.rb' # name will be MyWorker
@@ -101,7 +101,7 @@ code.merge_worker 'my_worker.rb' # name will be MyWorker
 
 ### merge_gem(name, version = '>= 0')
 
-Merges gem with dependencies. Please note that gems which contains binary extensions will not be merged at the moment, however we have sane set of such gems preinstalled at IronWorker servers. You can use version constrains if you need specific gem version.
+Merges gem with dependencies. Please note that gems which contains binary extensions will not be merged at the moment, however we have sane set of such gems preinstalled at IronWorker servers. You can use version constrains if you need a specific gem version.
 
 ```ruby
 code.merge_gem 'activerecord'
@@ -129,7 +129,7 @@ client.tasks.create('MyWorker', {:client => 'Joe'})
 
 ## IronWorker::Client API
 
-You can use IronWorkerNG::Client API to upload code packages, queue tasks, created schedules and more.
+You can use IronWorkerNG::Client API to upload code packages, queue tasks, create schedules and more.
 
 ### initialize(options = {})
 
@@ -141,7 +141,7 @@ client = IronWorkerNG::Client.new(:token => 'IRON_IO_TOKEN', :project_id => 'IRO
 
 ### codes.list(options = {})
 
-Returns array of information about uploaded codes. Visit http://dev.iron.io/worker/reference/api/#list_code_packages for more information about options and code information object format.
+Returns an array of information about uploaded codes. Visit http://dev.iron.io/worker/reference/api/#list_code_packages for more information about options and code information object format.
 
 ```ruby
 client.codes.list.each do |code|
@@ -185,7 +185,7 @@ end
 
 ### codes.download(code_id, options = {})
 
-Download code package with specified id and returns it to you as array of bytes. Visit http://dev.iron.io/worker/reference/api/#download_a_code_package for more information about options.
+Downloads the code package with specified id and returns it to you as array of bytes. Visit http://dev.iron.io/worker/reference/api/#download_a_code_package for more information about options.
 
 ```ruby
 data = client.codes.download('1234567890')
@@ -193,7 +193,7 @@ data = client.codes.download('1234567890')
 
 ### tasks.list(options = {})
 
-Returns array of information about tasks. Visit http://dev.iron.io/worker/reference/api/#list_tasks for more information about options and task information object format.
+Returns an array of information about tasks. Visit http://dev.iron.io/worker/reference/api/#list_tasks for more information about options and task information object format.
 
 ```ruby
 client.tasks.list.each do |task|
@@ -211,7 +211,7 @@ puts client.tasks.get('1234567890').code_name
 
 ### tasks.create(code_name, params = {}, options = {})
 
-Queues new task for code with specified code_name, passes params hash to it and returns task information object with only id field filled. Visit http://dev.iron.io/worker/reference/api/#queue_a_task for more information about options.
+Queues a new task for code with specified code_name, passes params hash to it and returns task information object with only id field filled. Visit http://dev.iron.io/worker/reference/api/#queue_a_task for more information about options.
 
 ```ruby
 task = client.tasks.create('MyWorker', {:client => 'Joe'}, {:delay => 180})
@@ -220,7 +220,7 @@ puts task.id
 
 ### tasks.cancel(task_id)
 
-Cancels task with specified task_id.
+Cancels the task with specified task_id.
 
 ```ruby
 client.tasks.cancel('1234567890')
@@ -244,7 +244,7 @@ puts client.tasks.log('1234567890')
 
 ### tasks.set_progress(task_id, options = {})
 
-Sets task progress information for task with specified task_id. Should be used from within worker to inform you about worker execution status which you'll get via tasks.get call. Visit http://dev.iron.io/worker/reference/api/#set_a_tasks_progress for more information about options.
+Sets task progress information for task with specified task_id. This should be used from within workers to inform you about worker execution status which you'll get via a tasks.get call. Visit http://dev.iron.io/worker/reference/api/#set_a_tasks_progress for more information about options.
 
 ```ruby
 client.tasks.set_progress('1234567890', {:msg => 'Still running...'})
@@ -252,7 +252,7 @@ client.tasks.set_progress('1234567890', {:msg => 'Still running...'})
 
 ### tasks.wait_for(task_id, options = {})
 
-Waits while task identified by specified task_id executes. Options can containt :sleep parameter used to sleep between API invocations which defaults to 5 seconds. If block is provided, it'll be yielded after each API call with task information object as parameter.
+Waits while task identified by specified task_id executes. Options can contain :sleep parameter used to sleep between API invocations which defaults to 5 seconds. If block is provided, it'll be yielded after each API call with task information object as parameter.
 
 ```ruby
 client.tasks.wait_for('1234567890') do |task|
@@ -262,7 +262,7 @@ end
 
 ### schedules.list(options = {})
 
-Returns array of information about schedules. Visit http://dev.iron.io/worker/reference/api/#list_scheduled_tasks for more information about options and schedule information object format.
+Returns an array of information about schedules. Visit http://dev.iron.io/worker/reference/api/#list_scheduled_tasks for more information about options and schedule information object format.
 
 ```ruby
 client.schedules.list.each do |schedule|
@@ -272,7 +272,7 @@ end
 
 ### schedules.get(schedule_id)
 
-Returns information about schedule with specified schedule_id. Visit http://dev.iron.io/worker/reference/api/#get_info_about_a_scheduled_task for more information about schedule information object format.
+Returns information about the schedule with specified schedule_id. Visit http://dev.iron.io/worker/reference/api/#get_info_about_a_scheduled_task for more information about schedule information object format.
 
 ```ruby
 puts client.schedules.get('1234567890').last_run_time
@@ -280,7 +280,7 @@ puts client.schedules.get('1234567890').last_run_time
 
 ### schedules.create(code_name, params = {}, options = {})
 
-Creates new schedule for code with specified code_name, passes params hash to it and returns schedule information object with only id field filled. Visit http://dev.iron.io/worker/reference/api/#schedule_a_task for more information about options.
+Creates a new schedule for code with specified code_name, passes params hash to it and returns schedule information object with only id field filled. Visit http://dev.iron.io/worker/reference/api/#schedule_a_task for more information about options.
 
 ```ruby
 schedule = client.schedules.create('MyWorker', {:client => 'Joe'}, {:start_at => Time.now + 3600})
@@ -289,7 +289,7 @@ puts schedule.id
 
 ### schedules.cancel(schdule_id)
 
-Cancels schedule with specified schedule_id.
+Cancels the schedule with specified schedule_id.
 
 ```ruby
 client.schedules.cancel('1234567890')
