@@ -50,7 +50,7 @@ module IronWorkerNG
             if @merge_gem_reqs.length > 0
               reqs = @merge_gem_reqs.map { |req| Bundler::DepProxy.new(req, Gem::Platform::RUBY) }
 
-              souce = nil
+              source = nil
               begin
                 source = Bundler::Source::Rubygems.new
               rescue Bundler::GemfileNotFound

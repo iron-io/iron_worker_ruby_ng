@@ -9,7 +9,7 @@ else
   @config = YAML.load_file(File.join(File.dirname(__FILE__), 'config.yml'))
 end
 
-client = IronWorkerNG::Client.new(@config['iron_worker']['token'], @config['iron_worker']['project_id'])
+client = IronWorkerNG::Client.new(:token => @config['iron_worker']['token'], :project_id => @config['iron_worker']['project_id'])
 
 code = IronWorkerNG::Code::Ruby.new
 code.merge_worker 'hello_worker.rb'

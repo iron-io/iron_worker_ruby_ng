@@ -50,6 +50,18 @@ keys.each do |key|
   @params[key.to_sym] = @params[key]
 end
 
+def payload
+  @payload
+end
+
+def iron_io_token
+  @iron_io_token
+end
+
+def iron_io_project_id
+  @iron_io_project_id
+end
+
 def params
   @params
 end
@@ -66,17 +78,13 @@ end
 unless worker_class.nil?
   worker_inst = worker_class.new
 
-  class << worker_inst
-    attr_accessor :iron_io_token
-    attr_accessor :iron_io_project_id
-    attr_accessor :iron_worker_task_id
-    attr_accessor :params
+  params.keys.each do |param|
+    if param.class == String
+      if worker_inst.respond_to?(param + '=')
+        worker_inst.send(param + '=', params[param])
+      end
+    end
   end
-
-  worker_inst.iron_io_token = @iron_io_token
-  worker_inst.iron_io_project_id = @iron_io_project_id
-  worker_inst.iron_worker_task_id = @iron_worker_task_id
-  worker_inst.params = @params
 
   worker_inst.run
 end
