@@ -42,8 +42,6 @@ require 'json'
 
 parsed_payload = JSON.parse(@payload)
 
-raise "Хуй"
-
 @iron_io_token = parsed_payload['token']
 @iron_io_project_id = parsed_payload['project_id']
 @params = parsed_payload['params'] || {}
