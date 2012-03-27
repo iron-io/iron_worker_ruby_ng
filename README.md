@@ -211,7 +211,7 @@ puts client.tasks.get('1234567890').code_name
 
 ### tasks.create(code_name, params = {}, options = {})
 
-Queues new task for code with specified code_name and passed params hash to it and returns task information object with only id field filled. Visit http://dev.iron.io/worker/reference/api/#queue_a_task for more information about options.
+Queues new task for code with specified code_name, passes params hash to it and returns task information object with only id field filled. Visit http://dev.iron.io/worker/reference/api/#queue_a_task for more information about options.
 
 ```ruby
 task = client.tasks.create('MyWorker', {:client => 'Joe'}, {:delay => 180})
@@ -258,4 +258,39 @@ Waits while task identified by specified task_id executes. Options can containt 
 client.tasks.wait_for('1234567890') do |task|
   puts task.msg
 end
+```
+
+### schedules.list(options = {})
+
+Returns array of information about schedules. Visit http://dev.iron.io/worker/reference/api/#list_scheduled_tasks for more information about options and schedule information object format.
+
+```ruby
+client.schedules.list.each do |schedule|
+  puts schedule.inspect
+end
+```
+
+### schedules.get(schedule_id)
+
+Returns information about schedule with specified schedule_id. Visit http://dev.iron.io/worker/reference/api/#get_info_about_a_scheduled_task for more information about schedule information object format.
+
+```ruby
+puts client.schedules.get('1234567890').last_run_time
+```
+
+### schedules.create(code_name, params = {}, options = {})
+
+Creates new schedule for code with specified code_name, passes params hash to it and returns schedule information object with only id field filled. Visit http://dev.iron.io/worker/reference/api/#schedule_a_task for more information about options.
+
+```ruby
+schedule = client.schedules.create('MyWorker', {:client => 'Joe'}, {:start_at => Time.now + 3600})
+puts schedule.id
+```
+
+### schedules.cancel(schdule_id)
+
+Cancels schedule with specified schedule_id.
+
+```ruby
+client.schedules.cancel('1234567890')
 ```
