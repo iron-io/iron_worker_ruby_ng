@@ -121,7 +121,7 @@ code.merge_gemfile '../Gemfile', 'common', 'worker' # merges gems from common an
 When you have your code package you are ready to run it on IronWorker servers.
 
 ```ruby
-client = IronWorkerNG::Client.new(:token => IRON_IO_TOKEN', :project_id => 'IRON_IO_PROJECT_ID')
+client = IronWorkerNG::Client.new(:token => 'IRON_IO_TOKEN', :project_id => 'IRON_IO_PROJECT_ID')
 
 client.codes.create(code)
 client.tasks.create('MyWorker', {:client => 'Joe'})
