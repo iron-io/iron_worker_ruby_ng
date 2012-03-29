@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "iron_worker_ng"
-  s.version = "0.1.13"
+  s.version = "0.1.14"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Andrew Kirilenko", "Iron.io, Inc"]
-  s.date = "2012-03-27"
+  s.date = "2012-03-29"
   s.description = "New generation ruby client for IronWorker"
   s.email = "info@iron.io"
   s.executables = ["iron_worker_ng"]
