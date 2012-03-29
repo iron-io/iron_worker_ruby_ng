@@ -58,6 +58,10 @@ def payload
   @payload
 end
 
+def task_id
+  @task_id
+end
+
 def iron_io_token
   @iron_io_token
 end
