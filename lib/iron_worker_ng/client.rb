@@ -21,11 +21,13 @@ module IronWorkerNG
 
   class Client
     attr_reader :api
-    attr_reader :logger
 
     def initialize(options = {})
-      @logger = options.delete(:logger) || IronWorkerNG.logger
       @api = IronWorkerNG::APIClient.new(options)
+    end
+
+    def logger
+      IronWorkerNG.logger
     end
 
     def method_missing(name, *args, &block)

@@ -11,8 +11,6 @@ module IronWorkerNG
       attr_reader :name
       attr_reader :features
 
-      attr_reader :logger
-
       @@registered_types = []
     
       def self.registered_types
@@ -37,9 +35,12 @@ module IronWorkerNG
       include IronWorkerNG::Feature::Common::MergeDir::InstanceMethods
 
       def initialize(name = nil, options = {})
-        @logger = options[:logger] || IronWorkerNG.logger
         @name = name
         @features = []
+      end
+
+      def logger
+        IronWorkerNG.logger
       end
 
       def fixate

@@ -16,11 +16,8 @@ module IronWorkerNG
     attr_accessor :port
     attr_accessor :api_version
     attr_accessor :user_agent
-    attr_accessor :logger
 
     def initialize(options = {})
-      @logger = options[:logger] || IronWorkerNG.logger
-
       @token = options[:token] || options['token']
       @project_id = options[:project_id] || options['project_id']
 
@@ -33,6 +30,10 @@ module IronWorkerNG
       @url = "#{scheme}://#{host}:#{port}/#{api_version}/"
 
       @rest = Rest::Client.new
+    end
+
+    def logger
+      IronWorkerNG.logger
     end
 
     def common_request_hash
