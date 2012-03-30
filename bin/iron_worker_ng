@@ -76,15 +76,12 @@ if command == 'codes.create'
 
   runtime = runtimes[0][:name] if runtime.nil?
 
-  logger.info 'Creating code bundle'
   code = runtimes.find { |r| r[:name] == runtime }[:klass].new(name)
 
   execute_features.each do |f|
-    logger.info "Executing feature #{f[:name]}"
     code.send(f[:name], *f[:args])
   end
 
-  logger.info 'Uploading code bundle'
   client.codes.create(code)
 elsif command == 'tasks.create' || command == 'schedules.create'
   name = nil
@@ -175,10 +172,8 @@ elsif command == 'tasks.create' || command == 'schedules.create'
   id = nil
 
   if command == 'tasks.create'
-    logger.info 'Creating task'
     id = client.tasks.create(name, params, options).id
   else
-    logger.info 'Create schedule'
     id = client.schedules.create(name, params, options).id
   end
 
@@ -215,7 +210,6 @@ elsif command == 'tasks.log'
 
   log = ''
 
-  logger.info 'Fetching task log'
   if live
     begin
       log = client.tasks.log(task_id)
