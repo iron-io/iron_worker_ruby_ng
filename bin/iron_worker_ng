@@ -24,6 +24,8 @@ log_level = ENV['IRON_WORKER_LOG_LEVEL'] || 'INFO'
 logger.level = eval "Logger::#{log_level}"
 logger.datetime_format = "%F %T.%L "
 
+IronWorkerNG.logger = logger
+
 client = IronWorkerNG::Client.new(:token => ENV['IRON_IO_TOKEN'], :project_id => ENV['IRON_IO_PROJECT_ID'])
 
 if command == 'codes.create'

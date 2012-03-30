@@ -11,6 +11,8 @@ module IronWorkerNG
       attr_reader :name
       attr_reader :features
 
+      attr_reader :logger
+
       @@registered_types = []
     
       def self.registered_types
@@ -34,7 +36,8 @@ module IronWorkerNG
       include IronWorkerNG::Feature::Common::MergeFile::InstanceMethods
       include IronWorkerNG::Feature::Common::MergeDir::InstanceMethods
 
-      def initialize(name = nil)
+      def initialize(name = nil, options = {})
+        @logger = options[:logger] || IronWorkerNG.logger
         @name = name
         @features = []
       end
@@ -71,7 +74,8 @@ module IronWorkerNG
         end
 
         zip_name = Dir.tmpdir + '/' + Dir::Tmpname.make_tmpname("iron-worker-ng-", "code.zip")
-      
+
+        logger.debug "Creating zip file #{zip_name}"
         Zip::ZipFile.open(zip_name, Zip::ZipFile::CREATE) do |zip|
           bundle(zip)
           create_runner(zip, init_code)

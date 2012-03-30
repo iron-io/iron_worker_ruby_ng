@@ -21,8 +21,10 @@ module IronWorkerNG
 
   class Client
     attr_reader :api
+    attr_reader :logger
 
     def initialize(options = {})
+      @logger = options.delete(:logger) || IronWorkerNG.logger
       @api = IronWorkerNG::APIClient.new(options)
     end
 
@@ -45,6 +47,7 @@ module IronWorkerNG
     def codes_create(code)
       zip_file = code.create_zip
       @api.codes_create(code.name, zip_file, code.runtime, code.runner)
+      logger.debug "Removing zip #{zip_file}"
       File.unlink(zip_file)
 
       true

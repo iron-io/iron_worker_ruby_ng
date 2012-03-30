@@ -16,12 +16,14 @@ module IronWorkerNG
           end
 
           def bundle(zip)
+            logger.debug "Bundling file #{@path} #{'dest=' + @dest unless @dest.empty?}"
             zip.add(@dest + File.basename(@path), @path)
           end
         end
 
         module InstanceMethods
           def merge_file(path, dest = '')
+            logger.debug "Merging file #{path} #{'dest=' + dest unless dest.empty?}"
             @features << IronWorkerNG::Feature::Common::MergeFile::Feature.new(path, dest)
           end
 

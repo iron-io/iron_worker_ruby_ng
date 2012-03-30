@@ -16,6 +16,7 @@ module IronWorkerNG
           end
 
           def bundle(zip)
+            logger.debug "Bundling worker #{@path}"
             zip.add(File.basename(@path), @path)
           end
 
@@ -30,7 +31,10 @@ module IronWorkerNG
           def merge_worker(path, klass = nil)
             @worker ||= nil 
 
-            return unless @worker.nil?
+            unless @worker.nil?
+              logger.warn "Ignoring attempt to merge another worker #{path}"
+              return
+            end
 
             if klass == nil
               klass = File.basename(path).gsub(/\.rb$/, '').capitalize.gsub(/_./) { |x| x[1].upcase }
@@ -39,6 +43,7 @@ module IronWorkerNG
             @name ||= klass
 
             @worker = IronWorkerNG::Feature::Ruby::MergeWorker::Feature.new(path, klass)
+            logger.debug "Merging worker #{@name}"
             @features << @worker
           end
 
