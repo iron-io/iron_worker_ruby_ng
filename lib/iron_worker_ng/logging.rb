@@ -8,6 +8,7 @@ end
 
 module IronWorkerNG
   @@logger = Logger.new(STDERR)
+  @@logger.datetime_format = "%F %T.%L "
 
   def self.logger
     @@logger
