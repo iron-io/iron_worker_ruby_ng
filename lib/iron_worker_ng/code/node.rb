@@ -6,6 +6,7 @@ module IronWorkerNG
       include IronWorkerNG::Feature::Node::MergeWorker::InstanceMethods
 
       def create_runner(zip, init_code)
+        logger.debug 'Adding nodejs runner'
         zip.get_output_stream('runner.rb') do |runner|
           runner.write <<RUNNER
 # iron_worker_ng-#{IronWorkerNG.version}

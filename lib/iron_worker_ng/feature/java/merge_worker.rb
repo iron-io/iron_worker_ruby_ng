@@ -16,6 +16,7 @@ module IronWorkerNG
           end
 
           def bundle(zip)
+            logger.debug "Bundling worker #{@path}"
             zip.add(File.basename(@path), @path)
           end
 
@@ -30,11 +31,15 @@ module IronWorkerNG
           def merge_worker(path, klass)
             @worker ||= nil 
 
-            return unless @worker.nil?
+            unless @worker.nil?
+              logger.warn "Ignoring attempt to merge another worker #{path}"
+              return
+            end
 
             @name ||= klass.split('.')[-1]
 
             @worker = IronWorkerNG::Feature::Java::MergeWorker::Feature.new(path, klass)
+            logger.debug "Merging worker #{@name}"
             @features << @worker
           end
 

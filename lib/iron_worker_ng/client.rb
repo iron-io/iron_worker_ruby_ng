@@ -26,6 +26,10 @@ module IronWorkerNG
       @api = IronWorkerNG::APIClient.new(options)
     end
 
+    def logger
+      IronWorkerNG.logger
+    end
+
     def method_missing(name, *args, &block)
       if args.length == 0
         IronWorkerNG::ClientProxyCaller.new(self, name)
@@ -45,6 +49,7 @@ module IronWorkerNG
     def codes_create(code)
       zip_file = code.create_zip
       @api.codes_create(code.name, zip_file, code.runtime, code.runner)
+      logger.debug "Removing zip #{zip_file}"
       File.unlink(zip_file)
 
       true

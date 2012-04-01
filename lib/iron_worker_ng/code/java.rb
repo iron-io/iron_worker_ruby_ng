@@ -8,6 +8,8 @@ module IronWorkerNG
       include IronWorkerNG::Feature::Java::MergeWorker::InstanceMethods
 
       def create_runner(zip, init_code)
+        logger.debug 'Adding java runner'
+
         classpath_array = []
       
         @features.each do |f|

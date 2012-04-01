@@ -19,6 +19,13 @@ if ENV['IRON_IO_TOKEN'].nil? || ENV['IRON_IO_PROJECT_ID'].nil?
   exit 1
 end
 
+logger = Logger.new(ENV['IRON_WORKER_LOG_FILE'] || STDERR)
+log_level = ENV['IRON_WORKER_LOG_LEVEL'] || 'INFO'
+logger.level = eval "Logger::#{log_level}"
+logger.datetime_format = "%F %T.%L "
+
+IronWorkerNG.logger = logger
+
 client = IronWorkerNG::Client.new(:token => ENV['IRON_IO_TOKEN'], :project_id => ENV['IRON_IO_PROJECT_ID'])
 
 if command == 'codes.create'
@@ -58,12 +65,12 @@ if command == 'codes.create'
   begin
     opts.parse!
   rescue OptionParser::ParseError
-    puts $!.to_s
+    logger.fatal $!.report
     exit 1
   end
 
   if execute_features.size == 0
-    puts opts
+    logger.fatal "No features to execute specified\n#{opts}"
     exit 1
   end
 
@@ -140,12 +147,12 @@ elsif command == 'tasks.create' || command == 'schedules.create'
   begin
     opts.parse!
   rescue OptionParser::ParseError
-    puts $!.to_s
+    logger.fatal $!.to_s
     exit 1
   end
 
   if name.nil?
-    puts opts
+    logger.fatal "Required option --name is not specified\n#{opts}"
     exit 1
   end
 
@@ -170,6 +177,8 @@ elsif command == 'tasks.create' || command == 'schedules.create'
     id = client.schedules.create(name, params, options).id
   end
 
+  logger.debug "id = #{id}"
+
   print id if print_id
 elsif command == 'tasks.log'
   task_id = nil
@@ -190,12 +199,12 @@ elsif command == 'tasks.log'
   begin
     opts.parse!
   rescue OptionParser::ParseError
-    puts $!.to_s
+    logger.fatal $!.to_s
     exit 1
   end
 
   if task_id.nil?
-    puts opts
+    logger.fatal "Required option --task-id is not specified\n#{opts}"
     exit 1
   end
 
@@ -205,6 +214,7 @@ elsif command == 'tasks.log'
     begin
       log = client.tasks.log(task_id)
     rescue IronWorkerNG::APIClientError
+      logger.warn $!.report
     end
   else
     log = client.tasks.log(task_id)
@@ -220,6 +230,7 @@ elsif command == 'tasks.log'
           print next_log[log.length .. - 1]
           log = next_log
         rescue IronWorkerNG::APIClientError
+          logger.warn $!.report
         end
       end
     end
@@ -228,6 +239,7 @@ elsif command == 'tasks.log'
       next_log = client.tasks.log(task_id)
       print next_log[log.length .. - 1]
     rescue IronWorkerNG::APIClientError
+      logger.warn $!.report
     end
   end
 end

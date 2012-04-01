@@ -20,6 +20,8 @@ module IronWorkerNG
 
         module InstanceMethods
           def merge_gemfile(path, *groups)
+            logger.debug 'Merging Gemfile...'
+
             groups = groups.map { |g| g.to_sym }
             groups << :default if groups.length == 0
 

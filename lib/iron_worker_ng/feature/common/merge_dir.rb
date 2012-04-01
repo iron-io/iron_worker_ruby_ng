@@ -22,6 +22,7 @@ module IronWorkerNG
           end
 
           def bundle(zip)
+            logger.debug "Bundling dir #{@path} #{'dest=' + @dest unless @dest.empty?}"
             Dir.glob(@path + '/**/**') do |path|
               zip.add(@dest + File.basename(@path) + path[@path.length .. -1], path)
             end
@@ -30,6 +31,7 @@ module IronWorkerNG
 
         module InstanceMethods
           def merge_dir(path, dest = '')
+            logger.debug "Merging dir #{path} #{'dest=' + dest unless dest.empty?}"
             @features << IronWorkerNG::Feature::Common::MergeDir::Feature.new(path, dest)
           end
 
