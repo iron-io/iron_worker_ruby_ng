@@ -34,7 +34,7 @@ module IronWorkerNG
       include IronWorkerNG::Feature::Common::MergeFile::InstanceMethods
       include IronWorkerNG::Feature::Common::MergeDir::InstanceMethods
 
-      def initialize(name = nil)
+      def initialize(name = nil, options = {})
         @name = name
         @features = []
       end
@@ -71,7 +71,9 @@ module IronWorkerNG
         end
 
         zip_name = Dir.tmpdir + '/' + Dir::Tmpname.make_tmpname("iron-worker-ng-", "code.zip")
-      
+
+        IronWorkerNG::Logger.info "Creating code zip #{zip_name}"
+
         Zip::ZipFile.open(zip_name, Zip::ZipFile::CREATE) do |zip|
           bundle(zip)
           create_runner(zip, init_code)

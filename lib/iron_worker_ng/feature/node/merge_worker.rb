@@ -14,6 +14,8 @@ module IronWorkerNG
           end
 
           def bundle(zip)
+            IronWorkerNG::Logger.info "Bundling node worker with #{@path} path"
+
             zip.add(File.basename(@path), @path)
           end
 
@@ -28,11 +30,17 @@ module IronWorkerNG
           def merge_worker(path)
             @worker ||= nil 
 
-            return unless @worker.nil?
+            unless @worker.nil?
+              IronWorkerNG::Logger.warn "Ignoring attempt to merge node worker with #{path} path"
+              return
+            end
 
             @name ||= File.basename(path).gsub(/\.js$/, '').capitalize.gsub(/_./) { |x| x[1].upcase }
 
             @worker = IronWorkerNG::Feature::Node::MergeWorker::Feature.new(path)
+
+            IronWorkerNG::Logger.info "Merging node worker with #{path} path"
+
             @features << @worker
           end
 

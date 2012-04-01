@@ -17,10 +17,14 @@ module IronWorkerNG
 
           def bundle(zip)
             if @spec.extensions.length == 0
+              IronWorkerNG::Logger.info "Bundling ruby gem with #{@spec.name} name and #{@spec.version} version"
+
               zip.add('gems/' + @spec.full_name, @spec.full_gem_path)
               Dir.glob(@spec.full_gem_path + '/**/**') do |path|
                 zip.add('gems/' + @spec.full_name + path[@spec.full_gem_path.length .. -1], path)
               end
+            else
+              IronWorkerNG::Logger.warn "Skipping ruby gem with #{@spec.name} name and #{@spec.version} version as it contains native extensions"
             end
           end
 
@@ -37,15 +41,20 @@ module IronWorkerNG
           attr_reader :merge_gem_reqs
 
           def merge_gem(name, version = '>= 0')
-            @merge_gem_reqs ||= []
+            IronWorkerNG::Logger.info "Merging ruby gem dependency with #{name} name and #{version} version constraint"
 
+            @merge_gem_reqs ||= []
             @merge_gem_reqs << Bundler::Dependency.new(name, version.split(', '))
           end
 
           def merge_gem_fixate
+            IronWorkerNG::Logger.info 'Fixating gems dependencies'
+
             @merge_gem_reqs ||= []
 
-            @features.reject! { |f| f.class == IronWorkerNG::Feature::Ruby::MergeGem::Feature }
+            @features.reject! do |f|
+              f.class == IronWorkerNG::Feature::Ruby::MergeGem::Feature
+            end
 
             if @merge_gem_reqs.length > 0
               reqs = @merge_gem_reqs.map { |req| Bundler::DepProxy.new(req, Gem::Platform::RUBY) }
@@ -63,7 +72,11 @@ module IronWorkerNG
               spec_set = Bundler::Resolver.resolve(reqs, index)
 
               spec_set.to_a.each do |spec|
-                @features << IronWorkerNG::Feature::Ruby::MergeGem::Feature.new(spec.__materialize__)
+                spec.__materialize__
+
+                IronWorkerNG::Logger.info "Merging ruby gem with #{spec.name} name and #{spec.version} version"
+
+                @features << IronWorkerNG::Feature::Ruby::MergeGem::Feature.new(spec)
               end
             end
           end

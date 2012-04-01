@@ -45,6 +45,8 @@ module IronWorkerNG
       request_hash[:headers] = common_request_hash
       request_hash[:params] = params
 
+      IronWorkerNG::Logger.debug "GET #{@url + method} with #{request_hash.to_s}"
+
       @rest.get(@url + method, request_hash)
     end
 
@@ -53,6 +55,8 @@ module IronWorkerNG
       request_hash[:headers] = common_request_hash
       request_hash[:body] = params.to_json
 
+      IronWorkerNG::Logger.debug "POST #{@url + method} with #{request_hash.to_s}" 
+
       @rest.post(@url + method, request_hash)
     end
 
@@ -60,6 +64,8 @@ module IronWorkerNG
       request_hash = {}
       request_hash[:headers] = common_request_hash
       request_hash[:params] = params
+
+      IronWorkerNG::Logger.debug "DELETE #{@url + method} with #{request_hash.to_s}"
 
       @rest.delete(@url + method, request_hash)
     end
@@ -71,10 +77,14 @@ module IronWorkerNG
       request_hash[:data] = params.to_json
       request_hash[:file] = file
 
+      IronWorkerNG::Logger.debug "POST #{@url + method + "?oauth=" + @token} with #{request_hash.to_s}"
+
       RestClient.post(@url + method + "?oauth=#{@token}", request_hash) 
     end
 
     def parse_response(response, parse_json = true)
+      IronWorkerNG::Logger.debug "GOT #{response.code} with #{response.body}"
+
       raise IronWorkerNG::APIClientError.new(response.body) if response.code != 200
 
       return response.body unless parse_json

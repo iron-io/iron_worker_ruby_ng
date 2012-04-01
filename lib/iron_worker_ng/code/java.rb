@@ -8,6 +8,8 @@ module IronWorkerNG
       include IronWorkerNG::Feature::Java::MergeWorker::InstanceMethods
 
       def create_runner(zip, init_code)
+        IronWorkerNG::Logger.info 'Creating java runner'
+
         classpath_array = []
       
         @features.each do |f|
@@ -17,6 +19,8 @@ module IronWorkerNG
         end
 
         classpath = classpath_array.join(':')
+
+        IronWorkerNG::Logger.info "Collected #{classpath} classpath"
       
         zip.get_output_stream('runner.rb') do |runner|
           runner.write <<RUNNER

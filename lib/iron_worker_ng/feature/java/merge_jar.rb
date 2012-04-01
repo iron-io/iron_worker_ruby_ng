@@ -14,6 +14,8 @@ module IronWorkerNG
           end
 
           def bundle(zip)
+            IronWorkerNG::Logger.info "Bundling java jar with #{@path} path"
+
             zip.add(File.basename(@path), @path)
           end
 
@@ -24,6 +26,8 @@ module IronWorkerNG
 
         module InstanceMethods
           def merge_jar(path)
+            IronWorkerNG::Logger.info "Merging java jar with #{path} path"
+
             @features << IronWorkerNG::Feature::Java::MergeJar::Feature.new(path)
           end
 

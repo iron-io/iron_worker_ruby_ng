@@ -10,6 +10,8 @@ module IronWorkerNG
       include IronWorkerNG::Feature::Ruby::MergeWorker::InstanceMethods
 
       def create_runner(zip, init_code)
+        IronWorkerNG::Logger.info 'Creating ruby runner'
+
         zip.get_output_stream('runner.rb') do |runner|
           runner.write <<RUNNER
 # iron_worker_ng-#{IronWorkerNG.version}
