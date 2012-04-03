@@ -10,7 +10,42 @@ rescue Bundler::BundlerError => e
 end
 
 require 'rake'
+require 'rake/testtask'
+require 'tmpdir'
 require 'jeweler'
+
+Rake::TestTask.new do |t|
+  examples_tests_dir = Dir.tmpdir
+
+  Dir.glob('examples/*.rb').each do |path|
+    next unless path =~ %r|/([^/]+).rb$|
+
+    test_path = examples_tests_dir + '/test_example_' + $1 + '.rb' 
+
+    File.open(test_path, 'w') do |out|
+      out << "require 'helpers'\n"
+      out << "class #{$1.capitalize}Test < Test::Unit::TestCase\n"
+      out << "def test_example\n"
+
+      File.readlines(path).each do |line|
+        line, assert_str = line.chomp.split /#>/
+        out << line << "\n"
+
+        if assert_str
+          cond, desc = assert_str.split /--/
+          out << "assert(" << cond << ", '" <<
+            (desc or "").gsub(/'/, "\\\\'") << "')\n"
+        end
+      end
+
+      out << "end\nend\n"
+    end
+  end
+
+  t.libs << "lib" << "test" << examples_tests_dir
+  t.test_files = FileList['test/**/**.rb', examples_tests_dir + '/**.rb']
+  t.verbose = true
+end
 
 Jeweler::Tasks.new do |gem|
   gem.name = "iron_worker_ng"
