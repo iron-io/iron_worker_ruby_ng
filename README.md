@@ -118,12 +118,21 @@ code.merge_gemfile '../Gemfile', 'common', 'worker' # merges gems from common an
 
 # Using IronWorker
 
-When you have your code package, you are ready to upload and run it on the IronWorker cloud.
+When you have your code package, you are ready to upload and run it on the IronWorker cloud. 
 
 ```ruby
+# Initialize the client
 client = IronWorkerNG::Client.new(:token => 'IRON_IO_TOKEN', :project_id => 'IRON_IO_PROJECT_ID')
-
+# Upload the code
 client.codes.create(code)
+```
+
+**NOTE**: You only need to call `client.codes.create(code)` once for each time your code changes.
+
+Now that the code is uploaded, we can create/queue up tasks. You can call this over and over 
+for as many tasks as you want. 
+
+```ruby
 client.tasks.create('MyWorker', {:client => 'Joe'})
 ```
 
