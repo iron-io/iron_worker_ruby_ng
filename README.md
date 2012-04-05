@@ -1,6 +1,13 @@
 # Introduction
 
-To run your code in cloud you need to do two things - upload code package to be executed and queue or schedule it for execution. While you can use [REST APIs](http://dev.iron.io/worker/reference/api) for that, it's easier to use an IronWorker library created specifically for your language of choice, such as IronWorkerNG.
+To run your code in cloud you need to do three things:
+
+- **Create code package**
+- **Upload code package**
+- **Queue or schedule tasks** for execution 
+
+While you can use [REST APIs](http://dev.iron.io/worker/reference/api) for that, it's easier to use an 
+IronWorker library created specifically for your language of choice, such as this gem, IronWorkerNG.
 
 # Preparing Your Environment
 
