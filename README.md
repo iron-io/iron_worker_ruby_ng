@@ -116,7 +116,7 @@ Merge all gems from specified the groups in a Gemfile. Please note that this wil
 code.merge_gemfile '../Gemfile', 'common', 'worker' # merges gems from common and worker groups
 ```
 
-# Using IronWorker
+# Upload Your Worker
 
 When you have your code package, you are ready to upload and run it on the IronWorker cloud. 
 
@@ -129,6 +129,8 @@ client.codes.create(code)
 
 **NOTE**: You only need to call `client.codes.create(code)` once for each time your code changes.
 
+# Queue Up Tasks for Your Worker
+
 Now that the code is uploaded, we can create/queue up tasks. You can call this over and over 
 for as many tasks as you want. 
 
@@ -136,7 +138,7 @@ for as many tasks as you want.
 client.tasks.create('MyWorker', {:client => 'Joe'})
 ```
 
-## IronWorker::Client API
+# IronWorker::Client API
 
 You can use the `IronWorkerNG::Client` class to upload code packages, queue tasks, create schedules, and more.
 
