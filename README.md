@@ -145,7 +145,9 @@ for as many tasks as you want.
 client.tasks.create('MyWorker', {:client => 'Joe'})
 ```
 
-# IronWorker::Client API
+# The Rest of the IronWorker API
+
+## IronWorker::Client
 
 You can use the `IronWorkerNG::Client` class to upload code packages, queue tasks, create schedules, and more.
 
