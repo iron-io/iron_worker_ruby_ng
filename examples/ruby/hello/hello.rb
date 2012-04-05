@@ -12,7 +12,7 @@ client = IronWorkerNG::Client.new(:token => token,
 
 # create ruby code bundle
 code = IronWorkerNG::Code::Ruby.new
-code.merge_worker('examples/workers/hello_worker.rb')
+code.merge_worker('examples/ruby/hello/hello_worker.rb')
 
 # upload it to iron.io
 client.codes.create(code)

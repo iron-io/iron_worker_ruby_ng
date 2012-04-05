@@ -15,10 +15,10 @@ require 'tmpdir'
 require 'jeweler'
 
 Rake::TestTask.new do |t|
-  examples_tests_dir = Dir.tmpdir
+  examples_tests_dir = Dir.mktmpdir('iw_examples')
 
-  Dir.glob('examples/*.rb').each do |path|
-    next unless path =~ %r|/([^/]+).rb$|
+  Dir.glob('examples/**/**.rb').each do |path|
+    next unless path =~ %r|/([^/]+)/\1.rb$|
 
     test_path = examples_tests_dir + '/test_example_' + $1 + '.rb' 
 
