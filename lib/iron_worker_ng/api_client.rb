@@ -21,6 +21,9 @@ module IronWorkerNG
       @token = options[:token] || options['token']
       @project_id = options[:project_id] || options['project_id']
 
+      raise "Both iron.io token and project id are required" unless
+        token and project_id
+
       @scheme = options[:scheme] || 'https'
       @host = options[:host] || IronWorkerNG::APIClient::AWS_US_EAST_HOST
       @port = options[:port] || 443
