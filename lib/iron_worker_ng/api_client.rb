@@ -21,11 +21,11 @@ module IronWorkerNG
       @token = options[:token] || options['token']
       @project_id = options[:project_id] || options['project_id']
 
-      @scheme = options[:scheme] || 'https'
-      @host = options[:host] || IronWorkerNG::APIClient::AWS_US_EAST_HOST
-      @port = options[:port] || 443
-      @api_version = options[:api_version] || 2
-      @user_agent = options[:user_agent] || 'iron_worker_ng-' + IronWorkerNG.version
+      @scheme = options[:scheme] || options['scheme'] || 'https'
+      @host = options[:host] || options['host'] || IronWorkerNG::APIClient::AWS_US_EAST_HOST
+      @port = options[:port] || options['port'] || 443
+      @api_version = options[:api_version] || options['api_version'] || 2
+      @user_agent = options[:user_agent] || options['user_agent'] || 'iron_worker_ng-' + IronWorkerNG.version
 
       @url = "#{scheme}://#{host}:#{port}/#{api_version}/"
 

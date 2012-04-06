@@ -8,7 +8,7 @@ require_relative '../feature/common/merge_dir'
 module IronWorkerNG
   module Code
     class Base
-      attr_reader :name
+      attr_accessor :name
       attr_reader :features
 
       @@registered_types = []
@@ -82,7 +82,7 @@ module IronWorkerNG
         zip_name
       end
 
-      def create_runner(zip)
+      def create_runner(zip, init_code)
       end
 
       def runtime
