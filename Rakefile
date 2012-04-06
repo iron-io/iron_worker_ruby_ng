@@ -37,8 +37,10 @@ Rake::TestTask.new do |t|
   end
 
   t.libs << "lib" << "test" << examples_tests_dir
-  t.test_files = FileList['test/**/**.rb',
-                          examples_tests_dir + '/**/test_*.rb']
+  files = FileList['test/**/**.rb',
+                   examples_tests_dir + '/**/test_*.rb']
+  t.test_files = files.keep_if{ |f| f =~ Regexp.new(ENV['TESTP'] || '') }
+
   t.verbose = true
 end
 
