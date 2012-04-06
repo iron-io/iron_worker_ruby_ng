@@ -1,30 +1,24 @@
 require 'rubygems'
-require 'bundler'
 
-begin
-  Bundler.setup(:default, :development)
-rescue Bundler::BundlerError => e
-  $stderr.puts e.message
-  $stderr.puts "Run `bundle install` to install missing gems"
-  exit e.status_code
-end
-
-require 'rake'
 require 'rake/testtask'
 require 'tmpdir'
-require 'jeweler'
 
 Rake::TestTask.new do |t|
   examples_tests_dir = Dir.mktmpdir('iw_examples')
 
-  Dir.glob('examples/**/**.rb').each do |path|
-    next unless path =~ %r|/([^/]+)/\1.rb$|
+  FileUtils::cp_r(Dir.glob('examples/*'), examples_tests_dir)
 
-    test_path = examples_tests_dir + '/test_example_' + $1 + '.rb' 
+  Dir.glob('examples/**/**.rb').each do |path|
+    next unless path =~ %r|examples/(.*)/([^/]+)/\2.rb$|
+
+    dir = $1
+    name = $2
+
+    test_path = examples_tests_dir + "/#{dir}/#{name}/test_#{name}.rb"
 
     File.open(test_path, 'w') do |out|
       out << "require 'helpers'\n"
-      out << "class #{$1.capitalize}Test < Test::Unit::TestCase\n"
+      out << "class #{name.capitalize}Test < Test::Unit::TestCase\n"
       out << "def test_example\n"
 
       File.readlines(path).each do |line|
@@ -43,11 +37,23 @@ Rake::TestTask.new do |t|
   end
 
   t.libs << "lib" << "test" << examples_tests_dir
-  t.test_files = FileList['test/**/**.rb', examples_tests_dir + '/**.rb']
+  t.test_files = FileList['test/**/**.rb',
+                          examples_tests_dir + '/**/test_*.rb']
   t.verbose = true
 end
 
+require 'bundler'
+require 'jeweler'
+
 Jeweler::Tasks.new do |gem|
+  begin
+    Bundler.setup(:default, :development)
+  rescue Bundler::BundlerError => e
+    $stderr.puts e.message
+    $stderr.puts "Run `bundle install` to install missing gems"
+    exit e.status_code
+  end
+
   gem.name = "iron_worker_ng"
   gem.homepage = "https://github.com/iron-io/iron_worker_ruby_ng"
   gem.description = %Q{New generation ruby client for IronWorker}

@@ -1,0 +1,1 @@
+log params[:arg].inject(:+)
