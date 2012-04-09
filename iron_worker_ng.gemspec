@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "iron_worker_ng"
-  s.version = "0.1.14"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Andrew Kirilenko", "Iron.io, Inc"]
-  s.date = "2012-03-29"
+  s.date = "2012-04-09"
   s.description = "New generation ruby client for IronWorker"
   s.email = "info@iron.io"
   s.executables = ["iron_worker_ng"]
@@ -22,6 +22,11 @@ Gem::Specification.new do |s|
     "README.md",
     "VERSION",
     "bin/iron_worker_ng",
+    "examples/ruby/hello/hello.rb",
+    "examples/ruby/hello/hello_worker.rb",
+    "examples/ruby/master_slave/master_slave.rb",
+    "examples/ruby/master_slave/master_worker.rb",
+    "examples/ruby/master_slave/slave_worker.rb",
     "lib/iron_worker_ng.rb",
     "lib/iron_worker_ng/api_client.rb",
     "lib/iron_worker_ng/api_client_error.rb",
@@ -39,7 +44,9 @@ Gem::Specification.new do |s|
     "lib/iron_worker_ng/feature/ruby/merge_gem.rb",
     "lib/iron_worker_ng/feature/ruby/merge_gemfile.rb",
     "lib/iron_worker_ng/feature/ruby/merge_worker.rb",
-    "lib/iron_worker_ng/version.rb"
+    "lib/iron_worker_ng/logger.rb",
+    "lib/iron_worker_ng/version.rb",
+    "test/helpers.rb"
   ]
   s.homepage = "https://github.com/iron-io/iron_worker_ruby_ng"
   s.require_paths = ["lib"]
