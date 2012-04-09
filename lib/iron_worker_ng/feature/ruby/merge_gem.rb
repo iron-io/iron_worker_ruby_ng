@@ -11,6 +11,21 @@ module IronWorkerNG
             @spec = spec
           end
 
+          def gem_path
+            path = @spec.full_gem_path
+
+            # when running under bundle exec it sometimes duplicates gem path suffix
+            
+            suffix_index = path.rindex('/gems/')
+            suffix = path[suffix_index .. -1]
+
+            if path.end_with?(suffix + suffix)
+              path = path[0 .. suffix_index - 1]
+            end
+
+            path
+          end
+
           def hash_string
             Digest::MD5.hexdigest(@spec.full_name)
           end
@@ -19,9 +34,9 @@ module IronWorkerNG
             if @spec.extensions.length == 0
               IronWorkerNG::Logger.debug "Bundling ruby gem with name='#{@spec.name}' and version='#{@spec.version}'"
 
-              zip.add('gems/' + @spec.full_name, @spec.full_gem_path)
-              Dir.glob(@spec.full_gem_path + '/**/**') do |path|
-                zip.add('gems/' + @spec.full_name + path[@spec.full_gem_path.length .. -1], path)
+              zip.add('gems/' + @spec.full_name, gem_path)
+              Dir.glob(gem_path + '/**/**') do |path|
+                zip.add('gems/' + @spec.full_name + path[gem_path.length .. -1], path)
               end
             else
               IronWorkerNG::Logger.warn "Skipping ruby gem with name='#{@spec.name}' and version='#{@spec.version}' as it contains native extensions"
