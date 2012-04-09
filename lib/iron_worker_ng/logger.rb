@@ -3,7 +3,12 @@ require 'logger'
 module IronWorkerNG
   module Logger
     def self.logger
-      @logger ||= ::Logger.new(STDOUT)
+      unless @logger
+        @logger = ::Logger.new(STDOUT)
+        @logger.level = ::Logger::INFO
+      end
+
+      @logger
     end
 
     def self.logger=(logger)

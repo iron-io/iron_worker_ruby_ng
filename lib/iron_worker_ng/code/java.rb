@@ -10,6 +10,11 @@ module IronWorkerNG
       def create_runner(zip, init_code)
         IronWorkerNG::Logger.info 'Creating java runner'
 
+        unless @worker
+          IronWorkerNG::Logger.error 'No worker specified'
+          raise 'No worker specified'
+        end
+
         classpath_array = []
       
         @features.each do |f|
@@ -20,7 +25,7 @@ module IronWorkerNG
 
         classpath = classpath_array.join(':')
 
-        IronWorkerNG::Logger.info "Collected #{classpath} classpath"
+        IronWorkerNG::Logger.info "Collected '#{classpath}' classpath"
       
         zip.get_output_stream('runner.rb') do |runner|
           runner.write <<RUNNER

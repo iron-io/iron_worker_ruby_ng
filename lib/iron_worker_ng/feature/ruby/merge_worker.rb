@@ -16,7 +16,7 @@ module IronWorkerNG
           end
 
           def bundle(zip)
-            IronWorkerNG::Logger.info "Bundling ruby worker with #{path} path and #{klass} class"
+            IronWorkerNG::Logger.debug "Bundling ruby worker with path='#{path}' and class='#{klass}'"
 
             zip.add(File.basename(@path), @path)
           end
@@ -32,20 +32,20 @@ module IronWorkerNG
           def merge_worker(path, klass = nil)
             @worker ||= nil 
 
-            unless @worker.nil?
-              IronWorkerNG::Logger.warn "Ignoring attempt to merge ruby worker with #{path} path"
-              return
-            end
-
             if klass == nil
               klass = File.basename(path).gsub(/\.rb$/, '').capitalize.gsub(/_./) { |x| x[1].upcase }
+            end
+
+            unless @worker.nil?
+              IronWorkerNG::Logger.warn "Ignoring attempt to merge ruby worker with path='#{path}' and class='#{klass}'"
+              return
             end
 
             @name ||= klass
 
             @worker = IronWorkerNG::Feature::Ruby::MergeWorker::Feature.new(path, klass)
 
-            IronWorkerNG::Logger.info "Merging ruby worker with #{path} path and #{klass} class"
+            IronWorkerNG::Logger.info "Merging ruby worker with path='#{path}' and class='#{klass}'"
 
             @features << @worker
           end

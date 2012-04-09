@@ -21,14 +21,16 @@ module IronWorkerNG
       @token = options[:token] || options['token']
       @project_id = options[:project_id] || options['project_id']
 
-      raise "Both iron.io token and project id are required" unless
-        token and project_id
+      if (not @token) || (not @project_id)
+        IronWorkerNG::Logger.error 'Both iron.io token and project_id must be specified' 
+        raise 'Both iron.io token and project_id must be specified' 
+      end
 
-      @scheme = options[:scheme] || 'https'
-      @host = options[:host] || IronWorkerNG::APIClient::AWS_US_EAST_HOST
-      @port = options[:port] || 443
-      @api_version = options[:api_version] || 2
-      @user_agent = options[:user_agent] || 'iron_worker_ng-' + IronWorkerNG.version
+      @scheme = options[:scheme] || options['scheme'] || 'https'
+      @host = options[:host] || options['host'] || IronWorkerNG::APIClient::AWS_US_EAST_HOST
+      @port = options[:port] || options['port'] || 443
+      @api_version = options[:api_version] || options['api_version'] || 2
+      @user_agent = options[:user_agent] || options['user_agent'] || 'iron_worker_ng-' + IronWorkerNG.version
 
       @url = "#{scheme}://#{host}:#{port}/#{api_version}/"
 
@@ -48,7 +50,7 @@ module IronWorkerNG
       request_hash[:headers] = common_request_hash
       request_hash[:params] = params
 
-      IronWorkerNG::Logger.debug "GET #{@url + method} with #{request_hash.to_s}"
+      IronWorkerNG::Logger.debug "GET #{@url + method} with params='#{request_hash.to_s}'"
 
       @rest.get(@url + method, request_hash)
     end
@@ -58,7 +60,7 @@ module IronWorkerNG
       request_hash[:headers] = common_request_hash
       request_hash[:body] = params.to_json
 
-      IronWorkerNG::Logger.debug "POST #{@url + method} with #{request_hash.to_s}" 
+      IronWorkerNG::Logger.debug "POST #{@url + method} with params='#{request_hash.to_s}'" 
 
       @rest.post(@url + method, request_hash)
     end
@@ -68,7 +70,7 @@ module IronWorkerNG
       request_hash[:headers] = common_request_hash
       request_hash[:params] = params
 
-      IronWorkerNG::Logger.debug "DELETE #{@url + method} with #{request_hash.to_s}"
+      IronWorkerNG::Logger.debug "DELETE #{@url + method} with params='#{request_hash.to_s}'"
 
       @rest.delete(@url + method, request_hash)
     end
@@ -80,13 +82,13 @@ module IronWorkerNG
       request_hash[:data] = params.to_json
       request_hash[:file] = file
 
-      IronWorkerNG::Logger.debug "POST #{@url + method + "?oauth=" + @token} with #{request_hash.to_s}"
+      IronWorkerNG::Logger.debug "POST #{@url + method + "?oauth=" + @token} with params='#{request_hash.to_s}'"
 
       RestClient.post(@url + method + "?oauth=#{@token}", request_hash) 
     end
 
     def parse_response(response, parse_json = true)
-      IronWorkerNG::Logger.debug "GOT #{response.code} with #{response.body}"
+      IronWorkerNG::Logger.debug "GOT #{response.code} with params='#{response.body}'"
 
       raise IronWorkerNG::APIClientError.new(response.body) if response.code != 200
 

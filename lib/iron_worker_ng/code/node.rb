@@ -8,6 +8,11 @@ module IronWorkerNG
       def create_runner(zip, init_code)
         IronWorkerNG::Logger.info 'Creating node runner'
 
+        unless @worker
+          IronWorkerNG::Logger.error 'No worker specified'
+          raise 'No worker specified'
+        end
+
         zip.get_output_stream('runner.rb') do |runner|
           runner.write <<RUNNER
 # iron_worker_ng-#{IronWorkerNG.version}

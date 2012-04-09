@@ -14,11 +14,6 @@ end
 command = $*[0]
 $*.shift
 
-if ENV['IRON_IO_TOKEN'].nil? || ENV['IRON_IO_PROJECT_ID'].nil?
-  puts "please set $IRON_IO_TOKEN and $IRON_IO_PROJECT_ID environment variables"
-  exit 1
-end
-
 client = IronWorkerNG::Client.new(:token => ENV['IRON_IO_TOKEN'], :project_id => ENV['IRON_IO_PROJECT_ID'])
 
 if command == 'codes.create'
