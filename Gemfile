@@ -13,4 +13,5 @@ end
 group :test do
   gem 'iron_worker_ng'
   gem 'typhoeus'
+  gem 'pry'
 end
