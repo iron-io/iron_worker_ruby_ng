@@ -20,7 +20,7 @@ module IronWorkerNG
 
         IronWorkerNG::Logger.info "Collected '#{classpath}' classpath"
       
-        zip.get_output_stream('runner.rb') do |runner|
+        zip.get_output_stream(runner) do |runner|
           runner.write <<RUNNER
 # iron_worker_ng-#{IronWorkerNG.version}
 
