@@ -9,7 +9,17 @@ module IronWorkerNG
       include IronWorkerNG::Feature::Ruby::MergeGemfile::InstanceMethods
       include IronWorkerNG::Feature::Ruby::MergeWorker::InstanceMethods
 
-      def create_runner(zip, init_code)
+      def create_runner(zip)
+        gempath_code_array = []
+      
+        @features.each do |f|
+          if f.respond_to?(:code_for_gempath)
+            gempath_code_array << f.send(:code_for_gempath)
+          end
+        end
+
+        gempath_code = gempath_code_array.join("\n")
+
         zip.get_output_stream(runner) do |runner|
           runner.write <<RUNNER
 # iron_worker_ng-#{IronWorkerNG.version}
@@ -26,7 +36,7 @@ end
 
 Dir.chdir(root)
 
-#{init_code}
+#{gempath_code}
 $:.unshift("\#{root}")
 
 def log(*args)

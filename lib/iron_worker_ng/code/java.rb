@@ -7,7 +7,7 @@ module IronWorkerNG
       include IronWorkerNG::Feature::Java::MergeJar::InstanceMethods
       include IronWorkerNG::Feature::Java::MergeWorker::InstanceMethods
 
-      def create_runner(zip, init_code)
+      def create_runner(zip)
         classpath_array = []
       
         @features.each do |f|
@@ -36,9 +36,7 @@ root() {
 
 cd "$(root "$@")"
 
-#{init_code}
-
-java -cp #{classpath} #{worker.klass} $@
+java -cp #{classpath} #{worker.klass} "$@"
 RUNNER
         end
       end

@@ -43,7 +43,7 @@ module IronWorkerNG
             end
           end
 
-          def code_for_init
+          def code_for_gempath
             if @spec.extensions.length == 0
               '$:.unshift("#{root}/gems/' + @spec.full_name + '/lib")'
             else

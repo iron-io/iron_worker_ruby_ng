@@ -67,21 +67,13 @@ module IronWorkerNG
 
         fixate
 
-        init_code = ''
-
-        @features.each do |f|
-          if f.respond_to?(:code_for_init)
-            init_code += f.send(:code_for_init) + "\n"
-          end
-        end
-
         zip_name = Dir.tmpdir + '/' + Dir::Tmpname.make_tmpname("iron-worker-ng-", "code.zip")
 
         IronWorkerNG::Logger.debug "Creating code zip '#{zip_name}'"
 
         Zip::ZipFile.open(zip_name, Zip::ZipFile::CREATE) do |zip|
           bundle(zip)
-          create_runner(zip, init_code)
+          create_runner(zip)
         end
 
         zip_name
