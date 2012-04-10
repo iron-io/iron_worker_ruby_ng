@@ -20,7 +20,7 @@ module IronWorkerNG
           end
 
           def code_for_init
-            "worker_file_name = '#{File.basename(@path)}'"
+            "worker_file_name=\"#{File.basename(@path)}\""
           end
         end
 

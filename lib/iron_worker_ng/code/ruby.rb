@@ -18,7 +18,7 @@ root = nil
 payload_file = nil
 task_id = nil
 
-($*.length - 2).downto(0) do |i|
+0.upto($*.length - 2) do |i|
   root = $*[i + 1] if $*[i] == '-d'
   payload_file = $*[i + 1] if $*[i] == '-payload'
   task_id = $*[i + 1] if $*[i] == '-id'

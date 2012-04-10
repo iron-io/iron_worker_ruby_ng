@@ -8,29 +8,33 @@ module IronWorkerNG
       def create_runner(zip, init_code)
         zip.get_output_stream(runner) do |runner|
           runner.write <<RUNNER
+#!/bin/sh
 # iron_worker_ng-#{IronWorkerNG.version}
 
-root = nil
+root() {
+  while [ $# -gt 0 ]; do
+    if [ "$1" = "-d" ]; then
+      printf "%s\n" "$2"
+      break
+    fi
+  done
+}
 
-($*.length - 2).downto(0) do |i|
-  root = $*[i + 1] if $*[i] == '-d'
-end
-
-Dir.chdir(root)
+cd "$(root "$@")"
 
 #{init_code}
 
-puts `node \#{worker_file_name} \#{$*.join(' ')}`
+node $worker_file_name $@
 RUNNER
         end
       end
 
       def runtime
-        'ruby'
+        'sh'
       end
 
       def runner
-        '__runner__.rb'
+        '__runner__.sh'
       end
     end
   end
