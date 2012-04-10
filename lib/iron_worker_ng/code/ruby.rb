@@ -74,12 +74,12 @@ def params
   @params
 end
 
-require worker_file_name
+require '#{File.basename(worker.path)}'
 
 worker_class = nil
 
 begin
-  worker_class = Kernel.const_get(worker_class_name)
+  worker_class = Kernel.const_get('#{worker.klass}')
 rescue
 end
 

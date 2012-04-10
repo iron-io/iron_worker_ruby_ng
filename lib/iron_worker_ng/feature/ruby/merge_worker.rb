@@ -20,10 +20,6 @@ module IronWorkerNG
 
             zip.add(File.basename(@path), @path)
           end
-
-          def code_for_init
-            "worker_file_name = '#{File.basename(@path)}'\nworker_class_name='#{@klass}'"
-          end
         end
 
         module InstanceMethods
