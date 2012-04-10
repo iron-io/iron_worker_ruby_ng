@@ -14,8 +14,6 @@ module IronWorkerNG
           runner.write <<RUNNER
 # iron_worker_ng-#{IronWorkerNG.version}
 
-puts `pwd`
-
 root = nil
 payload_file = nil
 task_id = nil
