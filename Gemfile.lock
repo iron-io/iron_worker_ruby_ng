@@ -1,8 +1,9 @@
 GEM
   remote: http://rubygems.org/
   specs:
+    coderay (1.0.6)
     git (1.2.5)
-    iron_worker_ng (0.1.14)
+    iron_worker_ng (0.2.0)
       bundler (> 1.0.0)
       json
       rest
@@ -14,7 +15,12 @@ GEM
       rake
       rdoc
     json (1.6.5)
+    method_source (0.7.1)
     mime-types (1.18)
+    pry (0.9.8.4)
+      coderay (~> 1.0.5)
+      method_source (~> 0.7.1)
+      slop (>= 2.4.4, < 3)
     rake (0.9.2.2)
     rdoc (3.12)
       json (~> 1.4)
@@ -23,6 +29,7 @@ GEM
       rest-client
     rest-client (1.6.7)
       mime-types (>= 1.16)
+    slop (2.4.4)
     typhoeus (0.3.3)
       mime-types
     zip (2.0.2)
@@ -35,6 +42,7 @@ DEPENDENCIES
   iron_worker_ng
   jeweler (~> 1.8.3)
   json
+  pry
   rest
   rest-client
   typhoeus
