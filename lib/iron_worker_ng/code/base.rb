@@ -60,6 +60,11 @@ module IronWorkerNG
       end
 
       def create_zip
+        unless @worker
+          IronWorkerNG::Logger.error 'No worker specified'
+          raise 'No worker specified'
+        end
+
         fixate
 
         init_code = ''

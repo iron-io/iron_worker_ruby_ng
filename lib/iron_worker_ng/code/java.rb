@@ -8,13 +8,6 @@ module IronWorkerNG
       include IronWorkerNG::Feature::Java::MergeWorker::InstanceMethods
 
       def create_runner(zip, init_code)
-        IronWorkerNG::Logger.info 'Creating java runner'
-
-        unless @worker
-          IronWorkerNG::Logger.error 'No worker specified'
-          raise 'No worker specified'
-        end
-
         classpath_array = []
       
         @features.each do |f|
@@ -51,7 +44,7 @@ RUNNER
       end
 
       def runner
-        'runner.rb'
+        '__runner__.rb'
       end
     end
   end
