@@ -4,6 +4,14 @@ module IronWorkerNG
   module Feature
     module Ruby
       module MergeGem
+        def self.merge_binary?
+          @merge_binary ||= false
+        end
+
+        def self.merge_binary=(merge_binary)
+          @merge_binary = merge_binary
+        end
+
         class Feature < IronWorkerNG::Feature::Base
           attr_reader :spec
 
@@ -31,7 +39,7 @@ module IronWorkerNG
           end
 
           def bundle(zip)
-            if @spec.extensions.length == 0
+            if @spec.extensions.length == 0 || IronWorkerNG::Feature::Ruby::MergeGem.merge_binary?
               IronWorkerNG::Logger.debug "Bundling ruby gem with name='#{@spec.name}' and version='#{@spec.version}'"
 
               zip.add('gems/' + @spec.full_name, gem_path)
