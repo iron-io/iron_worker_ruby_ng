@@ -24,7 +24,7 @@ cd "$(root "$@")"
 
 chmod +x #{File.basename(worker.path)}
 
-./#{File.basename(worker.path)} "$@"
+LD_LIBRARY_PATH=. ./#{File.basename(worker.path)} "$@"
 RUNNER
         end
       end
