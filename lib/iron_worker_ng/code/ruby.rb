@@ -39,10 +39,6 @@ Dir.chdir(root)
 #{gempath_code}
 $:.unshift("\#{root}")
 
-def log(*args)
-  puts *args
-end
-
 require 'json'
 
 @iron_worker_task_id = task_id
