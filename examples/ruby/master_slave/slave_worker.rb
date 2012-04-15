@@ -1,1 +1,1 @@
-log params[:arg].inject(:+)
+puts params[:arg].inject(:+)
