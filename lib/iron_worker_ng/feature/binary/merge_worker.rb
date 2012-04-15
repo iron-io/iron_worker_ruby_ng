@@ -31,7 +31,7 @@ module IronWorkerNG
               return
             end
 
-            @name ||= File.basename(path).gsub(/\.js$/, '').capitalize.gsub(/_./) { |x| x[1].upcase }
+            @name ||= File.basename(path).gsub(/\..*$/, '').capitalize.gsub(/_./) { |x| x[1].upcase }
 
             @worker = IronWorkerNG::Feature::Binary::MergeWorker::Feature.new(path)
 
