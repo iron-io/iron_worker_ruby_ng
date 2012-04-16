@@ -1,21 +1,7 @@
-require './lib/iron_worker_ng.rb'
-require 'test/unit'
+require 'helpers'
 
-class BasicTest < Test::Unit::TestCase
-  attr_accessor :client
-
-  def setup
-    IronWorkerNG::Logger.logger.level = ::Logger::DEBUG
-
-    token, project_id = [ ENV['IRON_IO_TOKEN'], ENV['IRON_IO_PROJECT_ID'] ]
-    raise("please set $IRON_IO_TOKEN and $IRON_IO_PROJECT_ID " +
-          "environment variables") unless token and project_id
-
-    @client = IronWorkerNG::Client.new(:token => token,
-                                       :project_id => project_id )
-  end
-
-  def test_basic
+class BasicTest < IWNGTest
+  def _test_basic
     code = IronWorkerNG::Code::Ruby.new('test_basic')
     code.merge_worker(File.dirname(__FILE__) + '/hello.rb')
     client.codes_create(code)
@@ -25,13 +11,23 @@ class BasicTest < Test::Unit::TestCase
     assert_equal( "hello\n", log, "worker stdout is in log" )
   end
 
-  def test_30_codes
-    31.times do |i|
-      code = IronWorkerNG::Code::Ruby.new("test_30_codes_code#{i}")
-      code.merge_worker(File.dirname(__FILE__) + '/hello.rb')
-      client.codes_create(code)
+  def test_symlinks
+    Dir.unlink './test/data/dir1/dir2' if
+      Dir.exist? './test/data/dir1/dir2'
+    Dir.chdir('test/data/dir1') do
+      File.symlink('./test/data/dir2', 'dir2')
     end
-    assert_equal( 31, client.codes_list.size )
+
+    code = code_bundle 'test_symlinks' do
+      merge_dir('data/dir1', 'data')
+      worker 'puts File.read("dir1/dir2/test")'
+    end
+
+    puts code.create_zip
+
+    File.unlink 'test/data/dir1/dir2'
+
+    assert true
   end
 
 end

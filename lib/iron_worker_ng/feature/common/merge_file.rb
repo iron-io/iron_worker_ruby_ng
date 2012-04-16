@@ -18,7 +18,7 @@ module IronWorkerNG
           def bundle(zip)
             IronWorkerNG::Logger.debug "Bundling file with path='#{@path}' and dest='#{@dest}'"
 
-            zip.add(@dest + File.basename(@path), @path)
+            zip.add(@dest + '/' + File.basename(@path), @path)
           end
         end
 
