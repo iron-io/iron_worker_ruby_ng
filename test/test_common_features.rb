@@ -14,6 +14,17 @@ class CommonFeaturesTest < IWNGTest
     end
   end
 
+  def test_merge_file_no_dest
+    code = code_bundle('test') do
+      merge_file('Gemfile')
+      merge_worker('test/hello.rb')
+    end
+
+    inspect_zip(code) do |zip|
+      assert zip.find_entry('Gemfile')
+    end
+  end
+
   def test_merge_dir_check
     assert_raise RuntimeError, "should check if merged dir exists" do
       code_bundle('test') do
@@ -30,6 +41,17 @@ class CommonFeaturesTest < IWNGTest
 
     inspect_zip(code) do |zip|
       assert zip.find_entry('test/data/dir2/test')
+    end
+  end
+
+  def test_merge_dir_no_dest
+    code = code_bundle('test') do
+      merge_dir('test')
+      merge_worker('test/hello.rb')
+    end
+
+    inspect_zip(code) do |zip|
+      assert zip.find_entry('test/hello.rb')
     end
   end
 

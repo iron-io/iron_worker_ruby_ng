@@ -11,7 +11,8 @@ module IronWorkerNG
           def initialize(path, dest)
             raise 'No such directory - ' + path unless Dir.exist? path
             @path = File.expand_path(path)
-            @dest = Pathname.new(dest).cleanpath.to_s
+            @dest = dest
+            @dest = Pathname.new(dest).cleanpath.to_s + '/' unless @dest.empty?
           end
 
           def hash_string
@@ -28,7 +29,7 @@ module IronWorkerNG
             IronWorkerNG::Logger.debug "Bundling dir with path='#{@path}' and dest='#{@dest}'"
 
             Dir.glob(@path + '/**/**') do |path|
-              zip.add(@dest + '/' + File.basename(@path) + path[@path.length .. -1], path)
+              zip.add(@dest + File.basename(@path) + path[@path.length .. -1], path)
             end
           end
         end
