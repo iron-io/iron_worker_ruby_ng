@@ -1,0 +1,1 @@
+puts params[:arg].inject(:+)

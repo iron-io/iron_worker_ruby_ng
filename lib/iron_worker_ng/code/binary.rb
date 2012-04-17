@@ -1,9 +1,9 @@
-require_relative '../feature/node/merge_worker'
+require_relative '../feature/binary/merge_worker'
 
 module IronWorkerNG
   module Code
-    class Node < IronWorkerNG::Code::Base
-      include IronWorkerNG::Feature::Node::MergeWorker::InstanceMethods
+    class Binary < IronWorkerNG::Code::Base
+      include IronWorkerNG::Feature::Binary::MergeWorker::InstanceMethods
 
       def create_runner(zip)
         zip.get_output_stream(runner) do |runner|
@@ -22,7 +22,9 @@ root() {
 
 cd "$(root "$@")"
 
-node #{File.basename(worker.path)} "$@"
+chmod +x #{File.basename(worker.path)}
+
+LD_LIBRARY_PATH=. ./#{File.basename(worker.path)} "$@"
 RUNNER
         end
       end
@@ -38,4 +40,4 @@ RUNNER
   end
 end
 
-IronWorkerNG::Code::Base.register_type(:name => 'node', :klass => IronWorkerNG::Code::Node)
+IronWorkerNG::Code::Base.register_type(:name => 'binary', :klass => IronWorkerNG::Code::Binary)

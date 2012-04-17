@@ -1,6 +1,13 @@
 # Introduction
 
-To run your code in cloud you need to do two things - upload code package to be executed and queue or schedule it for execution. While you can use [REST APIs](http://dev.iron.io/worker/reference/api) for that, it's easier to use an IronWorker library created specifically for your language of choice, such as IronWorkerNG.
+To run your code in cloud you need to do three things:
+
+- **Create code package**
+- **Upload code package**
+- **Queue or schedule tasks** for execution 
+
+While you can use [REST APIs](http://dev.iron.io/worker/reference/api) for that, it's easier to use an 
+IronWorker library created specifically for your language of choice, such as this gem, IronWorkerNG.
 
 # Preparing Your Environment
 
@@ -116,18 +123,31 @@ Merge all gems from specified the groups in a Gemfile. Please note that this wil
 code.merge_gemfile '../Gemfile', 'common', 'worker' # merges gems from common and worker groups
 ```
 
-# Using IronWorker
+# Upload Your Worker
 
-When you have your code package, you are ready to upload and run it on the IronWorker cloud.
+When you have your code package, you are ready to upload and run it on the IronWorker cloud. 
 
 ```ruby
+# Initialize the client
 client = IronWorkerNG::Client.new(:token => 'IRON_IO_TOKEN', :project_id => 'IRON_IO_PROJECT_ID')
-
+# Upload the code
 client.codes.create(code)
+```
+
+**NOTE**: You only need to call `client.codes.create(code)` once for each time your code changes.
+
+# Queue Up Tasks for Your Worker
+
+Now that the code is uploaded, we can create/queue up tasks. You can call this over and over 
+for as many tasks as you want. 
+
+```ruby
 client.tasks.create('MyWorker', {:client => 'Joe'})
 ```
 
-## IronWorker::Client API
+# The Rest of the IronWorker API
+
+## IronWorker::Client
 
 You can use the `IronWorkerNG::Client` class to upload code packages, queue tasks, create schedules, and more.
 

@@ -7,9 +7,7 @@ module IronWorkerNG
       include IronWorkerNG::Feature::Java::MergeJar::InstanceMethods
       include IronWorkerNG::Feature::Java::MergeWorker::InstanceMethods
 
-      def create_runner(zip, init_code)
-        IronWorkerNG::Logger.info 'Creating java runner'
-
+      def create_runner(zip)
         classpath_array = []
       
         @features.each do |f|
@@ -20,33 +18,35 @@ module IronWorkerNG
 
         classpath = classpath_array.join(':')
 
-        IronWorkerNG::Logger.info "Collected #{classpath} classpath"
+        IronWorkerNG::Logger.info "Collected '#{classpath}' classpath"
       
-        zip.get_output_stream('runner.rb') do |runner|
+        zip.get_output_stream(runner) do |runner|
           runner.write <<RUNNER
+#!/bin/sh
 # iron_worker_ng-#{IronWorkerNG.version}
 
-root = nil
+root() {
+  while [ $# -gt 0 ]; do
+    if [ "$1" = "-d" ]; then
+      printf "%s\n" "$2"
+      break
+    fi
+  done
+}
 
-($*.length - 2).downto(0) do |i|
-  root = $*[i + 1] if $*[i] == '-d'
-end
+cd "$(root "$@")"
 
-Dir.chdir(root)
-
-#{init_code}
-
-puts `java -cp #{classpath} #{worker.klass} \#{$*.join(' ')}`
+java -cp #{classpath} #{worker.klass} "$@"
 RUNNER
         end
       end
 
       def runtime
-        'ruby'
+        'sh'
       end
 
       def runner
-        'runner.rb'
+        '__runner__.sh'
       end
     end
   end

@@ -9,15 +9,18 @@ module IronWorkerNG
       include IronWorkerNG::Feature::Ruby::MergeGemfile::InstanceMethods
       include IronWorkerNG::Feature::Ruby::MergeWorker::InstanceMethods
 
-      def create_runner(zip, init_code)
-        IronWorkerNG::Logger.info 'Creating ruby runner'
-
-        unless @worker
-          IronWorkerNG::Logger.error 'No worker specified'
-          raise 'No worker specified'
+      def create_runner(zip)
+        gempath_code_array = []
+      
+        @features.each do |f|
+          if f.respond_to?(:code_for_gempath)
+            gempath_code_array << f.send(:code_for_gempath)
+          end
         end
 
-        zip.get_output_stream('runner.rb') do |runner|
+        gempath_code = gempath_code_array.join("\n")
+
+        zip.get_output_stream(runner) do |runner|
           runner.write <<RUNNER
 # iron_worker_ng-#{IronWorkerNG.version}
 
@@ -25,7 +28,7 @@ root = nil
 payload_file = nil
 task_id = nil
 
-($*.length - 2).downto(0) do |i|
+0.upto($*.length - 2) do |i|
   root = $*[i + 1] if $*[i] == '-d'
   payload_file = $*[i + 1] if $*[i] == '-payload'
   task_id = $*[i + 1] if $*[i] == '-id'
@@ -33,12 +36,8 @@ end
 
 Dir.chdir(root)
 
-#{init_code}
+#{gempath_code}
 $:.unshift("\#{root}")
-
-def log(*args)
-  puts *args
-end
 
 require 'json'
 
@@ -81,12 +80,12 @@ def params
   @params
 end
 
-require worker_file_name
+require '#{File.basename(worker.path)}'
 
 worker_class = nil
 
 begin
-  worker_class = Kernel.const_get(worker_class_name)
+  worker_class = Kernel.const_get('#{worker.klass}')
 rescue
 end
 
@@ -112,7 +111,7 @@ RUNNER
       end
 
       def runner
-        'runner.rb'
+        '__runner__.rb'
       end
     end
   end

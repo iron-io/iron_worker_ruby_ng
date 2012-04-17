@@ -1,6 +1,6 @@
 module IronWorkerNG
   module Feature
-    module Node
+    module Binary
       module MergeWorker
         class Feature < IronWorkerNG::Feature::Base
           attr_reader :path
@@ -14,7 +14,7 @@ module IronWorkerNG
           end
 
           def bundle(zip)
-            IronWorkerNG::Logger.debug "Bundling node worker with path='#{@path}'"
+            IronWorkerNG::Logger.debug "Bundling binary worker with path='#{@path}'"
 
             zip.add(File.basename(@path), @path)
           end
@@ -27,15 +27,15 @@ module IronWorkerNG
             @worker ||= nil 
 
             unless @worker.nil?
-              IronWorkerNG::Logger.warn "Ignoring attempt to merge node worker with path='#{path}'"
+              IronWorkerNG::Logger.warn "Ignoring attempt to merge binary worker with path='#{path}'"
               return
             end
 
-            @name ||= File.basename(path).gsub(/\.js$/, '').capitalize.gsub(/_./) { |x| x[1].upcase }
+            @name ||= File.basename(path).gsub(/\..*$/, '').capitalize.gsub(/_./) { |x| x[1].upcase }
 
-            @worker = IronWorkerNG::Feature::Node::MergeWorker::Feature.new(path)
+            @worker = IronWorkerNG::Feature::Binary::MergeWorker::Feature.new(path)
 
-            IronWorkerNG::Logger.info "Merging node worker with path='#{path}'"
+            IronWorkerNG::Logger.info "Merging binary worker with path='#{path}'"
 
             @features << @worker
           end

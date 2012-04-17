@@ -60,23 +60,20 @@ module IronWorkerNG
       end
 
       def create_zip
-        fixate
-
-        init_code = ''
-
-        @features.each do |f|
-          if f.respond_to?(:code_for_init)
-            init_code += f.send(:code_for_init) + "\n"
-          end
+        unless @worker
+          IronWorkerNG::Logger.error 'No worker specified'
+          raise 'No worker specified'
         end
+
+        fixate
 
         zip_name = Dir.tmpdir + '/' + Dir::Tmpname.make_tmpname("iron-worker-ng-", "code.zip")
 
-        IronWorkerNG::Logger.info "Creating code zip #{zip_name}"
+        IronWorkerNG::Logger.debug "Creating code zip '#{zip_name}'"
 
         Zip::ZipFile.open(zip_name, Zip::ZipFile::CREATE) do |zip|
           bundle(zip)
-          create_runner(zip, init_code)
+          create_runner(zip)
         end
 
         zip_name
