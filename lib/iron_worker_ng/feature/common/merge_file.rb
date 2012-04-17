@@ -1,3 +1,5 @@
+require 'pathname'
+
 module IronWorkerNG
   module Feature
     module Common
@@ -9,7 +11,7 @@ module IronWorkerNG
           def initialize(path, dest)
             @path = File.expand_path(path)
             @dest = dest
-            @dest += '/' unless @dest.empty? or @dest.end_with? '/'
+            @dest = Pathname.new(dest).cleanpath.to_s + '/' unless @dest.empty?
           end
 
           def hash_string
