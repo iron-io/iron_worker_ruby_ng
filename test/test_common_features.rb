@@ -9,7 +9,7 @@ class CommonFeaturesTest < IWNGTest
       merge_worker('test/hello.rb')
     end
 
-    Zip::ZipFile.open(code.create_zip) do |zip|
+    inspect_zip(code) do |zip|
       assert zip.find_entry('test/data/dir2/test')
     end
   end
@@ -28,9 +28,37 @@ class CommonFeaturesTest < IWNGTest
       merge_worker('test/hello.rb')
     end
 
-    Zip::ZipFile.open(code.create_zip) do |zip|
+    inspect_zip(code) do |zip|
       assert zip.find_entry('test/data/dir2/test')
     end
+  end
+
+  def test_symlinks
+    File.unlink 'test/data/dir1/dir2' if
+      File.symlink? 'test/data/dir1/dir2'
+
+    Dir.chdir('test/data/dir1') do
+      File.symlink('../dir2', 'dir2')
+    end
+
+    code = code_bundle 'test_symlinks' do
+      merge_dir('test/data/dir1', 'test/data')
+      merge_dir('test/data/dir2', 'test/data')
+      worker_code 'puts File.read("test/data/dir1/dir2/test")'
+    end
+
+    inspect_zip(code) do |zip|
+      assert_equal '../dir2', zip.read('test/data/dir1/dir2')
+    end
+
+    client.codes_create(code)
+    task_id = client.tasks_create('test_symlinks').id
+    client.tasks_wait_for(task_id)
+    log = client.tasks_log(task_id)
+
+    assert_equal "test", log
+
+    File.unlink 'test/data/dir1/dir2'
   end
 
 end
