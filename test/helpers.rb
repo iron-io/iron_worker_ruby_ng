@@ -8,18 +8,26 @@ def code_bundle(name,&block)
 
   class << code
     def worker_code(str)
-      Tempfile.open('worker') do |f|
-        f << str
-        f.close
-        merge_worker(f.path)
-        f.unlink
-      end
+      tmpdir = Dir.tmpdir + '/' + Digest::MD5.hexdigest(str)
+      Dir.mkdir tmpdir unless Dir.exist? tmpdir
+
+      tmpfname = tmpdir + '/worker.rb'
+      File.open(tmpfname, "w") { |f| f << str }
+
+      puts "created #{tmpfname}"
+      merge_worker(tmpfname)
     end
   end
 
   code.instance_eval(&block)
 
   code
+end
+
+def inspect_zip(code)
+  zip_file = code.create_zip
+  yield Zip::ZipFile.open(zip_file)
+  File.unlink zip_file
 end
 
 class IWNGTest < Test::Unit::TestCase
