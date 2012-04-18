@@ -8,7 +8,7 @@ require_relative '../feature/common/merge_dir'
 module IronWorkerNG
   module Code
     class Base
-      attr_reader :name
+      attr_accessor :name
       attr_reader :features
 
       @@registered_types = []
@@ -34,9 +34,18 @@ module IronWorkerNG
       include IronWorkerNG::Feature::Common::MergeFile::InstanceMethods
       include IronWorkerNG::Feature::Common::MergeDir::InstanceMethods
 
-      def initialize(name = nil, options = {})
-        @name = name
+      def initialize(*args)
+        @name = nil
         @features = []
+
+        if args.length == 1 && args[0].class == String && File.exists?(args[0])
+          merge_worker(args[0])
+        elsif args.length == 1 && args.class == String
+          @name = args[0]
+        elsif args.length == 1 && args.class == Hash
+          @name = args[0][:name]
+          merge_worker(args[0][:worker]) unless args[0][:worker].nil?
+        end
       end
 
       def fixate
