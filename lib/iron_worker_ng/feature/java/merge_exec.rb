@@ -1,7 +1,7 @@
 module IronWorkerNG
   module Feature
     module Java
-      module MergeWorker
+      module MergeExec
         class Feature < IronWorkerNG::Feature::Base
           attr_reader :path
           attr_reader :klass
@@ -16,7 +16,7 @@ module IronWorkerNG
           end
 
           def bundle(zip)
-            IronWorkerNG::Logger.debug "Bundling java worker with path='#{@path}' and class='#{@klass}'"
+            IronWorkerNG::Logger.debug "Bundling java exec with path='#{@path}' and class='#{@klass}'"
 
             zip.add(File.basename(@path), @path)
           end
@@ -27,13 +27,13 @@ module IronWorkerNG
         end
 
         module InstanceMethods
-          attr_reader :worker
+          attr_reader :exec
 
-          def merge_worker(path, klass = nil)
-            @worker ||= nil 
+          def merge_exec(path, klass = nil)
+            @exec ||= nil 
 
-            unless @worker.nil?
-              IronWorkerNG::Logger.warn "Ignoring attempt to merge java worker with path='#{path}' and class='#{klass}'"
+            unless @exec.nil?
+              IronWorkerNG::Logger.warn "Ignoring attempt to merge java exec with path='#{path}' and class='#{klass}'"
               return
             end
 
@@ -43,15 +43,17 @@ module IronWorkerNG
               @name ||= klass.split('.')[-1]
             end
 
-            @worker = IronWorkerNG::Feature::Java::MergeWorker::Feature.new(path, klass)
+            @exec = IronWorkerNG::Feature::Java::MergeExec::Feature.new(path, klass)
 
-            IronWorkerNG::Logger.info "Merging java worker with path='#{path}' and class='#{klass}'"
+            IronWorkerNG::Logger.info "Merging java exec with path='#{path}' and class='#{klass}'"
 
-            @features << @worker
+            @features << @exec
           end
 
+          alias :merge_worker :merge_exec
+
           def self.included(base)
-            IronWorkerNG::Code::Base.register_feature(:name => 'merge_worker', :for_klass => base, :args => 'PATH,CLASS')
+            IronWorkerNG::Code::Base.register_feature(:name => 'merge_exec', :for_klass => base, :args => 'PATH,CLASS')
           end
         end
       end

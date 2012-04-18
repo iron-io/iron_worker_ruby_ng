@@ -1,11 +1,11 @@
 require_relative '../feature/java/merge_jar'
-require_relative '../feature/java/merge_worker'
+require_relative '../feature/java/merge_exec'
 
 module IronWorkerNG
   module Code
     class Java < IronWorkerNG::Code::Base
       include IronWorkerNG::Feature::Java::MergeJar::InstanceMethods
-      include IronWorkerNG::Feature::Java::MergeWorker::InstanceMethods
+      include IronWorkerNG::Feature::Java::MergeExec::InstanceMethods
 
       def create_runner(zip)
         classpath_array = []
@@ -36,7 +36,7 @@ root() {
 
 cd "$(root "$@")"
 
-java -cp #{classpath} #{worker.klass.nil? ? "-jar #{File.basename(worker.path)}" : worker.klass} "$@"
+java -cp #{classpath} #{@exec.klass.nil? ? "-jar #{File.basename(@exec.path)}" : @exec.klass} "$@"
 RUNNER
         end
       end

@@ -39,14 +39,14 @@ module IronWorkerNG
         @features = []
 
         if args.length == 1 && args[0].class == String && File.exists?(args[0])
-          merge_worker(args[0])
+          merge_exec(args[0])
         elsif args.length == 1 && args.class == String
           @name = args[0]
         elsif args.length == 1 && args.class == Hash
-          @name = args[0][:name] || args[0]]['name']
+          @name = args[0][:name] || args[0]['name']
 
-          worker = args[0][:worker] || args[0]['worker']
-          merge_worker(worker) unless worker.nil?
+          exec = args[0][:exec] || args[0]['exec'] || args[0][:worker] || args[0]['worker']
+          merge_exec(exec) unless exec.nil?
         end
       end
 
@@ -71,9 +71,9 @@ module IronWorkerNG
       end
 
       def create_zip
-        unless @worker
-          IronWorkerNG::Logger.error 'No worker specified'
-          raise 'No worker specified'
+        unless @exec
+          IronWorkerNG::Logger.error 'No exec specified'
+          raise 'No exec specified'
         end
 
         fixate

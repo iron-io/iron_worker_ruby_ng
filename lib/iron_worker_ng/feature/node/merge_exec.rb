@@ -1,7 +1,7 @@
 module IronWorkerNG
   module Feature
     module Node
-      module MergeWorker
+      module MergeExec
         class Feature < IronWorkerNG::Feature::Base
           attr_reader :path
 
@@ -14,34 +14,36 @@ module IronWorkerNG
           end
 
           def bundle(zip)
-            IronWorkerNG::Logger.debug "Bundling node worker with path='#{@path}'"
+            IronWorkerNG::Logger.debug "Bundling node exec with path='#{@path}'"
 
             zip.add(File.basename(@path), @path)
           end
         end
 
         module InstanceMethods
-          attr_reader :worker
+          attr_reader :exec
 
-          def merge_worker(path)
-            @worker ||= nil 
+          def merge_exec(path)
+            @exec ||= nil 
 
-            unless @worker.nil?
-              IronWorkerNG::Logger.warn "Ignoring attempt to merge node worker with path='#{path}'"
+            unless @exec.nil?
+              IronWorkerNG::Logger.warn "Ignoring attempt to merge node exec with path='#{path}'"
               return
             end
 
             @name ||= File.basename(path).gsub(/\.js$/, '').capitalize.gsub(/_./) { |x| x[1].upcase }
 
-            @worker = IronWorkerNG::Feature::Node::MergeWorker::Feature.new(path)
+            @exec = IronWorkerNG::Feature::Node::MergeExec::Feature.new(path)
 
-            IronWorkerNG::Logger.info "Merging node worker with path='#{path}'"
+            IronWorkerNG::Logger.info "Merging node exec with path='#{path}'"
 
-            @features << @worker
+            @features << @exec
           end
 
+          alias :merge_worker :merge_exec
+
           def self.included(base)
-            IronWorkerNG::Code::Base.register_feature(:name => 'merge_worker', :for_klass => base, :args => 'PATH')
+            IronWorkerNG::Code::Base.register_feature(:name => 'merge_exec', :for_klass => base, :args => 'PATH')
           end
         end
       end
