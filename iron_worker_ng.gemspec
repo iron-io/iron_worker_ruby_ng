@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = "iron_worker_ng"
-  s.version = "0.2.4"
+  s.version = "0.2.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Andrew Kirilenko", "Iron.io, Inc"]
@@ -40,15 +40,15 @@ Gem::Specification.new do |s|
     "lib/iron_worker_ng/code/node.rb",
     "lib/iron_worker_ng/code/ruby.rb",
     "lib/iron_worker_ng/feature/base.rb",
-    "lib/iron_worker_ng/feature/binary/merge_worker.rb",
+    "lib/iron_worker_ng/feature/binary/merge_exec.rb",
     "lib/iron_worker_ng/feature/common/merge_dir.rb",
     "lib/iron_worker_ng/feature/common/merge_file.rb",
+    "lib/iron_worker_ng/feature/java/merge_exec.rb",
     "lib/iron_worker_ng/feature/java/merge_jar.rb",
-    "lib/iron_worker_ng/feature/java/merge_worker.rb",
-    "lib/iron_worker_ng/feature/node/merge_worker.rb",
+    "lib/iron_worker_ng/feature/node/merge_exec.rb",
+    "lib/iron_worker_ng/feature/ruby/merge_exec.rb",
     "lib/iron_worker_ng/feature/ruby/merge_gem.rb",
     "lib/iron_worker_ng/feature/ruby/merge_gemfile.rb",
-    "lib/iron_worker_ng/feature/ruby/merge_worker.rb",
     "lib/iron_worker_ng/logger.rb",
     "lib/iron_worker_ng/version.rb",
     "test/Gemfile",
