@@ -40,9 +40,9 @@ module IronWorkerNG
 
         if args.length == 1 && args[0].class == String && File.exists?(args[0])
           merge_exec(args[0])
-        elsif args.length == 1 && args.class == String
+        elsif args.length == 1 && args[0].class == String
           @name = args[0]
-        elsif args.length == 1 && args.class == Hash
+        elsif args.length == 1 && args[0].class == Hash
           @name = args[0][:name] || args[0]['name']
 
           exec = args[0][:exec] || args[0]['exec'] || args[0][:worker] || args[0]['worker']
