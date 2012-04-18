@@ -55,13 +55,15 @@ code.merge_gem 'activerecord'
 
 The IronWorkerNG::Code::Ruby class will help you package your code for upload, but to upload it to the cloud, you'll need to use the `IronWorkerNG::Client` class.
 
-### initialize(name = nil)
+### initialize(*args)
 
-Create new code package with the specified name. If `name` is omitted, a camel-cased version of the worker's file name will be used.
+Create new code package with the specified args.
 
 ```ruby
-code = IronWorkerNG::Code::Ruby.new
-code_with_name = IronWorkerNG::Code::Ruby.new('CoolWorker')
+code_with_name = IronWorkerNG::Code::Ruby.new(:worker => 'cool_worker.rb', :name => 'CoolWorker')
+code_with_guessed_name = IronWorkerNG::Code::Ruby.new(:worker => 'cool_worker.rb')
+code_with_short_form_syntax = IronWorkeNG::Code::Ruby.new('cool_worker.rb')
+code = IronWorkerNG::Code::Ruby.new # will need to use code.merge_worker later
 ```
 
 ### name()
@@ -70,6 +72,14 @@ Return the code package's name.
 
 ```ruby
 puts code.name
+```
+
+### name=(name)
+
+Sets the code package's name.
+
+```ruby
+code.name = 'CoolWorker'
 ```
 
 ### hash_string()

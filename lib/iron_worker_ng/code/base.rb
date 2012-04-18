@@ -34,9 +34,20 @@ module IronWorkerNG
       include IronWorkerNG::Feature::Common::MergeFile::InstanceMethods
       include IronWorkerNG::Feature::Common::MergeDir::InstanceMethods
 
-      def initialize(name = nil, options = {})
-        @name = name
+      def initialize(*args)
+        @name = nil
         @features = []
+
+        if args.length == 1 && args[0].class == String && File.exists?(args[0])
+          merge_worker(args[0])
+        elsif args.length == 1 && args.class == String
+          @name = args[0]
+        elsif args.length == 1 && args.class == Hash
+          @name = args[0][:name] || args[0]]['name']
+
+          worke = args[0][:worker] || args[0]['worker']
+          merge_worker(worker) unless worke.nil?
+        end
       end
 
       def fixate

@@ -1,3 +1,5 @@
+require 'pathname'
+
 module IronWorkerNG
   module Feature
     module Common
@@ -9,6 +11,7 @@ module IronWorkerNG
           def initialize(path, dest)
             @path = File.expand_path(path)
             @dest = dest
+            @dest = Pathname.new(dest).cleanpath.to_s + '/' unless @dest.empty?
           end
 
           def hash_string
@@ -18,7 +21,7 @@ module IronWorkerNG
           def bundle(zip)
             IronWorkerNG::Logger.debug "Bundling file with path='#{@path}' and dest='#{@dest}'"
 
-            zip.add(@dest + '/' + File.basename(@path), @path)
+            zip.add(@dest + File.basename(@path), @path)
           end
         end
 
