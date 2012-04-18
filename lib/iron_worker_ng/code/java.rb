@@ -36,7 +36,7 @@ root() {
 
 cd "$(root "$@")"
 
-java -cp #{classpath} #{worker.klass} "$@"
+java -cp #{classpath} #{worker.klass.nil? ? "-jar #{File.basename(worker.path)}" : worker.klass} "$@"
 RUNNER
         end
       end

@@ -29,7 +29,7 @@ module IronWorkerNG
         module InstanceMethods
           attr_reader :worker
 
-          def merge_worker(path, klass)
+          def merge_worker(path, klass = nil)
             @worker ||= nil 
 
             unless @worker.nil?
@@ -37,7 +37,11 @@ module IronWorkerNG
               return
             end
 
-            @name ||= klass.split('.')[-1]
+            if klass.nil?
+              @name ||= File.basename(path).gsub(/\.jar$/, '').capitalize.gsub(/_./) { |x| x[1].upcase }
+            else
+              @name ||= klass.split('.')[-1]
+            end
 
             @worker = IronWorkerNG::Feature::Java::MergeWorker::Feature.new(path, klass)
 
