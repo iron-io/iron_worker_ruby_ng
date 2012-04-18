@@ -43,7 +43,7 @@ module IronWorkerNG
         elsif args.length == 1 && args.class == String
           @name = args[0]
         elsif args.length == 1 && args.class == Hash
-          @name = args[0][:name] || args[0]]['name']
+          @name = args[0][:name] || args[0]['name']
 
           worker = args[0][:worker] || args[0]['worker']
           merge_worker(worker) unless worker.nil?
