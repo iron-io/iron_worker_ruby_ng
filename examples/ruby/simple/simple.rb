@@ -20,16 +20,16 @@ client = IronWorkerNG::Client.new(:token => token,
 
 # if not specified, name default to worker name converted from underscore to camel style
 code = IronWorkerNG::Code::Ruby.new
-code.merge_worker('/sample_worker.rb')
+code.merge_exec('/sample_worker.rb')
 #> code.name == 'SampleWorker'
 
 # still can pass name in constructor
 code = IronWorkerNG::Code::Ruby.new('transmogrify')
 #> code.name == 'transmogrify'
-code.merge_worker(File.dirname(__FILE__) + '/sample_worker.rb')
+code.merge_exec(File.dirname(__FILE__) + '/sample_worker.rb')
 
 # once worker merged, following attempts will be ignored
-code.merge_worker('anything')
+code.merge_exec('anything')
 #> code.worker.path.end_with? '/worker.rb'
 
 # if worker requires some gems, we 

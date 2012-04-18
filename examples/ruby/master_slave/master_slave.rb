@@ -11,12 +11,12 @@ client = IronWorkerNG::Client.new(:token => token,
 
 # create master code bundle
 master = IronWorkerNG::Code::Ruby.new
-master.merge_worker(File.dirname(__FILE__) + '/master_worker.rb')
+master.merge_exec(File.dirname(__FILE__) + '/master_worker.rb')
 master.merge_gem('iron_worker_ng') # we need it to queue slave workers
 
 # create slave code bundle
 slave = IronWorkerNG::Code::Ruby.new
-slave.merge_worker(File.dirname(__FILE__) + '/slave_worker.rb')
+slave.merge_exec(File.dirname(__FILE__) + '/slave_worker.rb')
 
 # upload both
 client.codes.create(master)

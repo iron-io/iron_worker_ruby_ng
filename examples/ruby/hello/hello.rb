@@ -11,7 +11,7 @@ client = IronWorkerNG::Client.new(:token => token,
 
 # create ruby code bundle
 code = IronWorkerNG::Code::Ruby.new
-code.merge_worker(File.dirname(__FILE__) + '/hello_worker.rb')
+code.merge_exec(File.dirname(__FILE__) + '/hello_worker.rb')
 
 # upload it to iron.io
 client.codes.create(code)
