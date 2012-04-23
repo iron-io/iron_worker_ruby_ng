@@ -42,6 +42,7 @@ $:.unshift("\#{root}")
 require 'json'
 
 @iron_worker_task_id = task_id
+@iron_task_id = task_id
 
 @payload = File.read(payload_file)
 
@@ -52,7 +53,9 @@ rescue
 end
 
 @iron_io_token = parsed_payload['token'] || nil
+@iron_token = @iron_io_token
 @iron_io_project_id = parsed_payload['project_id'] || nil
+@iron_project_id = @iron_io_project_id
 @params = parsed_payload['params'] || {}
 
 keys = @params.keys
@@ -68,12 +71,24 @@ def iron_worker_task_id
   @iron_worker_task_id
 end
 
+def iron_task_id
+  @iron_task_id
+end
+
 def iron_io_token
   @iron_io_token
 end
 
+def iron_token
+  @iron_token
+end
+
 def iron_io_project_id
   @iron_io_project_id
+end
+
+def iron_project_id
+  @iron_project_id
 end
 
 def params

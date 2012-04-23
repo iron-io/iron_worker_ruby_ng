@@ -1,6 +1,7 @@
 require 'rest-client'
 require 'rest'
 require 'json'
+require 'yaml'
 require 'time'
 
 require_relative 'api_client_error'
@@ -19,7 +20,33 @@ module IronWorkerNG
 
     def initialize(options = {})
       @token = options[:token] || options['token']
+      @token ||= ENV['IRON_IO_TOKEN']
+      @token ||= ENV['IRON_TOKEN']
+
       @project_id = options[:project_id] || options['project_id']
+      @project_id ||= ENV['IRON_IO_PROJECT_ID']
+      @project_id ||= ENV['IRON_PROJECT_ID']
+
+      if @token.nil? || @project_id.nil?
+        [ENV['IRON_IO_CONFIG'], ENV['IRON_IO_CONFIG_FILE'], ENV['IRON_CONFIG'], ENV['IRON_CONFIG_FILE'], '~/.iron', '/etc/iron.conf'].each do |config_file|
+          if (not config_file.nil?) && File.exists?(File.expand_path(config_file))
+            config = YAML.load_file(File.expand_path(config_file))
+          
+            unless config['iron_io'].nil?
+              @token ||= config['iron_io']['token']
+              @project_id ||= config['iron_io']['project_id']
+            end
+
+            unless config['iron'].nil?
+              @token ||= config['iron']['token']
+              @project_id ||= config['iron']['project_id']
+            end
+
+            @token ||= config['token']
+            @project_id ||= config['project_id']
+          end
+        end
+      end
 
       if (not @token) || (not @project_id)
         IronWorkerNG::Logger.error 'Both iron.io token and project_id must be specified' 
