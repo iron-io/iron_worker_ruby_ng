@@ -6,7 +6,7 @@ class CommonFeaturesTest < IWNGTest
   def test_merge_file
     code = code_bundle('test') do
       merge_file('test', 'test/data/dir2')
-      merge_worker('test/hello.rb')
+      merge_exec('test/hello.rb')
     end
 
     inspect_zip(code) do |zip|
@@ -17,7 +17,7 @@ class CommonFeaturesTest < IWNGTest
   def test_merge_file_no_dest
     code = code_bundle('test') do
       merge_file('Gemfile')
-      merge_worker('test/hello.rb')
+      merge_exec('test/hello.rb')
     end
 
     inspect_zip(code) do |zip|
@@ -36,7 +36,7 @@ class CommonFeaturesTest < IWNGTest
   def test_merge_dir
     code = code_bundle('test') do
       merge_dir('test/data/dir2', 'test/data')
-      merge_worker('test/hello.rb')
+      merge_exec('test/hello.rb')
     end
 
     inspect_zip(code) do |zip|
@@ -47,7 +47,7 @@ class CommonFeaturesTest < IWNGTest
   def test_merge_dir_no_dest
     code = code_bundle('test') do
       merge_dir('test')
-      merge_worker('test/hello.rb')
+      merge_exec('test/hello.rb')
     end
 
     inspect_zip(code) do |zip|
@@ -78,7 +78,7 @@ class CommonFeaturesTest < IWNGTest
     client.tasks_wait_for(task_id)
     log = client.tasks_log(task_id)
 
-    assert_equal "test", log
+    assert_equal "test\n", log
 
     File.unlink 'test/data/dir1/dir2'
   end
