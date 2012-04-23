@@ -70,6 +70,8 @@ module IronWorkerNG
             @merge_gem_reqs << Bundler::Dependency.new(name, version.split(', '))
           end
 
+          alias :gem :merge_gem
+
           def merge_gem_fixate
             IronWorkerNG::Logger.info 'Fixating gems dependencies'
 
