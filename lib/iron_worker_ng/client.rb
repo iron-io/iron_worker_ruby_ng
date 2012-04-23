@@ -22,8 +22,12 @@ module IronWorkerNG
   class Client
     attr_reader :api
 
-    def initialize(options = {})
+    def initialize(options = {}, &block)
       @api = IronWorkerNG::APIClient.new(options)
+
+      unless block.nil?
+        instance_eval(&block)
+      end
     end
 
     def method_missing(name, *args, &block)

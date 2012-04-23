@@ -34,7 +34,7 @@ module IronWorkerNG
       include IronWorkerNG::Feature::Common::MergeFile::InstanceMethods
       include IronWorkerNG::Feature::Common::MergeDir::InstanceMethods
 
-      def initialize(*args)
+      def initialize(*args, &block)
         @name = nil
         @features = []
 
@@ -47,6 +47,10 @@ module IronWorkerNG
 
           exec = args[0][:exec] || args[0]['exec'] || args[0][:worker] || args[0]['worker']
           merge_exec(exec) unless exec.nil?
+        end
+
+        unless block.nil?
+          instance_eval(&block)
         end
       end
 
