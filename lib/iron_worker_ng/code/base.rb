@@ -38,6 +38,10 @@ module IronWorkerNG
         @name = nil
         @features = []
 
+        if File.exists?('Workerfile')
+          eval(File.read('Workerfile'))
+        end
+
         if args.length == 1 && args[0].class == String && File.exists?(args[0])
           merge_exec(args[0])
         elsif args.length == 1 && args[0].class == String
