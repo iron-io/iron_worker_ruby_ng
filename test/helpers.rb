@@ -15,7 +15,7 @@ def code_bundle(name,&block)
       File.open(tmpfname, "w") { |f| f << str }
 
       puts "created #{tmpfname}"
-      merge_worker(tmpfname)
+      merge_exec(tmpfname)
     end
   end
 

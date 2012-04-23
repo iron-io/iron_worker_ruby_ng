@@ -30,7 +30,7 @@ code.merge_exec(File.dirname(__FILE__) + '/sample_worker.rb')
 
 # once worker merged, following attempts will be ignored
 code.merge_exec('anything')
-#> code.worker.path.end_with? '/worker.rb'
+#> code.exec.path.end_with? '/worker.rb'
 
 # if worker requires some gems, we 
 
