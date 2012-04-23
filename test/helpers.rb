@@ -3,8 +3,8 @@ require 'tempfile'
 
 require './lib/iron_worker_ng.rb'
 
-def code_bundle(name,&block)
-  code = IronWorkerNG::Code::Ruby.new(name)
+def code_bundle(*args,&block)
+  code = IronWorkerNG::Code::Ruby.new(*args)
 
   class << code
     def worker_code(str)
@@ -19,7 +19,7 @@ def code_bundle(name,&block)
     end
   end
 
-  code.instance_eval(&block)
+  code.instance_eval(&block) if block_given?
 
   code
 end
@@ -42,5 +42,15 @@ class IWNGTest < Test::Unit::TestCase
 
     @client = IronWorkerNG::Client.new(:token => token,
                                        :project_id => project_id )
+  end
+end
+
+module IronWorkerNG
+  module Code
+    class Base
+      def exec_path
+        exec = @features.find{|f| f.is_a? IronWorkerNG::Feature::Ruby::MergeExec::Feature } and exec.path
+      end
+    end
   end
 end
