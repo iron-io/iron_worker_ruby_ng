@@ -21,8 +21,6 @@ module IronWorkerNG
         end
 
         module InstanceMethods
-          attr_reader :exec
-
           def merge_exec(path)
             @exec ||= nil 
 
