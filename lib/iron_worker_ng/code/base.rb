@@ -52,7 +52,7 @@ module IronWorkerNG
           exec = args[0][:exec] || args[0]['exec'] || args[0][:worker] || args[0]['worker']
           merge_exec(exec) unless exec.nil?
         else
-          raise "Wrong arguments"
+          raise "Wrong arguments" unless args.empty?
         end
 
         unless block.nil?
