@@ -1,7 +1,6 @@
 require 'rest-client'
 require 'rest'
 require 'json'
-require 'yaml'
 require 'time'
 
 require_relative 'api_client_error'
@@ -19,67 +18,55 @@ module IronWorkerNG
     attr_accessor :user_agent
 
     def initialize(options = {})
-      @token = options[:token] || options['token']
-      @project_id = options[:project_id] || options['project_id']
-
-      if (@token.nil? || @project_id.nil?) && ((not options[:yaml_config_file].nil?) || (not options['yaml_config_file'].nil?))
-        load_yaml_config(options[:yaml_config_file] || options['yaml_config_file'])
-      end
-
-      if (@token.nil? || @project_id.nil?) && ((not options[:json_config_file].nil?) || (not options['json_config_file'].nil?))
-        load_json_config(options[:json_config_file] || options['json_config_file'])
-      end
-
-      if @token.nil? || @project_id.nil?
-        load_yaml_config('iron.yml')
-      end
-
-      if @token.nil? || @project_id.nil?
-        load_json_config('iron.json')
-      end
-
-      @token ||= ENV['IRON_TOKEN']
-      @project_id ||= ENV['IRON_PROJECT_ID']
-
-      if @token.nil? || @project_id.nil?
-        load_yaml_config('~/.iron.yml')
-      end
-
-      if @token.nil? || @project_id.nil?
-        load_json_config('~/.iron.json')
-      end
+      load_from_hash(options)
+      load_from_config(options[:config_file] || options['config_file'])
+      load_from_config('iron.json')
+      load_from_env('IRON_WORKER')
+      load_from_env('IRON')
+      load_from_config('~/.iron.json')
+      load_from_hash(:scheme => 'https', :host => IronWorkerNG::APIClient::AWS_US_EAST_HOST, :port => 443, :api_version => 2, :user_agent => 'iron_worker_ng-' + IronWorkerNG.version)
 
       if (not @token) || (not @project_id)
         IronWorkerNG::Logger.error 'Both iron.io token and project_id must be specified' 
         raise 'Both iron.io token and project_id must be specified' 
       end
 
-      @scheme = options[:scheme] || options['scheme'] || 'https'
-      @host = options[:host] || options['host'] || IronWorkerNG::APIClient::AWS_US_EAST_HOST
-      @port = options[:port] || options['port'] || 443
-      @api_version = options[:api_version] || options['api_version'] || 2
-      @user_agent = options[:user_agent] || options['user_agent'] || 'iron_worker_ng-' + IronWorkerNG.version
-
-      @url = "#{scheme}://#{host}:#{port}/#{api_version}/"
-
       @rest = Rest::Client.new
     end
 
-    def load_yaml_config(config_file)
-      if File.exists?(File.expand_path(config_file))
-        config = YAML.load_file(File.expand_path(config_file))
+    def load_from_hash(hash)
+      @token ||= hash[:token] || hash['token']
+      @project_id ||= hash[:project_id] || hash['project_id']
 
-        @token ||= config['token']
-        @project_id ||= config['project_id']
-      end
+      @scheme ||= hash[:scheme] || hash['scheme']
+      @host ||= hash[:host] || hash['host']
+      @port ||= hash[:port] || hash['port']
+      @api_version ||= hash[:api_version] || hash['api_version']
+      @user_agent ||= hash[:user_agent] || hash['user_agent']
     end
 
-    def load_json_config(config_file)
+    def load_from_env(prefix)
+      @token ||= ENV[prefix + '_TOKEN']
+      @project_id ||= ENV[prefix + '_PROJECT_ID']
+
+      @scheme ||= ENV[prefix + '_SCHEME']
+      @host ||= ENV[prefix + '_HOST']
+      @port ||= ENV[prefix + '_PORT']
+      @api_version ||= ENV[prefix + '_API_VERSION']
+      @user_agent ||= ENV[prefix + '_USER_AGENT']
+    end
+
+    def load_from_config(config_file)
+      return if config_file.nil?
+
       if File.exists?(File.expand_path(config_file))
         config = JSON.load(File.read(File.expand_path(config_file)))
 
-        @token ||= config['token']
-        @project_id ||= config['project_id']
+        unless config['iron_worker'].nil?
+          load_from_hash(config['iron_worker'])
+        end
+
+        load_from_hash(config)
       end
     end
 
@@ -91,14 +78,18 @@ module IronWorkerNG
       }
     end
 
+    def url
+      "#{scheme}://#{host}:#{port}/#{api_version}/"
+    end
+
     def get(method, params = {})
       request_hash = {}
       request_hash[:headers] = common_request_hash
       request_hash[:params] = params
 
-      IronWorkerNG::Logger.debug "GET #{@url + method} with params='#{request_hash.to_s}'"
+      IronWorkerNG::Logger.debug "GET #{url + method} with params='#{request_hash.to_s}'"
 
-      @rest.get(@url + method, request_hash)
+      @rest.get(url + method, request_hash)
     end
 
     def post(method, params = {})
@@ -106,9 +97,9 @@ module IronWorkerNG
       request_hash[:headers] = common_request_hash
       request_hash[:body] = params.to_json
 
-      IronWorkerNG::Logger.debug "POST #{@url + method} with params='#{request_hash.to_s}'" 
+      IronWorkerNG::Logger.debug "POST #{url + method} with params='#{request_hash.to_s}'" 
 
-      @rest.post(@url + method, request_hash)
+      @rest.post(url + method, request_hash)
     end
 
     def delete(method, params = {})
@@ -116,9 +107,9 @@ module IronWorkerNG
       request_hash[:headers] = common_request_hash
       request_hash[:params] = params
 
-      IronWorkerNG::Logger.debug "DELETE #{@url + method} with params='#{request_hash.to_s}'"
+      IronWorkerNG::Logger.debug "DELETE #{url + method} with params='#{request_hash.to_s}'"
 
-      @rest.delete(@url + method, request_hash)
+      @rest.delete(url + method, request_hash)
     end
 
     # FIXME: retries support
@@ -128,9 +119,9 @@ module IronWorkerNG
       request_hash[:data] = params.to_json
       request_hash[:file] = file
 
-      IronWorkerNG::Logger.debug "POST #{@url + method + "?oauth=" + @token} with params='#{request_hash.to_s}'"
+      IronWorkerNG::Logger.debug "POST #{url + method + "?oauth=" + @token} with params='#{request_hash.to_s}'"
 
-      RestClient.post(@url + method + "?oauth=#{@token}", request_hash) 
+      RestClient.post(url + method + "?oauth=#{@token}", request_hash) 
     end
 
     def parse_response(response, parse_json = true)
