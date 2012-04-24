@@ -1,16 +1,9 @@
 require 'iron_worker_ng'
 
-# to run examples, you must specify iron.io authentication token and project id
-token, project_id = [ ENV['IRON_IO_TOKEN'], ENV['IRON_IO_PROJECT_ID'] ]
-raise("please set $IRON_IO_TOKEN and $IRON_IO_PROJECT_ID " +
-      "environment variables") unless token and project_id
-
 IronWorkerNG::Logger.logger.level = ::Logger::DEBUG
 
 # initializing api object with them
-client = IronWorkerNG::Client.new(:token => token,
-                                  :project_id => project_id,
-                                  # rest are optinal
+client = IronWorkerNG::Client.new(# optinal
                                   :scheme => 'https',
                                   :port => 443,
                                   :api_version => 2,
