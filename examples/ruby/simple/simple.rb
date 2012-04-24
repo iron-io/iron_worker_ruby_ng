@@ -2,7 +2,7 @@ require 'iron_worker_ng'
 
 IronCore::Logger.logger.level = ::Logger::DEBUG
 
-# initializing api object with them
+# initializing client object
 client = IronWorkerNG::Client.new(# optinal
                                   :scheme => 'https',
                                   :port => 443,

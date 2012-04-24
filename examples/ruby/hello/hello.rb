@@ -1,6 +1,6 @@
 require 'iron_worker_ng'
 
-# initializing api object with them
+# initializing client object
 client = IronWorkerNG::Client.new
 
 # create ruby code bundle
