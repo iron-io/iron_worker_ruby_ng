@@ -17,8 +17,10 @@ module IronWorkerNG
     attr_accessor :port
     attr_accessor :api_version
     attr_accessor :user_agent
+    attr_accessor :options
 
     def initialize(options = {})
+      @options = options
       @token = options[:token] || options['token']
       @project_id = options[:project_id] || options['project_id']
 
