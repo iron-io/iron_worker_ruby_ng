@@ -35,6 +35,8 @@ module IronWorkerNG
     end
 
     def load_from_hash(hash)
+      return if hash.nil?
+
       @token ||= hash[:token] || hash['token']
       @project_id ||= hash[:project_id] || hash['project_id']
 
@@ -62,10 +64,8 @@ module IronWorkerNG
       if File.exists?(File.expand_path(config_file))
         config = JSON.load(File.read(File.expand_path(config_file)))
 
-        unless config['iron_worker'].nil?
-          load_from_hash(config['iron_worker'])
-        end
-
+        load_from_hash(config['iron_worker'])
+        load_from_hash(config['iron'])
         load_from_hash(config)
       end
     end
