@@ -17,6 +17,8 @@ module IronWorkerNG
     attr_accessor :api_version
     attr_accessor :user_agent
 
+    attr_reader :options
+
     def initialize(options = {})
       load_from_hash(options)
       load_from_config(options[:config_file] || options['config_file'])
@@ -30,6 +32,17 @@ module IronWorkerNG
         IronWorkerNG::Logger.error 'Both iron.io token and project_id must be specified' 
         raise 'Both iron.io token and project_id must be specified' 
       end
+
+      @options = {
+        :token => @token,
+        :project_id => @project_id,
+
+        :scheme => @scheme,
+        :host => @host,
+        :port => @port,
+        :api_version => @api_version,
+        :user_agent => @user_agent
+      }
 
       @rest = Rest::Client.new
     end
