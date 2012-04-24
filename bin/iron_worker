@@ -57,14 +57,13 @@ if command == 'codes.create'
     exit 1
   end
 
-  if execute_features.size == 0
-    puts opts
-    exit 1
-  end
-
   runtime = runtimes[0][:name] if runtime.nil?
 
-  code = runtimes.find { |r| r[:name] == runtime }[:klass].new(name)
+  code = runtimes.find { |r| r[:name] == runtime }[:klass].new
+
+  unless name.nil?
+    code.name = name
+  end
 
   execute_features.each do |f|
     code.send(f[:name], *f[:args])
