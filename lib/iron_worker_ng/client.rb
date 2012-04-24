@@ -77,7 +77,7 @@ module IronWorkerNG
     end
 
     def tasks_create(code_name, params = {}, options = {})
-      res = @api.tasks_create(code_name, {:token => @api.token, :project_id => @api.project_id, :params => params}.to_json, options)
+      res = @api.tasks_create(code_name, params.class == String ? params : params.to_json, options)
 
       OpenStruct.new(res['tasks'][0])
     end
@@ -127,7 +127,7 @@ module IronWorkerNG
     end
 
     def schedules_create(code_name, params = {}, options = {})
-      res = @api.schedules_create(code_name, {:token => @api.token, :project_id => @api.project_id, :params => params}.to_json, options)
+      res = @api.schedules_create(code_name, params.class == String ? params : params.to_json, options)
 
       OpenStruct.new(res['schedules'][0])
     end

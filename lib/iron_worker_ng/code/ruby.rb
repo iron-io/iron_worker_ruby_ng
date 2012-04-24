@@ -45,15 +45,11 @@ require 'json'
 
 @payload = File.read(payload_file)
 
-parsed_payload = {}
+@params = {}
 begin
-  parsed_payload = JSON.parse(@payload)
+  @params = JSON.parse(@payload)
 rescue
 end
-
-@iron_token = parsed_payload['token'] || nil
-@iron_project_id = parsed_payload['project_id'] || nil
-@params = parsed_payload['params'] || {}
 
 keys = @params.keys
 keys.each do |key|
@@ -64,20 +60,12 @@ def payload
   @payload
 end
 
-def iron_task_id
-  @iron_task_id
-end
-
-def iron_token
-  @iron_token
-end
-
-def iron_project_id
-  @iron_project_id
-end
-
 def params
   @params
+end
+
+def iron_task_id
+  @iron_task_id
 end
 
 require '#{File.basename(@exec.path)}'
