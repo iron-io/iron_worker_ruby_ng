@@ -52,7 +52,7 @@ module IronWorkerNG
           end
 
           def code_for_gempath
-            if @spec.extensions.length == 0
+            if @spec.extensions.length == 0 || IronWorkerNG::Feature::Ruby::MergeGem.merge_binary?
               '$:.unshift("#{root}/gems/' + @spec.full_name + '/lib")'
             else
               '# native gem ' + @spec.full_name
@@ -69,6 +69,8 @@ module IronWorkerNG
             @merge_gem_reqs ||= []
             @merge_gem_reqs << Bundler::Dependency.new(name, version.split(', '))
           end
+
+          alias :gem :merge_gem
 
           def merge_gem_fixate
             IronWorkerNG::Logger.info 'Fixating gems dependencies'

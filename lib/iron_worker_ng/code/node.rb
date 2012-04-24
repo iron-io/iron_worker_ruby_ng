@@ -1,9 +1,9 @@
-require_relative '../feature/node/merge_worker'
+require_relative '../feature/node/merge_exec'
 
 module IronWorkerNG
   module Code
     class Node < IronWorkerNG::Code::Base
-      include IronWorkerNG::Feature::Node::MergeWorker::InstanceMethods
+      include IronWorkerNG::Feature::Node::MergeExec::InstanceMethods
 
       def create_runner(zip)
         zip.get_output_stream(runner) do |runner|
@@ -22,7 +22,7 @@ root() {
 
 cd "$(root "$@")"
 
-node #{File.basename(worker.path)} "$@"
+node #{File.basename(@exec.path)} "$@"
 RUNNER
         end
       end

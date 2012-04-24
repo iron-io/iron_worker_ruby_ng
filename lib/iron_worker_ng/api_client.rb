@@ -1,6 +1,7 @@
 require 'rest-client'
 require 'rest'
 require 'json'
+require 'yaml'
 require 'time'
 
 require_relative 'api_client_error'
@@ -21,6 +22,33 @@ module IronWorkerNG
       @token = options[:token] || options['token']
       @project_id = options[:project_id] || options['project_id']
 
+      if (@token.nil? || @project_id.nil?) && ((not options[:yaml_config_file].nil?) || (not options['yaml_config_file'].nil?))
+        load_yaml_config(options[:yaml_config_file] || options['yaml_config_file'])
+      end
+
+      if (@token.nil? || @project_id.nil?) && ((not options[:json_config_file].nil?) || (not options['json_config_file'].nil?))
+        load_json_config(options[:json_config_file] || options['json_config_file'])
+      end
+
+      if @token.nil? || @project_id.nil?
+        load_yaml_config('iron.yml')
+      end
+
+      if @token.nil? || @project_id.nil?
+        load_json_config('iron.json')
+      end
+
+      @token ||= ENV['IRON_TOKEN']
+      @project_id ||= ENV['IRON_PROJECT_ID']
+
+      if @token.nil? || @project_id.nil?
+        load_yaml_config('~/.iron.yml')
+      end
+
+      if @token.nil? || @project_id.nil?
+        load_json_config('~/.iron.json')
+      end
+
       if (not @token) || (not @project_id)
         IronWorkerNG::Logger.error 'Both iron.io token and project_id must be specified' 
         raise 'Both iron.io token and project_id must be specified' 
@@ -35,6 +63,24 @@ module IronWorkerNG
       @url = "#{scheme}://#{host}:#{port}/#{api_version}/"
 
       @rest = Rest::Client.new
+    end
+
+    def load_yaml_config(config_file)
+      if File.exists?(File.expand_path(config_file))
+        config = YAML.load_file(File.expand_path(config_file))
+
+        @token ||= config['token']
+        @project_id ||= config['project_id']
+      end
+    end
+
+    def load_json_config(config_file)
+      if File.exists?(File.expand_path(config_file))
+        config = JSON.load(File.read(File.expand_path(config_file)))
+
+        @token ||= config['token']
+        @project_id ||= config['project_id']
+      end
     end
 
     def common_request_hash

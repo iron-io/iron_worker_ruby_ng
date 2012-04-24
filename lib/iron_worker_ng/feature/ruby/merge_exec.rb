@@ -1,7 +1,7 @@
 module IronWorkerNG
   module Feature
     module Ruby
-      module MergeWorker
+      module MergeExec
         class Feature < IronWorkerNG::Feature::Base
           attr_reader :path
           attr_reader :klass
@@ -16,38 +16,41 @@ module IronWorkerNG
           end
 
           def bundle(zip)
-            IronWorkerNG::Logger.debug "Bundling ruby worker with path='#{path}' and class='#{klass}'"
+            IronWorkerNG::Logger.debug "Bundling ruby exec with path='#{path}' and class='#{klass}'"
 
             zip.add(File.basename(@path), @path)
           end
         end
 
         module InstanceMethods
-          attr_reader :worker
-
-          def merge_worker(path, klass = nil)
-            @worker ||= nil 
+          def merge_exec(path, klass = nil)
+            @exec ||= nil 
 
             if klass == nil
               klass = File.basename(path).gsub(/\.rb$/, '').capitalize.gsub(/_./) { |x| x[1].upcase }
             end
 
-            unless @worker.nil?
-              IronWorkerNG::Logger.warn "Ignoring attempt to merge ruby worker with path='#{path}' and class='#{klass}'"
+            unless @exec.nil?
+              IronWorkerNG::Logger.warn "Ignoring attempt to merge ruby exec with path='#{path}' and class='#{klass}'"
               return
             end
 
             @name ||= klass
 
-            @worker = IronWorkerNG::Feature::Ruby::MergeWorker::Feature.new(path, klass)
+            @exec = IronWorkerNG::Feature::Ruby::MergeExec::Feature.new(path, klass)
 
-            IronWorkerNG::Logger.info "Merging ruby worker with path='#{path}' and class='#{klass}'"
+            IronWorkerNG::Logger.info "Merging ruby exec with path='#{path}' and class='#{klass}'"
 
-            @features << @worker
+            @features << @exec
           end
 
+          alias :exec :merge_exec
+
+          alias :merge_worker :merge_exec
+          alias :worker :merge_worker
+
           def self.included(base)
-            IronWorkerNG::Code::Base.register_feature(:name => 'merge_worker', :for_klass => base, :args => 'PATH[,CLASS]')
+            IronWorkerNG::Code::Base.register_feature(:name => 'merge_exec', :for_klass => base, :args => 'PATH[,CLASS]')
           end
         end
       end

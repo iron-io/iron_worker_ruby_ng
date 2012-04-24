@@ -1,16 +1,9 @@
 require 'iron_worker_ng'
 
-# to run examples, you must specify iron.io authentication token and project id
-token, project_id = [ ENV['IRON_IO_TOKEN'], ENV['IRON_IO_PROJECT_ID'] ]
-raise("please set $IRON_IO_TOKEN and $IRON_IO_PROJECT_ID " +
-      "environment variables") unless token and project_id
-
 IronWorkerNG::Logger.logger.level = ::Logger::DEBUG
 
 # initializing api object with them
-client = IronWorkerNG::Client.new(:token => token,
-                                  :project_id => project_id,
-                                  # rest are optinal
+client = IronWorkerNG::Client.new(# optinal
                                   :scheme => 'https',
                                   :port => 443,
                                   :api_version => 2,
@@ -20,17 +13,17 @@ client = IronWorkerNG::Client.new(:token => token,
 
 # if not specified, name default to worker name converted from underscore to camel style
 code = IronWorkerNG::Code::Ruby.new
-code.merge_worker('/sample_worker.rb')
+code.merge_exec('/sample_worker.rb')
 #> code.name == 'SampleWorker'
 
 # still can pass name in constructor
 code = IronWorkerNG::Code::Ruby.new('transmogrify')
 #> code.name == 'transmogrify'
-code.merge_worker(File.dirname(__FILE__) + '/sample_worker.rb')
+code.merge_exec(File.dirname(__FILE__) + '/sample_worker.rb')
 
 # once worker merged, following attempts will be ignored
-code.merge_worker('anything')
-#> code.worker.path.end_with? '/worker.rb'
+code.merge_exec('anything')
+#> code.features.find{|f| f.is_a? IronWorkerNG::Feature::Ruby::MergeExec::Feature }.path.end_with? '/worker.rb'
 
 # if worker requires some gems, we 
 

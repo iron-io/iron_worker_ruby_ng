@@ -34,6 +34,8 @@ module IronWorkerNG
             @features << IronWorkerNG::Feature::Ruby::MergeGemfile::Feature.new(path, groups)
           end
 
+          alias :gemfile :merge_gemfile
+
           def self.included(base)
             IronWorkerNG::Code::Base.register_feature(:name => 'merge_gemfile', :for_klass => base, :args => 'PATH[,GROUP...]')
           end

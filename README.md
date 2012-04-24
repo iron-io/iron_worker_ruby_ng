@@ -45,7 +45,7 @@ Because your worker will be executed in the cloud, you'll need to bundle all the
 ```ruby
 code = IronWorkerNG::Code::Ruby.new
 
-code.merge_worker 'my_worker.rb'
+code.merge_exec 'my_worker.rb'
 code.merge_file '../lib/utils.rb'
 code.merge_dir '../config'
 code.merge_gem 'activerecord'
@@ -60,10 +60,10 @@ The IronWorkerNG::Code::Ruby class will help you package your code for upload, b
 Create new code package with the specified args.
 
 ```ruby
-code_with_name = IronWorkerNG::Code::Ruby.new(:worker => 'cool_worker.rb', :name => 'CoolWorker')
-code_with_guessed_name = IronWorkerNG::Code::Ruby.new(:worker => 'cool_worker.rb')
+code_with_name = IronWorkerNG::Code::Ruby.new(:exec => 'cool_worker.rb', :name => 'CoolWorker')
+code_with_guessed_name = IronWorkerNG::Code::Ruby.new(:exec => 'cool_worker.rb')
 code_with_short_form_syntax = IronWorkeNG::Code::Ruby.new('cool_worker.rb')
-code = IronWorkerNG::Code::Ruby.new # will need to use code.merge_worker later
+code = IronWorkerNG::Code::Ruby.new # will need to use code.merge_exec later
 ```
 
 ### name()
@@ -108,12 +108,12 @@ code.merge_dir '../config' # will be in the same directory as worker
 code.merge_dir 'lib', 'utils' # will be in utils subdirectory, accessible as utils/lib
 ```
 
-### merge_worker(path, name = nil)
+### merge_exec(path, name = nil)
 
 Merge the worker located at `path`. If `name` is omitted, a camel-cased version of the file name will be used. **You can have only one worker merged per code package.**
 
 ```ruby
-code.merge_worker 'my_worker.rb' # name will be MyWorker
+code.merge_exec 'my_worker.rb' # name will be MyWorker
 ```
 
 ### merge_gem(name, version = '>= 0')

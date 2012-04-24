@@ -5,9 +5,9 @@ require 'time'
 require 'iron_worker_ng'
 
 if $*.size == 0 || (not ['codes.create', 'tasks.create', 'schedules.create', 'tasks.log'].include?($*[0]))
-  puts 'usage: iron_worker_ng COMMAND [OPTIONS]'
+  puts 'usage: iron_worker COMMAND [OPTIONS]'
   puts '    COMMAND: codes.create, tasks.create, schedules.create, tasks.log'
-  puts '    run iron_worker_ng COMMAND --help to get more information about each command'
+  puts '    run iron_worker COMMAND --help to get more information about each command'
   exit 1
 end
 
@@ -27,7 +27,7 @@ if command == 'codes.create'
   execute_features = []
 
   opts = OptionParser.new do |opts|
-    opts.banner = "usage: iron_worker_ng #{command} [OPTIONS]"
+    opts.banner = "usage: iron_worker #{command} [OPTIONS]"
 
     opts.on('-r', '--runtime RUNTIME', runtimes.map { |r| r[:name] }, "#{runtimes_help}") do |v|
       runtime = v
@@ -57,14 +57,13 @@ if command == 'codes.create'
     exit 1
   end
 
-  if execute_features.size == 0
-    puts opts
-    exit 1
-  end
-
   runtime = runtimes[0][:name] if runtime.nil?
 
-  code = runtimes.find { |r| r[:name] == runtime }[:klass].new(name)
+  code = runtimes.find { |r| r[:name] == runtime }[:klass].new
+
+  unless name.nil?
+    code.name = name
+  end
 
   execute_features.each do |f|
     code.send(f[:name], *f[:args])
@@ -87,7 +86,7 @@ elsif command == 'tasks.create' || command == 'schedules.create'
   print_id = false
 
   opts = OptionParser.new do |opts|
-    opts.banner = "usage: iron_worker_ng #{command} [OPTIONS]"
+    opts.banner = "usage: iron_worker #{command} [OPTIONS]"
 
     opts.on('-n', '--name NAME', 'code name') do |v|
       name = v 
@@ -171,7 +170,7 @@ elsif command == 'tasks.log'
   live = false
 
   opts = OptionParser.new do |opts|
-    opts.banner = "usage: iron_worker_ng #{command} [OPTIONS]"
+    opts.banner = "usage: iron_worker #{command} [OPTIONS]"
 
     opts.on('-t --task-id ID', 'task id') do |v|
       task_id = v 

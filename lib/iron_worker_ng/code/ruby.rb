@@ -1,13 +1,13 @@
 require_relative '../feature/ruby/merge_gem'
 require_relative '../feature/ruby/merge_gemfile'
-require_relative '../feature/ruby/merge_worker'
+require_relative '../feature/ruby/merge_exec'
 
 module IronWorkerNG
   module Code
     class Ruby < IronWorkerNG::Code::Base
       include IronWorkerNG::Feature::Ruby::MergeGem::InstanceMethods
       include IronWorkerNG::Feature::Ruby::MergeGemfile::InstanceMethods
-      include IronWorkerNG::Feature::Ruby::MergeWorker::InstanceMethods
+      include IronWorkerNG::Feature::Ruby::MergeExec::InstanceMethods
 
       def create_runner(zip)
         gempath_code_array = []
@@ -41,7 +41,7 @@ $:.unshift("\#{root}")
 
 require 'json'
 
-@iron_worker_task_id = task_id
+@iron_task_id = task_id
 
 @payload = File.read(payload_file)
 
@@ -51,8 +51,8 @@ begin
 rescue
 end
 
-@iron_io_token = parsed_payload['token'] || nil
-@iron_io_project_id = parsed_payload['project_id'] || nil
+@iron_token = parsed_payload['token'] || nil
+@iron_project_id = parsed_payload['project_id'] || nil
 @params = parsed_payload['params'] || {}
 
 keys = @params.keys
@@ -64,43 +64,43 @@ def payload
   @payload
 end
 
-def iron_worker_task_id
-  @iron_worker_task_id
+def iron_task_id
+  @iron_task_id
 end
 
-def iron_io_token
-  @iron_io_token
+def iron_token
+  @iron_token
 end
 
-def iron_io_project_id
-  @iron_io_project_id
+def iron_project_id
+  @iron_project_id
 end
 
 def params
   @params
 end
 
-require '#{File.basename(worker.path)}'
+require '#{File.basename(@exec.path)}'
 
-worker_class = nil
+exec_class = nil
 
 begin
-  worker_class = Kernel.const_get('#{worker.klass}')
+  exec_class = Kernel.const_get('#{@exec.klass}')
 rescue
 end
 
-unless worker_class.nil?
-  worker_inst = worker_class.new
+unless exec_class.nil?
+  exec_inst = exec_class.new
 
   params.keys.each do |param|
     if param.class == String
-      if worker_inst.respond_to?(param + '=')
-        worker_inst.send(param + '=', params[param])
+      if exec_inst.respond_to?(param + '=')
+        exec_inst.send(param + '=', params[param])
       end
     end
   end
 
-  worker_inst.run
+  exec_inst.run
 end
 RUNNER
         end

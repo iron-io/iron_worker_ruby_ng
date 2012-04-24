@@ -1,17 +1,11 @@
 require 'iron_worker_ng'
 
-# to run examples, you must specify iron.io authentication token and project id
-token, project_id = [ ENV['IRON_IO_TOKEN'], ENV['IRON_IO_PROJECT_ID'] ]
-raise("please set $IRON_IO_TOKEN and $IRON_IO_PROJECT_ID " +
-      "environment variables") unless token and project_id
-
 # initializing api object with them
-client = IronWorkerNG::Client.new(:token => token,
-                                  :project_id => project_id)
+client = IronWorkerNG::Client.new
 
 # create ruby code bundle
 code = IronWorkerNG::Code::Ruby.new
-code.merge_worker(File.dirname(__FILE__) + '/hello_worker.rb')
+code.merge_exec(File.dirname(__FILE__) + '/hello_worker.rb')
 
 # upload it to iron.io
 client.codes.create(code)

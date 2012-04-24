@@ -22,8 +22,12 @@ module IronWorkerNG
   class Client
     attr_reader :api
 
-    def initialize(options = {})
+    def initialize(options = {}, &block)
       @api = IronWorkerNG::APIClient.new(options)
+
+      unless block.nil?
+        instance_eval(&block)
+      end
     end
 
     def method_missing(name, *args, &block)
@@ -101,14 +105,17 @@ module IronWorkerNG
     end
 
     def tasks_wait_for(task_id, options = {})
-      options[:sleep] ||= 5
+      options[:sleep] ||= options['sleep'] || 5
 
       task = tasks_get(task_id)
+
       while task.status == 'queued' || task.status == 'running'
         yield task if block_given?
         sleep options[:sleep]
         task = tasks_get(task_id)
       end
+
+      task
     end
 
     def schedules_list(options = {})

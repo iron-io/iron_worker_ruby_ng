@@ -41,6 +41,8 @@ module IronWorkerNG
             @features << IronWorkerNG::Feature::Common::MergeDir::Feature.new(path, dest)
           end
 
+          alias :dir :merge_dir
+
           def self.included(base)
             IronWorkerNG::Code::Base.register_feature(:name => 'merge_dir', :for_klass => base, :args => 'PATH[,DEST]')
           end

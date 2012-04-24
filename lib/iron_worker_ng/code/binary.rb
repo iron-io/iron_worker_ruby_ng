@@ -1,9 +1,9 @@
-require_relative '../feature/binary/merge_worker'
+require_relative '../feature/binary/merge_exec'
 
 module IronWorkerNG
   module Code
     class Binary < IronWorkerNG::Code::Base
-      include IronWorkerNG::Feature::Binary::MergeWorker::InstanceMethods
+      include IronWorkerNG::Feature::Binary::MergeExec::InstanceMethods
 
       def create_runner(zip)
         zip.get_output_stream(runner) do |runner|
@@ -22,9 +22,9 @@ root() {
 
 cd "$(root "$@")"
 
-chmod +x #{File.basename(worker.path)}
+chmod +x #{File.basename(@exec.path)}
 
-LD_LIBRARY_PATH=. ./#{File.basename(worker.path)} "$@"
+LD_LIBRARY_PATH=. ./#{File.basename(@exec.path)} "$@"
 RUNNER
         end
       end
