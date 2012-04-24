@@ -5,14 +5,14 @@
 
 Gem::Specification.new do |s|
   s.name = "iron_worker_ng"
-  s.version = "0.3.3"
+  s.version = "0.3.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Andrew Kirilenko", "Iron.io, Inc"]
-  s.date = "2012-04-23"
+  s.date = "2012-04-24"
   s.description = "New generation ruby client for IronWorker"
   s.email = "info@iron.io"
-  s.executables = ["iron_worker_ng"]
+  s.executables = ["iron_worker"]
   s.extra_rdoc_files = [
     "LICENSE",
     "README.md"
@@ -21,15 +21,7 @@ Gem::Specification.new do |s|
     "LICENSE",
     "README.md",
     "VERSION",
-    "bin/iron_worker_ng",
-    "examples/ruby/hello/hello.rb",
-    "examples/ruby/hello/hello_worker.rb",
-    "examples/ruby/master_slave/master_slave.rb",
-    "examples/ruby/master_slave/master_worker.rb",
-    "examples/ruby/master_slave/slave_worker.rb",
-    "examples/ruby/simple/Gemfile",
-    "examples/ruby/simple/sample_worker.rb",
-    "examples/ruby/simple/simple.rb",
+    "bin/iron_worker",
     "lib/iron_worker_ng.rb",
     "lib/iron_worker_ng/api_client.rb",
     "lib/iron_worker_ng/api_client_error.rb",
@@ -50,15 +42,7 @@ Gem::Specification.new do |s|
     "lib/iron_worker_ng/feature/ruby/merge_gem.rb",
     "lib/iron_worker_ng/feature/ruby/merge_gemfile.rb",
     "lib/iron_worker_ng/logger.rb",
-    "lib/iron_worker_ng/version.rb",
-    "test/Gemfile",
-    "test/Rakefile",
-    "test/data/dir1/stub",
-    "test/data/dir2/test",
-    "test/hello.rb",
-    "test/helpers.rb",
-    "test/test_basic.rb",
-    "test/test_common_features.rb"
+    "lib/iron_worker_ng/version.rb"
   ]
   s.homepage = "https://github.com/iron-io/iron_worker_ruby_ng"
   s.require_paths = ["lib"]

@@ -20,32 +20,33 @@ module IronWorkerNG
 
     def initialize(options = {})
       @token = options[:token] || options['token']
-      @token ||= ENV['IRON_IO_TOKEN']
-      @token ||= ENV['IRON_TOKEN']
-
       @project_id = options[:project_id] || options['project_id']
-      @project_id ||= ENV['IRON_IO_PROJECT_ID']
+
+      if (@token.nil? || @project_id.nil?) && ((not options[:yaml_config_file].nil?) || (not options['yaml_config_file'].nil?))
+        load_yaml_config(options[:yaml_config_file] || options['yaml_config_file'])
+      end
+
+      if (@token.nil? || @project_id.nil?) && ((not options[:json_config_file].nil?) || (not options['json_config_file'].nil?))
+        load_json_config(options[:json_config_file] || options['json_config_file'])
+      end
+
+      if @token.nil? || @project_id.nil?
+        load_yaml_config('iron.yml')
+      end
+
+      if @token.nil? || @project_id.nil?
+        load_json_config('iron.json')
+      end
+
+      @token ||= ENV['IRON_TOKEN']
       @project_id ||= ENV['IRON_PROJECT_ID']
 
       if @token.nil? || @project_id.nil?
-        [ENV['IRON_IO_CONFIG'], ENV['IRON_IO_CONFIG_FILE'], ENV['IRON_CONFIG'], ENV['IRON_CONFIG_FILE'], '~/.iron', '/etc/iron.conf'].each do |config_file|
-          if (not config_file.nil?) && File.exists?(File.expand_path(config_file))
-            config = YAML.load_file(File.expand_path(config_file))
-          
-            unless config['iron_io'].nil?
-              @token ||= config['iron_io']['token']
-              @project_id ||= config['iron_io']['project_id']
-            end
+        load_yaml_config('~/.iron.yml')
+      end
 
-            unless config['iron'].nil?
-              @token ||= config['iron']['token']
-              @project_id ||= config['iron']['project_id']
-            end
-
-            @token ||= config['token']
-            @project_id ||= config['project_id']
-          end
-        end
+      if @token.nil? || @project_id.nil?
+        load_json_config('~/.iron.json')
       end
 
       if (not @token) || (not @project_id)
@@ -62,6 +63,24 @@ module IronWorkerNG
       @url = "#{scheme}://#{host}:#{port}/#{api_version}/"
 
       @rest = Rest::Client.new
+    end
+
+    def load_yaml_config(config_file)
+      if File.exists?(File.expand_path(config_file))
+        config = YAML.load_file(File.expand_path(config_file))
+
+        @token ||= config['token']
+        @project_id ||= config['project_id']
+      end
+    end
+
+    def load_json_config(config_file)
+      if File.exists?(File.expand_path(config_file))
+        config = JSON.load(File.read(File.expand_path(config_file)))
+
+        @token ||= config['token']
+        @project_id ||= config['project_id']
+      end
     end
 
     def common_request_hash

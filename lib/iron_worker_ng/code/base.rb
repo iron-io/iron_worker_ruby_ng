@@ -38,10 +38,6 @@ module IronWorkerNG
         @name = nil
         @features = []
 
-        if File.exists?('Workerfile')
-          eval(File.read('Workerfile'))
-        end
-
         if args.length == 1 && args[0].class == String && File.exists?(args[0])
           merge_exec(args[0])
         elsif args.length == 1 && args[0].class == String
@@ -51,8 +47,14 @@ module IronWorkerNG
 
           exec = args[0][:exec] || args[0]['exec'] || args[0][:worker] || args[0]['worker']
           merge_exec(exec) unless exec.nil?
+        end
+
+        if args.length == 1 && args[0].class == Hash && ((not args[0][:workerfile].nil?) || (not args[0]['workerfile'].nil?))
+          eval(File.read(File.expand_path(args[0][:workerfile] || args[0]['workerfile'])))
         else
-          raise "Wrong arguments" unless args.empty?
+          if File.exists?('Workerfile')
+            eval(File.read('Workerfile'))
+          end
         end
 
         unless block.nil?
