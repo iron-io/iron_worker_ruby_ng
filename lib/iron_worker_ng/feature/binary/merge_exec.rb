@@ -1,3 +1,5 @@
+require_relative '../base'
+
 module IronWorkerNG
   module Feature
     module Binary
