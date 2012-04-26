@@ -14,7 +14,7 @@ end
 command = $*[0]
 $*.shift
 
-client = IronWorkerNG::Client.new(:token => ENV['IRON_IO_TOKEN'], :project_id => ENV['IRON_IO_PROJECT_ID'])
+client = IronWorkerNG::Client.new
 
 if command == 'codes.create'
   runtimes = IronWorkerNG::Code::Base.registered_types
@@ -72,7 +72,7 @@ if command == 'codes.create'
   client.codes.create(code)
 elsif command == 'tasks.create' || command == 'schedules.create'
   name = nil
-  params = {}
+  payload = nil
 
   priority = nil
   timeout = nil
@@ -92,8 +92,8 @@ elsif command == 'tasks.create' || command == 'schedules.create'
       name = v 
     end
 
-    opts.on('-p', '--param NAME,VALUE', Array, 'parameters to pass') do |v|
-      params[v[0]] = v[1]
+    opts.on('-p', '--payload PAYLOAD', String, 'payload to pass') do |v|
+      payload = v
     end
 
     opts.on('--priority PRIORITY', Integer, '0 (default), 1, 2') do |v|
@@ -159,9 +159,9 @@ elsif command == 'tasks.create' || command == 'schedules.create'
   id = nil
 
   if command == 'tasks.create'
-    id = client.tasks.create(name, params, options).id
+    id = client.tasks.create(name, payload, options).id
   else
-    id = client.schedules.create(name, params, options).id
+    id = client.schedules.create(name, payload, options).id
   end
 
   print id if print_id
