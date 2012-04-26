@@ -6,7 +6,11 @@ class BasicTest < IWNGTest
     code.merge_exec(File.dirname(__FILE__) + '/hello.rb')
     client.codes_create(code)
     task_id = client.tasks_create('test_basic').id
-    client.tasks_wait_for(task_id)
+    task = client.tasks_wait_for(task_id)
+    p task
+    assert task
+    assert task.id == task_id
+    assert task.status == "complete"
     log = client.tasks_log(task_id)
     assert_equal( "hello\n", log, "worker stdout is in log" )
   end

@@ -1,6 +1,6 @@
 require 'test/unit'
 require 'tempfile'
-
+require 'uber_config'
 require './lib/iron_worker_ng.rb'
 
 def code_bundle(*args,&block)
@@ -36,9 +36,14 @@ class IWNGTest < Test::Unit::TestCase
   def setup
     IronWorkerNG::Logger.logger.level = ::Logger::DEBUG
 
-    token, project_id = [ ENV['IRON_IO_TOKEN'], ENV['IRON_IO_PROJECT_ID'] ]
-    raise("please set $IRON_IO_TOKEN and $IRON_IO_PROJECT_ID " +
-          "environment variables") unless token and project_id
+    @config = UberConfig.load(:dir=>"iron_worker_ruby")
+    p @config
+    token = ENV['IRON_TOKEN'] || @config['iron']['token']
+    project_id = ENV['IRON_PROJECT_ID'] || @config['iron']['project_id']
+
+    # client should raise this itself.
+    #raise("please set $IRON_IO_TOKEN and $IRON_IO_PROJECT_ID " +
+    #      "environment variables") unless token and project_id
 
     @client = IronWorkerNG::Client.new(:token => token,
                                        :project_id => project_id )
