@@ -19,7 +19,7 @@ module IronWorkerNG
           end
 
           def bundle(zip)
-            IronWorkerNG::Logger.debug "Bundling file with path='#{@path}' and dest='#{@dest}'"
+            IronCore::Logger.debug 'IronWorkerNG', "Bundling file with path='#{@path}' and dest='#{@dest}'"
 
             zip.add(@dest + File.basename(@path), @path)
           end
@@ -27,7 +27,7 @@ module IronWorkerNG
 
         module InstanceMethods
           def merge_file(path, dest = '')
-            IronWorkerNG::Logger.info "Merging file with path='#{path}' and dest='#{dest}'"
+            IronCore::Logger.info 'IronWorkerNG', "Merging file with path='#{path}' and dest='#{dest}'"
 
             @features << IronWorkerNG::Feature::Common::MergeFile::Feature.new(path, dest)
           end

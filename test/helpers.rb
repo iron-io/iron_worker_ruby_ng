@@ -34,14 +34,9 @@ class IWNGTest < Test::Unit::TestCase
   attr_accessor :client
 
   def setup
-    IronWorkerNG::Logger.logger.level = ::Logger::DEBUG
+    IronCore::Logger.logger.level = ::Logger::DEBUG
 
-    token, project_id = [ ENV['IRON_IO_TOKEN'], ENV['IRON_IO_PROJECT_ID'] ]
-    raise("please set $IRON_IO_TOKEN and $IRON_IO_PROJECT_ID " +
-          "environment variables") unless token and project_id
-
-    @client = IronWorkerNG::Client.new(:token => token,
-                                       :project_id => project_id )
+    @client = IronWorkerNG::Client.new
   end
 end
 

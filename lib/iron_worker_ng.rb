@@ -1,5 +1,4 @@
 require_relative 'iron_worker_ng/version'
-require_relative 'iron_worker_ng/logger'
 require_relative 'iron_worker_ng/client'
 require_relative 'iron_worker_ng/code/base'
 require_relative 'iron_worker_ng/code/ruby'

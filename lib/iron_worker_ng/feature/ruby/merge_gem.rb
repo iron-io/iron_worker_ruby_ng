@@ -40,14 +40,14 @@ module IronWorkerNG
 
           def bundle(zip)
             if @spec.extensions.length == 0 || IronWorkerNG::Feature::Ruby::MergeGem.merge_binary?
-              IronWorkerNG::Logger.debug "Bundling ruby gem with name='#{@spec.name}' and version='#{@spec.version}'"
+              IronCore::Logger.debug 'IronWorkerNG', "Bundling ruby gem with name='#{@spec.name}' and version='#{@spec.version}'"
 
               zip.add('__gems__/' + @spec.full_name, gem_path)
               Dir.glob(gem_path + '/**/**') do |path|
                 zip.add('__gems__/' + @spec.full_name + path[gem_path.length .. -1], path)
               end
             else
-              IronWorkerNG::Logger.warn "Skipping ruby gem with name='#{@spec.name}' and version='#{@spec.version}' as it contains native extensions"
+              IronCore::Logger.warn 'IronWorkerNG', "Skipping ruby gem with name='#{@spec.name}' and version='#{@spec.version}' as it contains native extensions"
             end
           end
 
@@ -64,7 +64,7 @@ module IronWorkerNG
           attr_reader :merge_gem_reqs
 
           def merge_gem(name, version = '>= 0')
-            IronWorkerNG::Logger.info "Adding ruby gem dependency with name='#{name}' and version='#{version}'"
+            IronCore::Logger.info 'IronWorkerNG', "Adding ruby gem dependency with name='#{name}' and version='#{version}'"
 
             @merge_gem_reqs ||= []
             @merge_gem_reqs << Bundler::Dependency.new(name, version.split(', '))
@@ -73,7 +73,7 @@ module IronWorkerNG
           alias :gem :merge_gem
 
           def merge_gem_fixate
-            IronWorkerNG::Logger.info 'Fixating gems dependencies'
+            IronCore::Logger.info 'IronWorkerNG', 'Fixating gems dependencies'
 
             @merge_gem_reqs ||= []
 
@@ -99,7 +99,7 @@ module IronWorkerNG
               spec_set.to_a.each do |spec|
                 spec.__materialize__
 
-                IronWorkerNG::Logger.info "Merging ruby gem with name='#{spec.name}' and version='#{spec.version}'"
+                IronCore::Logger.info 'IronWorkerNG', "Merging ruby gem with name='#{spec.name}' and version='#{spec.version}'"
 
                 @features << IronWorkerNG::Feature::Ruby::MergeGem::Feature.new(spec)
               end

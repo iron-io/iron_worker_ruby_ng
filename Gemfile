@@ -1,8 +1,7 @@
 source 'http://rubygems.org'
 
+gem 'iron_core'
 gem 'zip'
-gem 'rest-client'
-gem 'rest'
 gem 'json'
 gem 'bundler', '> 1.0.0'
 

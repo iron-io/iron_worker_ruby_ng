@@ -16,7 +16,7 @@ module IronWorkerNG
           end
 
           def bundle(zip)
-            IronWorkerNG::Logger.debug "Bundling ruby exec with path='#{path}' and class='#{klass}'"
+            IronCore::Logger.debug 'IronWorkerNG', "Bundling ruby exec with path='#{path}' and class='#{klass}'"
 
             zip.add(File.basename(@path), @path)
           end
@@ -31,7 +31,7 @@ module IronWorkerNG
             end
 
             unless @exec.nil?
-              IronWorkerNG::Logger.warn "Ignoring attempt to merge ruby exec with path='#{path}' and class='#{klass}'"
+              IronCore::Logger.warn 'IronWorkerNG', "Ignoring attempt to merge ruby exec with path='#{path}' and class='#{klass}'"
               return
             end
 
@@ -39,7 +39,7 @@ module IronWorkerNG
 
             @exec = IronWorkerNG::Feature::Ruby::MergeExec::Feature.new(path, klass)
 
-            IronWorkerNG::Logger.info "Merging ruby exec with path='#{path}' and class='#{klass}'"
+            IronCore::Logger.info 'IronWorkerNG', "Merging ruby exec with path='#{path}' and class='#{klass}'"
 
             @features << @exec
           end

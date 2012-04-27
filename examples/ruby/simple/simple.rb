@@ -1,6 +1,6 @@
 require 'iron_worker_ng'
 
-IronWorkerNG::Logger.logger.level = ::Logger::DEBUG
+IronCore::Logger.logger.level = ::Logger::DEBUG
 
 # initializing api object with them
 client = IronWorkerNG::Client.new(# optinal

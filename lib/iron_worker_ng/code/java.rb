@@ -18,7 +18,7 @@ module IronWorkerNG
 
         classpath = classpath_array.join(':')
 
-        IronWorkerNG::Logger.info "Collected '#{classpath}' classpath"
+        IronCore::Logger.info 'IronWorkerNG', "Collected '#{classpath}' classpath"
       
         zip.get_output_stream(runner) do |runner|
           runner.write <<RUNNER

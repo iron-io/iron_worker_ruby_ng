@@ -9,7 +9,6 @@ module IronWorkerNG
           attr_reader :dest
 
           def initialize(path, dest)
-            raise 'No such directory - ' + path unless Dir.exist? path
             @path = File.expand_path(path)
             @dest = dest
             @dest = Pathname.new(dest).cleanpath.to_s + '/' unless @dest.empty?
@@ -26,7 +25,7 @@ module IronWorkerNG
           end
 
           def bundle(zip)
-            IronWorkerNG::Logger.debug "Bundling dir with path='#{@path}' and dest='#{@dest}'"
+            IronCore::Logger.debug 'IronWorkerNG', "Bundling dir with path='#{@path}' and dest='#{@dest}'"
 
             Dir.glob(@path + '/**/**') do |path|
               zip.add(@dest + File.basename(@path) + path[@path.length .. -1], path)
@@ -36,7 +35,7 @@ module IronWorkerNG
 
         module InstanceMethods
           def merge_dir(path, dest = '')
-            IronWorkerNG::Logger.info "Merging dir with path='#{path}' and dest='#{dest}'"
+            IronCore::Logger.info 'IronWorkerNG', "Merging dir with path='#{path}' and dest='#{dest}'"
 
             @features << IronWorkerNG::Feature::Common::MergeDir::Feature.new(path, dest)
           end

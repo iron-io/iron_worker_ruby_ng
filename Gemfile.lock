@@ -2,6 +2,11 @@ GEM
   remote: http://rubygems.org/
   specs:
     git (1.2.5)
+    iron_core (0.1.0)
+      bundler (> 1.0.0)
+      json
+      rest
+      rest-client
     jeweler (1.8.3)
       bundler (~> 1.0)
       git (>= 1.2.5)
@@ -24,8 +29,7 @@ PLATFORMS
 
 DEPENDENCIES
   bundler (> 1.0.0)
+  iron_core
   jeweler (~> 1.8.3)
   json
-  rest
-  rest-client
   zip

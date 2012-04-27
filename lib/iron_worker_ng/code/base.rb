@@ -84,15 +84,15 @@ module IronWorkerNG
 
       def create_zip
         unless @exec
-          IronWorkerNG::Logger.error 'No exec specified'
-          raise 'No exec specified'
+          IronCore::Logger.error 'IronWorkerNG', 'No exec specified'
+          raise IronCore::IronError.new('No exec specified')
         end
 
         fixate
 
         zip_name = Dir.tmpdir + '/' + Dir::Tmpname.make_tmpname("iron-worker-ng-", "code.zip")
 
-        IronWorkerNG::Logger.debug "Creating code zip '#{zip_name}'"
+        IronCore::Logger.debug 'IronWorkerNG', "Creating code zip '#{zip_name}'"
 
         Zip::ZipFile.open(zip_name, Zip::ZipFile::CREATE) do |zip|
           bundle(zip)

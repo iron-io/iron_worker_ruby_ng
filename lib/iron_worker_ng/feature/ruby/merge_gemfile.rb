@@ -23,7 +23,7 @@ module IronWorkerNG
             groups = groups.map { |g| g.to_sym }
             groups << :default if groups.length == 0
 
-            IronWorkerNG::Logger.info "Adding ruby gems dependencies from #{groups.join(', ')} group#{groups.length > 1 ? 's' : ''} of #{path}"
+            IronCore::Logger.info 'IronWorkerNG', "Adding ruby gems dependencies from #{groups.join(', ')} group#{groups.length > 1 ? 's' : ''} of #{path}"
 
             specs = Bundler::Definition.build(path, path + '.lock', nil).specs_for(groups)
 

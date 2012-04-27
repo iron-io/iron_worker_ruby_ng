@@ -14,7 +14,7 @@ module IronWorkerNG
           end
 
           def bundle(zip)
-            IronWorkerNG::Logger.debug "Bundling binary exec with path='#{@path}'"
+            IronCore::Logger.debug 'IronWorkerNG', "Bundling binary exec with path='#{@path}'"
 
             zip.add(File.basename(@path), @path)
           end
@@ -25,7 +25,7 @@ module IronWorkerNG
             @exec ||= nil 
 
             unless @exec.nil?
-              IronWorkerNG::Logger.warn "Ignoring attempt to merge binary exec with path='#{path}'"
+              IronCore::Logger.warn 'IronWorkerNG', "Ignoring attempt to merge binary exec with path='#{path}'"
               return
             end
 
@@ -33,7 +33,7 @@ module IronWorkerNG
 
             @exec = IronWorkerNG::Feature::Binary::MergeExec::Feature.new(path)
 
-            IronWorkerNG::Logger.info "Merging binary exec with path='#{path}'"
+            IronCore::Logger.info 'IronWorkerNG', "Merging binary exec with path='#{path}'"
 
             @features << @exec
           end

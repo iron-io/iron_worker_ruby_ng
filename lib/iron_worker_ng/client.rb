@@ -1,4 +1,5 @@
 require 'ostruct'
+require 'json'
 
 require_relative 'api_client'
 

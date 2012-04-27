@@ -1,149 +1,20 @@
-require 'rest-client'
-require 'rest'
-require 'json'
 require 'time'
 
-require_relative 'api_client_error'
+require 'iron_core'
 
 module IronWorkerNG
-  class APIClient
+  class APIClient < IronCore::Client
     AWS_US_EAST_HOST = 'worker-aws-us-east-1.iron.io'
 
-    attr_accessor :token
-    attr_accessor :project_id
-    attr_accessor :scheme
-    attr_accessor :host
-    attr_accessor :port
-    attr_accessor :api_version
-    attr_accessor :user_agent
-
-    attr_reader :options
-
     def initialize(options = {})
-      load_from_hash(options)
-      load_from_config(options[:config_file] || options['config_file'])
-      load_from_config('iron.json')
-      load_from_env('IRON_WORKER')
-      load_from_env('IRON')
-      load_from_config('~/.iron.json')
-      load_from_hash(:scheme => 'https', :host => IronWorkerNG::APIClient::AWS_US_EAST_HOST, :port => 443, :api_version => 2, :user_agent => 'iron_worker_ng-' + IronWorkerNG.version)
+      super('worker', options)
+
+      load_from_hash(:scheme => 'https', :host => IronWorkerNG::APIClient::AWS_US_EAST_HOST, :port => 443, :api_version => 2, :user_agent => 'iron_worker_ruby_ng-' + IronWorkerNG.version + ' (iron_core_ruby-' + IronCore.version + ')')
 
       if (not @token) || (not @project_id)
-        IronWorkerNG::Logger.error 'Both iron.io token and project_id must be specified' 
-        raise 'Both iron.io token and project_id must be specified' 
+        IronCore::Logger.error 'IronWorkerNG', 'Both token and project_id must be specified' 
+        raise IronCore::IronError.new('Both token and project_id must be specified')
       end
-
-      @options = {
-        :token => @token,
-        :project_id => @project_id,
-
-        :scheme => @scheme,
-        :host => @host,
-        :port => @port,
-        :api_version => @api_version,
-        :user_agent => @user_agent
-      }
-
-      @rest = Rest::Client.new
-    end
-
-    def load_from_hash(hash)
-      return if hash.nil?
-
-      @token ||= hash[:token] || hash['token']
-      @project_id ||= hash[:project_id] || hash['project_id']
-
-      @scheme ||= hash[:scheme] || hash['scheme']
-      @host ||= hash[:host] || hash['host']
-      @port ||= hash[:port] || hash['port']
-      @api_version ||= hash[:api_version] || hash['api_version']
-      @user_agent ||= hash[:user_agent] || hash['user_agent']
-    end
-
-    def load_from_env(prefix)
-      @token ||= ENV[prefix + '_TOKEN']
-      @project_id ||= ENV[prefix + '_PROJECT_ID']
-
-      @scheme ||= ENV[prefix + '_SCHEME']
-      @host ||= ENV[prefix + '_HOST']
-      @port ||= ENV[prefix + '_PORT']
-      @api_version ||= ENV[prefix + '_API_VERSION']
-      @user_agent ||= ENV[prefix + '_USER_AGENT']
-    end
-
-    def load_from_config(config_file)
-      return if config_file.nil?
-
-      if File.exists?(File.expand_path(config_file))
-        config = JSON.load(File.read(File.expand_path(config_file)))
-
-        load_from_hash(config['iron_worker'])
-        load_from_hash(config['iron'])
-        load_from_hash(config)
-      end
-    end
-
-    def common_request_hash
-      {
-        'Content-Type' => 'application/json',
-        'Authorization' => "OAuth #{@token}",
-        'User-Agent' => @user_agent
-      }
-    end
-
-    def url
-      "#{scheme}://#{host}:#{port}/#{api_version}/"
-    end
-
-    def get(method, params = {})
-      request_hash = {}
-      request_hash[:headers] = common_request_hash
-      request_hash[:params] = params
-
-      IronWorkerNG::Logger.debug "GET #{url + method} with params='#{request_hash.to_s}'"
-
-      @rest.get(url + method, request_hash)
-    end
-
-    def post(method, params = {})
-      request_hash = {}
-      request_hash[:headers] = common_request_hash
-      request_hash[:body] = params.to_json
-
-      IronWorkerNG::Logger.debug "POST #{url + method} with params='#{request_hash.to_s}'" 
-
-      @rest.post(url + method, request_hash)
-    end
-
-    def delete(method, params = {})
-      request_hash = {}
-      request_hash[:headers] = common_request_hash
-      request_hash[:params] = params
-
-      IronWorkerNG::Logger.debug "DELETE #{url + method} with params='#{request_hash.to_s}'"
-
-      @rest.delete(url + method, request_hash)
-    end
-
-    # FIXME: retries support
-    # FIXME: user agent support
-    def post_file(method, file, params = {})
-      request_hash = {}
-      request_hash[:data] = params.to_json
-      request_hash[:file] = file
-
-      IronWorkerNG::Logger.debug "POST #{url + method + "?oauth=" + @token} with params='#{request_hash.to_s}'"
-
-      RestClient.post(url + method + "?oauth=#{@token}", request_hash) 
-    end
-
-    def parse_response(response, parse_json = true)
-      IronWorkerNG::Logger.debug "GOT #{response.code} with params='#{response.body}'"
-
-      raise IronWorkerNG::APIClientError.new(response.body) if response.code != 200
-
-      return response.body unless parse_json
-      JSON.parse(response.body)
     end
 
     def codes_list(options = {})
