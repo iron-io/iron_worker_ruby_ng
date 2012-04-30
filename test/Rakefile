@@ -1,5 +1,8 @@
+require 'bundler'
 require 'rake/testtask'
 require 'tmpdir'
+
+Bundler.setup(:default, :test)
 
 Dir.chdir(File.dirname(__FILE__) + '/..')
 

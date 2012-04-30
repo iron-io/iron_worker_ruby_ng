@@ -30,12 +30,12 @@ def inspect_zip(code)
   File.unlink zip_file
 end
 
+IronCore::Logger.logger.level = ::Logger::DEBUG
+
 class IWNGTest < Test::Unit::TestCase
   attr_accessor :client
 
   def setup
-    IronCore::Logger.logger.level = ::Logger::DEBUG
-
     @client = IronWorkerNG::Client.new
   end
 end

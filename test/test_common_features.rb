@@ -25,7 +25,13 @@ class CommonFeaturesTest < IWNGTest
     end
   end
 
-  def test_merge_dir_check
+  def test_missing_file
+    assert_raise RuntimeError, "should check if merged file exists" do
+      code_bundle('test') do
+        merge_dir('krumplumpl', 'test/data')
+      end
+    end
+
     assert_raise RuntimeError, "should check if merged dir exists" do
       code_bundle('test') do
         merge_dir('dir2', 'test/data')

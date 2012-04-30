@@ -1,5 +1,0 @@
-source 'http://rubygems.org'
-
-gem 'iron_worker_ng'
-gem 'typhoeus'
-gem 'pry'

@@ -1,6 +1,6 @@
 require 'iron_worker_ng'
 
-# initializing api object with them
+# initializing client object
 client = IronWorkerNG::Client.new
 
 # create master code bundle
@@ -19,6 +19,8 @@ client.codes.create(slave)
 # run master task
 task_id = client.tasks.create('MasterWorker',
                               { 
+                                :token => client.api.token,
+                                :project_id => client.api.project_id,
                                 :args => [ [1, 2, 3],
                                            [4, 5, 6],
                                            [7, 8, 9] ]
