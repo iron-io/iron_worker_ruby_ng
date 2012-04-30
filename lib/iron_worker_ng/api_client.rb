@@ -9,7 +9,11 @@ module IronWorkerNG
     def initialize(options = {})
       super('worker', options)
 
-      load_from_hash(:scheme => 'https', :host => IronWorkerNG::APIClient::AWS_US_EAST_HOST, :port => 443, :api_version => 2, :user_agent => 'iron_worker_ruby_ng-' + IronWorkerNG.version + ' (iron_core_ruby-' + IronCore.version + ')')
+      load_from_hash(:scheme => 'https',
+                     :host => IronWorkerNG::APIClient::AWS_US_EAST_HOST,
+                     :port => 443,
+                     :api_version => 2,
+                     :user_agent => 'iron_worker_ruby_ng-' + IronWorkerNG.version + ' (iron_core_ruby-' + IronCore.version + ')')
 
       if (not @token) || (not @project_id)
         IronCore::Logger.error 'IronWorkerNG', 'Both token and project_id must be specified' 
