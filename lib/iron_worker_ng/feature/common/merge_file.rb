@@ -9,6 +9,7 @@ module IronWorkerNG
           attr_reader :dest
 
           def initialize(path, dest)
+            raise 'No such file - ' + path unless File.exist? path
             @path = File.expand_path(path)
             @dest = dest
             @dest = Pathname.new(dest).cleanpath.to_s + '/' unless @dest.empty?

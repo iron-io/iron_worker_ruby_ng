@@ -1,8 +1,8 @@
 require 'iron_worker_ng'
 
 # token and project id are available inside worker
-client = IronWorkerNG::Client.new(:token => iron_io_token,
-                                  :project_id => iron_io_project_id)
+client = IronWorkerNG::Client.new(:token => params[:token],
+                                  :project_id => params[:project_id])
 
 puts 'Running slave workers...'
 task_ids = []
