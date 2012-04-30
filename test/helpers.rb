@@ -38,6 +38,18 @@ class IWNGTest < Test::Unit::TestCase
   def setup
     @client = IronWorkerNG::Client.new
   end
+
+  def get_all_tasks
+    result = []
+    page = -1
+    begin
+      tasks = client.tasks.list(:per_page => 100,
+                                :page => page += 1)
+      result += tasks
+    end while tasks.size == 100
+    result
+  end
+
 end
 
 module IronWorkerNG
