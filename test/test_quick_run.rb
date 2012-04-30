@@ -24,11 +24,17 @@ class QuickRunTest < IWNGTest
   end
 
   def test_scheduler_quick
-    id = client.schedules.create(:start_at => Time.now + 10).id
-    sc = client.schedules.wait_for(id)
-    assert_equal id, sc.id
-    assert_equal "complete", sc.status
-    assert_equal "hello\n", client.schedules.log(sc.id)
+    client.codes.create code_bundle(:name => 'test_schedule',
+                                    :exec => 'test/hello.rb')
+
+    id = client.schedules.create('test_schedule', :start_at => Time.now + 10).id
+    sleep 5 until client.schedules.get(id).status != 'complete'
+
+    task = get_all_tasks.find{ |t| t.code_name == 'test_schedule' }
+
+    assert task
+    assert_equal 'complete', task.status
+    assert_equal "hello\n", client.tasks.log(task.id)
   end
 
 end
