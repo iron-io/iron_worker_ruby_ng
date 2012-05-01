@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "iron_worker_ng"
-  s.version = "0.4.0"
+  s.version = "0.4.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Andrew Kirilenko", "Iron.io, Inc"]
-  s.date = "2012-04-30"
+  s.date = "2012-05-01"
   s.description = "New generation ruby client for IronWorker"
   s.email = "info@iron.io"
   s.executables = ["iron_worker"]
@@ -44,7 +44,7 @@ Gem::Specification.new do |s|
   ]
   s.homepage = "https://github.com/iron-io/iron_worker_ruby_ng"
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.21"
+  s.rubygems_version = "1.8.19"
   s.summary = "New generation ruby client for IronWorker"
 
   if s.respond_to? :specification_version then
