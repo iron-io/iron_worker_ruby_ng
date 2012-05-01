@@ -38,10 +38,8 @@ module IronWorkerNG
         @name = nil
         @features = []
 
-        if args.length == 1 && args[0].class == String && File.exists?(args[0])
+        if args.length == 1 && args[0].class == String
           merge_exec(args[0])
-        elsif args.length == 1 && args[0].class == String
-          @name = args[0]
         elsif args.length == 1 && args[0].class == Hash
           @name = args[0][:name] || args[0]['name']
 
@@ -52,6 +50,10 @@ module IronWorkerNG
         if args.length == 1 && args[0].class == Hash && ((not args[0][:workerfile].nil?) || (not args[0]['workerfile'].nil?))
           eval(File.read(File.expand_path(args[0][:workerfile] || args[0]['workerfile'])))
         else
+          if (not @name.nil?) && File.exists?(@name + '.worker')
+            eval(File.read(@name + '.worker'))
+          end
+
           if File.exists?('Workerfile')
             eval(File.read('Workerfile'))
           end

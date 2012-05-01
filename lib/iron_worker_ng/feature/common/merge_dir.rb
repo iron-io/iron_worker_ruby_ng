@@ -9,7 +9,11 @@ module IronWorkerNG
           attr_reader :dest
 
           def initialize(path, dest)
-            raise 'No such directory - ' + path unless Dir.exist? path
+            unless Dir.exist?(path)
+              IronCore::Logger.error 'IronWorkerNG', "Can't find directory with path='#{path}'"
+              raise IronCore::IronError.new("Can't find directory with path='#{path}'")
+            end
+
             @path = File.expand_path(path)
             @dest = dest
             @dest = Pathname.new(dest).cleanpath.to_s + '/' unless @dest.empty?
