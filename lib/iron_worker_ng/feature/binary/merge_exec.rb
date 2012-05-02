@@ -34,8 +34,6 @@ module IronWorkerNG
               return
             end
 
-            @name ||= File.basename(path).gsub(/\..*$/, '').capitalize.gsub(/_./) { |x| x[1].upcase }
-
             @exec = IronWorkerNG::Feature::Binary::MergeExec::Feature.new(path)
 
             IronCore::Logger.info 'IronWorkerNG', "Merging binary exec with path='#{path}'"

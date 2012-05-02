@@ -31,16 +31,10 @@ module IronWorkerNG
           def merge_exec(path, klass = nil)
             @exec ||= nil 
 
-            if klass == nil
-              klass = File.basename(path).gsub(/\.rb$/, '').capitalize.gsub(/_./) { |x| x[1].upcase }
-            end
-
             unless @exec.nil?
               IronCore::Logger.warn 'IronWorkerNG', "Ignoring attempt to merge ruby exec with path='#{path}' and class='#{klass}'"
               return
             end
-
-            @name ||= klass
 
             @exec = IronWorkerNG::Feature::Ruby::MergeExec::Feature.new(path, klass)
 

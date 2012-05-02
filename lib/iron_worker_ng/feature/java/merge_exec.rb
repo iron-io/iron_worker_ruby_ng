@@ -40,12 +40,6 @@ module IronWorkerNG
               return
             end
 
-            if klass.nil?
-              @name ||= File.basename(path).gsub(/\.jar$/, '').capitalize.gsub(/_./) { |x| x[1].upcase }
-            else
-              @name ||= klass.split('.')[-1]
-            end
-
             @exec = IronWorkerNG::Feature::Java::MergeExec::Feature.new(path, klass)
 
             IronCore::Logger.info 'IronWorkerNG', "Merging java exec with path='#{path}' and class='#{klass}'"

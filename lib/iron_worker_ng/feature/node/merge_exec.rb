@@ -34,8 +34,6 @@ module IronWorkerNG
               return
             end
 
-            @name ||= File.basename(path).gsub(/\.js$/, '').capitalize.gsub(/_./) { |x| x[1].upcase }
-
             @exec = IronWorkerNG::Feature::Node::MergeExec::Feature.new(path)
 
             IronCore::Logger.info 'IronWorkerNG', "Merging node exec with path='#{path}'"

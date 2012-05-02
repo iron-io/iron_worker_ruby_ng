@@ -212,14 +212,8 @@ end
 
 require '#{File.basename(@exec.path)}'
 
-exec_class = nil
-
-begin
+unless #{@exec.klass == nil}
   exec_class = Kernel.const_get('#{@exec.klass}')
-rescue
-end
-
-unless exec_class.nil?
   exec_inst = exec_class.new
 
   params.keys.each do |param|
@@ -236,7 +230,7 @@ RUNNER
         end
       end
 
-      def runtime
+      def runtime(runtime = nil)
         'ruby'
       end
 

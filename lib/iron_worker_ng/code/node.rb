@@ -27,7 +27,7 @@ RUNNER
         end
       end
 
-      def runtime
+      def runtime(runtime = nil)
         'sh'
       end
 

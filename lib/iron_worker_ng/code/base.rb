@@ -7,8 +7,59 @@ require_relative '../feature/common/merge_dir'
 
 module IronWorkerNG
   module Code
+    def self.create(*args, &block)
+      IronWorkerNG::Code::Base.create(*args, &block)
+    end
+
+    class RuntimeFinder
+      def initialize(*args, &block)
+        @runtime = nil
+
+        name = nil
+        exec_path = nil
+
+        if args.length == 1 && args[0].class == String
+          exec_path = args[0]
+        elsif args.length == 1 && args[0].class == Hash
+          name = args[0][:name] || args[0]['name']
+
+          exec_path = args[0][:exec] || args[0]['exec'] || args[0][:worker] || args[0]['worker']
+        end
+
+        if args.length == 1 && args[0].class == Hash && ((not args[0][:workerfile].nil?) || (not args[0]['workerfile'].nil?))
+          eval(File.read(File.expand_path(args[0][:workerfile] || args[0]['workerfile'])))
+        else
+          unless exec_path.nil?
+            name ||= IronWorkerNG::Code::Base.guess_name(exec_path)
+          end
+
+          if (not name.nil?) && File.exists?(name + '.worker')
+            eval(File.read(name + '.worker'))
+          elsif File.exists?('Workerfile')
+            eval(File.read('Workerfile'))
+          end
+        end
+
+        unless block.nil?
+          instance_eval(&block)
+        end
+      end
+
+      def runtime(runtime = nil)
+        @runtime = runtime if @runtime.nil?
+
+        @runtime
+      end
+
+      # prevent Kernel.exec
+      def exec(exec = nil)
+      end
+
+      def method_missing(name, *args, &block)
+      end
+    end
+
     class Base
-      attr_accessor :name
       attr_reader :features
 
       @@registered_types = []
@@ -34,6 +85,16 @@ module IronWorkerNG
       include IronWorkerNG::Feature::Common::MergeFile::InstanceMethods
       include IronWorkerNG::Feature::Common::MergeDir::InstanceMethods
 
+      def self.guess_name(path)
+        File.basename(path).gsub(/\..*$/, '').capitalize.gsub(/_./) { |x| x[1].upcase }
+      end
+
+      def self.create(*args, &block)
+        runtime = IronWorkerNG::Code::RuntimeFinder.new(*args, &block).runtime || 'ruby'
+
+        IronWorkerNG::Code::Base.registered_types.find { |r| r[:name] == runtime }[:klass].new(*args, &block)
+      end
+
       def initialize(*args, &block)
         @name = nil
         @features = []
@@ -50,17 +111,23 @@ module IronWorkerNG
         if args.length == 1 && args[0].class == Hash && ((not args[0][:workerfile].nil?) || (not args[0]['workerfile'].nil?))
           eval(File.read(File.expand_path(args[0][:workerfile] || args[0]['workerfile'])))
         else
-          if (not @name.nil?) && File.exists?(@name + '.worker')
-            eval(File.read(@name + '.worker'))
+          unless @exec.nil?
+            @name ||= IronWorkerNG::Code::Base.guess_name(@exec.path)
           end
 
-          if File.exists?('Workerfile')
+          if (not @name.nil?) && File.exists?(@name + '.worker')
+            eval(File.read(@name + '.worker'))
+          elsif File.exists?('Workerfile')
             eval(File.read('Workerfile'))
           end
         end
 
         unless block.nil?
           instance_eval(&block)
+        end
+
+        unless @exec.nil?
+          @name ||= IronWorkerNG::Code::Base.guess_name(@exec.path)
         end
       end
 
@@ -107,8 +174,17 @@ module IronWorkerNG
       def create_runner(zip)
       end
 
-      def runtime
+      def runtime(runtime = nil)
         nil
+      end
+
+      # support setting name throgh func call for workerfile
+      def name(name = nil)
+        @name ||= name
+      end
+
+      def name=(name)
+        @name = name
       end
 
       def runner
