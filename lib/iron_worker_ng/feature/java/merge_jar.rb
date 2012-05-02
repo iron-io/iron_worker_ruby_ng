@@ -6,6 +6,11 @@ module IronWorkerNG
           attr_reader :path
 
           def initialize(path)
+            unless File.exist?(path)
+              IronCore::Logger.error 'IronWorkerNG', "Can't find java jar with path='#{path}'"
+              raise IronCore::IronError.new("Can't find java jar with path='#{path}'")
+            end
+
             @path = File.expand_path(path)
           end
 

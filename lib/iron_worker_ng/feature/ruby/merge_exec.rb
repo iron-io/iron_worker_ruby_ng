@@ -7,6 +7,11 @@ module IronWorkerNG
           attr_reader :klass
 
           def initialize(path, klass)
+            unless File.exist?(path)
+              IronCore::Logger.error 'IronWorkerNG', "Can't find ruby exec with path='#{path}'"
+              raise IronCore::IronError.new("Can't find ruby exec with path='#{path}'")
+            end
+
             @path = File.expand_path(path)
             @klass = klass
           end
