@@ -1,6 +1,6 @@
 require 'rubygems'
 require 'bundler'
-require 'jeweler'
+require 'jeweler2'
 
 task :test do
   # running separate rake process to avoid bundler setup clash
