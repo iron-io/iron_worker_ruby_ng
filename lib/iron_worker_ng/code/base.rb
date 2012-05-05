@@ -159,6 +159,8 @@ module IronWorkerNG
 
         fixate
 
+        @name ||= IronWorkerNG::Code::Base.guess_name(@exec.path)
+
         zip_name = Dir.tmpdir + '/' + Dir::Tmpname.make_tmpname("iron-worker-ng-", "code.zip")
 
         IronCore::Logger.debug 'IronWorkerNG', "Creating code zip '#{zip_name}'"
