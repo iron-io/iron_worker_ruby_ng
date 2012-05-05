@@ -31,6 +31,14 @@ module IronWorkerNG
       end
     end
 
+    def token
+      @api.token
+    end
+
+    def project_id
+      @api.project_id
+    end
+
     def method_missing(name, *args, &block)
       if args.length == 0
         IronWorkerNG::ClientProxyCaller.new(self, name)
