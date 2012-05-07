@@ -11,6 +11,7 @@ group :development do
 end
 
 group :test do
+  gem 'test-unit'
   gem 'iron_worker_ng'
   gem 'typhoeus'
   gem 'pry'

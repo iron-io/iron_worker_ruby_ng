@@ -29,6 +29,7 @@ GEM
     rest-client (1.6.7)
       mime-types (>= 1.16)
     slop (2.4.4)
+    test-unit (2.4.8)
     typhoeus (0.3.3)
       mime-types
     zip (2.0.2)
@@ -44,5 +45,6 @@ DEPENDENCIES
   json
   pry
   rake
+  test-unit
   typhoeus
   zip
