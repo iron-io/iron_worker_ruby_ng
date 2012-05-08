@@ -59,7 +59,7 @@ if command == 'codes.create'
 
   code = nil
 
-  if code.nil?
+  if runtime.nil?
     code = IronWorkerNG::Code.create(:name => name)
   else
     code = runtimes.find { |r| r[:name] == runtime }[:klass].new(:name => name)
