@@ -26,13 +26,13 @@ class CommonFeaturesTest < IWNGTest
   end
 
   def test_missing_file
-    assert_raise RuntimeError, "should check if merged file exists" do
+    assert_raise IronCore::IronError, "should check if merged file exists" do
       code_bundle('test') do
         merge_dir('krumplumpl', 'test/data')
       end
     end
 
-    assert_raise RuntimeError, "should check if merged dir exists" do
+    assert_raise IronCore::IronError, "should check if merged dir exists" do
       code_bundle('test') do
         merge_dir('dir2', 'test/data')
       end
