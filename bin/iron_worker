@@ -4,19 +4,32 @@ require 'optparse'
 require 'time'
 require 'iron_worker_ng'
 
-if $*.size == 0 || (not ['codes.create', 'tasks.create', 'schedules.create', 'tasks.log'].include?($*[0]))
+if $*.size == 1 && ($*[0] == '-v' || $*[0] == '--version')
+  puts IronWorkerNG.full_version
+  exit 0
+end
+
+if $*.size == 0 || (not ['codes.create', 'upload', 'tasks.create', 'queue', 'schedules.create', 'schedule', 'tasks.log', 'log'].include?($*[0]))
   puts 'usage: iron_worker COMMAND [OPTIONS]'
-  puts '    COMMAND: codes.create, tasks.create, schedules.create, tasks.log'
+  puts '    COMMAND: codes.create (upload), tasks.create (queue), schedules.create (schedule), tasks.log (log)'
   puts '    run iron_worker COMMAND --help to get more information about each command'
   exit 1
 end
 
-command = $*[0]
-$*.shift
+command = $*.shift
+
+command = 'codes.create' if command == 'upload'
+command = 'tasks.create' if command == 'queue'
+command = 'schedules.create' if command == 'schedule'
+command = 'tasks.log' if command == 'log'
 
 client = IronWorkerNG::Client.new
 
 if command == 'codes.create'
+  if $*.size > 0 && $*[0][0] != '-'
+    $*.unshift('-n')
+  end
+
   runtimes = IronWorkerNG::Code::Base.registered_types
   runtimes_help = runtimes[0][:name] + ' (default)' + (runtimes.size == 1 ? '' : ', ') + runtimes.map { |r| r[:name] }[1 .. -1].join(', ')
 
@@ -71,6 +84,10 @@ if command == 'codes.create'
 
   client.codes.create(code)
 elsif command == 'tasks.create' || command == 'schedules.create'
+  if $*.size > 0 && $*[0][0] != '-'
+    $*.unshift('-n')
+  end
+  
   name = nil
   payload = nil
 
@@ -166,6 +183,10 @@ elsif command == 'tasks.create' || command == 'schedules.create'
 
   print id if print_id
 elsif command == 'tasks.log'
+  if $*.size > 0 && $*[0][0] != '-'
+    $*.unshift('-t')
+  end
+
   task_id = nil
   live = false
 
@@ -176,7 +197,7 @@ elsif command == 'tasks.log'
       task_id = v 
     end
 
-    opts.on('--live', 'live log session') do |v|
+    opts.on('-w --wait', 'wait for task') do |v|
       live = true
     end
   end
