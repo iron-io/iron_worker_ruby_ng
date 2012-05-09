@@ -11,24 +11,32 @@ client = IronWorkerNG::Client.new(# optinal
 
 # creating code bundle
 
+path = File.dirname(__FILE__) + '/sample_worker.rb'
+
 # if not specified, name default to worker name converted from underscore to camel style
-code = IronWorkerNG::Code::Ruby.new
-code.merge_exec('/sample_worker.rb')
+code = IronWorkerNG::Code::Ruby.new do
+  merge_exec path
+end
 #> code.name == 'SampleWorker'
 
-# still can pass name in constructor
-code = IronWorkerNG::Code::Ruby.new('transmogrify')
+# still can pass name in constructor and exec
+code = IronWorkerNG::Code::Ruby.new(:name => 'transmogrify',
+                                    :exec => path)
 #> code.name == 'transmogrify'
-code.merge_exec(File.dirname(__FILE__) + '/sample_worker.rb')
+
+# or in block (like other intance methods)
+code = IronWorkerNG::Code::Ruby.new do
+  name 'transmogrify'
+  merge_exec path
+end
 
 # once worker merged, following attempts will be ignored
 code.merge_exec('anything')
 #> code.features.find{|f| f.is_a? IronWorkerNG::Feature::Ruby::MergeExec::Feature }.path.end_with? '/worker.rb'
 
-# if worker requires some gems, we 
-
+# if worker requires some gems,
 # we can specify worker dependency on gem
-code.merge_gem('jeweler')
+code.merge_gem('jeweler2')
 # or on Gemfile, which is recommended
 code.merge_gemfile(File.dirname(__FILE__) + '/Gemfile',
                    :default, :extra)
