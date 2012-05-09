@@ -23,6 +23,10 @@ command = 'tasks.create' if command == 'queue'
 command = 'schedules.create' if command == 'schedule'
 command = 'tasks.log' if command == 'log'
 
+if level = ENV['LOG_LEVEL']
+  IronCore::Logger.logger.level = eval "::Logger::#{level}"
+end
+
 client = IronWorkerNG::Client.new
 
 if command == 'codes.create'
@@ -193,7 +197,7 @@ elsif command == 'tasks.log'
   opts = OptionParser.new do |opts|
     opts.banner = "usage: iron_worker #{command} [OPTIONS]"
 
-    opts.on('-t --task-id ID', 'task id') do |v|
+    opts.on('-t', '--task-id ID', 'task id') do |v|
       task_id = v 
     end
 

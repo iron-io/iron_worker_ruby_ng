@@ -29,4 +29,10 @@ class CodeCreateTest < IWNGTest
     end
   end
 
+  def test_upload
+    resp = client.codes_create code_bundle('test/hello.rb')
+    assert_equal 200, resp.status_code, "status ok"
+    assert resp.id =~ /[0-9a-f]{24}/, "has id"
+  end
+
 end
