@@ -7,7 +7,7 @@ class CodeCreateTest < IWNGTest
     assert_equal File.expand_path('test/hello.rb'), code.exec_path
     assert_equal 'Hello', code.name
 
-    code = code_bundle('asdfasdf')
+    code = code_bundle(:name => 'asdfasdf')
     assert_equal nil, code.exec_path
     assert_equal 'asdfasdf', code.name
 

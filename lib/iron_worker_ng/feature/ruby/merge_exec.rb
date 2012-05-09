@@ -38,6 +38,8 @@ module IronWorkerNG
 
             @exec = IronWorkerNG::Feature::Ruby::MergeExec::Feature.new(path, klass)
 
+            @name ||= IronWorkerNG::Code::Base.guess_name(@exec.path)
+
             IronCore::Logger.info 'IronWorkerNG', "Merging ruby exec with path='#{path}' and class='#{klass}'"
 
             @features << @exec

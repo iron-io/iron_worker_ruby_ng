@@ -69,7 +69,7 @@ class CommonFeaturesTest < IWNGTest
       File.symlink('../dir2', 'dir2')
     end
 
-    code = code_bundle 'test_symlinks' do
+    code = code_bundle :name => 'test_symlinks' do
       merge_dir('test/data/dir1', 'test/data')
       merge_dir('test/data/dir2', 'test/data')
       worker_code 'puts File.read("test/data/dir1/dir2/test")'
