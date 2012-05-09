@@ -26,13 +26,13 @@ class CommonFeaturesTest < IWNGTest
   end
 
   def test_missing_file
-    assert_raise RuntimeError, "should check if merged file exists" do
+    assert_raise IronCore::IronError, "should check if merged file exists" do
       code_bundle('test') do
         merge_dir('krumplumpl', 'test/data')
       end
     end
 
-    assert_raise RuntimeError, "should check if merged dir exists" do
+    assert_raise IronCore::IronError, "should check if merged dir exists" do
       code_bundle('test') do
         merge_dir('dir2', 'test/data')
       end
@@ -69,7 +69,7 @@ class CommonFeaturesTest < IWNGTest
       File.symlink('../dir2', 'dir2')
     end
 
-    code = code_bundle 'test_symlinks' do
+    code = code_bundle :name => 'test_symlinks' do
       merge_dir('test/data/dir1', 'test/data')
       merge_dir('test/data/dir2', 'test/data')
       worker_code 'puts File.read("test/data/dir1/dir2/test")'
