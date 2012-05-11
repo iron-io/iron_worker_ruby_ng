@@ -37,7 +37,7 @@ class CLITest < IWNGTest
     assert cli('tasks.create', name: 'Hello') =~
       /Queued up.*"id":"(.{24})"/
 
-    assert cli('tasks.log', '--live', task_id: $1) =~
+    assert cli('tasks.log', '--wait', task_id: $1) =~
       /\nhello\n/
 
     assert cli('schedules.create', name: 'Hello') =~

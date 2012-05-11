@@ -201,7 +201,7 @@ elsif command == 'tasks.log'
       task_id = v 
     end
 
-    opts.on('-w --wait', 'wait for task') do |v|
+    opts.on('-w', '--wait', 'wait for task') do |v|
       live = true
     end
   end
