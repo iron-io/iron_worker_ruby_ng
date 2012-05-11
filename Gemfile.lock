@@ -41,7 +41,6 @@ DEPENDENCIES
   iron_core
   iron_worker_ng
   jeweler2
-  json
   pry
   rake
   typhoeus
