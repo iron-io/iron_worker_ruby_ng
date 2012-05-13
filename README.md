@@ -32,7 +32,6 @@ Each IronWorkerNG Ruby worker is just Ruby code. It can be as simple or as compl
 ```ruby
 puts "I'm worker"
 puts "My task_id is #{@iron_worker_task_id}"
-puts "I'm executing inside #{@iron_io_project_id} and was queued using #{@iron_io_token} token"
 puts "I got '#{params}' parameters"
 ```
 
