@@ -22,11 +22,11 @@ module IronWorkerNG
 
         zip.get_output_stream(runner) do |runner|
           runner.write <<RUNNER
-# iron_worker_ng-#{IronWorkerNG.version}
+# iron_worker_ng-#{IronWorkerNG.full_version}
 
 module IronWorkerNG
-  #{ File.read( File.dirname(__FILE__) + '/../hashie/merge_initializer.rb' ) }
-  #{ File.read( File.dirname(__FILE__) + '/../hashie/indifferent_access.rb' ) }
+  #{File.read(File.dirname(__FILE__) + '/../../3rdparty/hashie/merge_initializer.rb')}
+  #{File.read(File.dirname(__FILE__) + '/../../3rdparty/hashie/indifferent_access.rb')}
 end
 
 class IronWorkerNGHash < Hash
