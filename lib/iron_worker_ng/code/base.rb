@@ -43,28 +43,27 @@ module IronWorkerNG
         elsif args.length == 1 && args[0].class == Hash
           @name = args[0][:name] || args[0]['name']
 
-          exec = args[0][:exec] || args[0]['exec'] || args[0][:worker] || args[0]['worker']
+          exec = args[0][:exec] || args[0]['exec'] ||
+            args[0][:worker] || args[0]['worker']
           merge_exec(exec) unless exec.nil?
         end
 
-        if args.length == 1 && args[0].class == Hash && ((not args[0][:workerfile].nil?) || (not args[0]['workerfile'].nil?))
-          eval(File.read(File.expand_path(args[0][:workerfile] || args[0]['workerfile'])))
+        if args.length == 1 and (opts = args[0]).is_a? Hash and wfile = opts[:workerfile] || opts['workerfile']
+          eval(File.read(File.expand_path wfile))
         end
 
         unless @exec.nil?
           @name ||= guess_name(@exec.path)
+          IronCore::Logger.info 'IronWorkerNG', "defaulting name to #{@name}"
         end
 
-        if (not @name.nil?) && File.exists?(@name + '.worker')
-          eval(File.read(@name + '.worker'))
-        end
-
-        if (not @name.nil?) && File.exists?(@name + '.workerfile')
-          eval(File.read(@name + '.workerfile'))
-        end
-
-        if File.exists?('Workerfile')
-          eval(File.read('Workerfile'))
+        wfiles = ['Workerfile']
+        wfiles << @name + '.worker' << @name + '.workerfile' if @name
+        wfiles.each do |wfile|
+          if File.exists? wfile
+            eval(File.read wfile)
+            IronCore::Logger.info 'IronWorkerNG', "using workerfile #{wfile}"
+          end
         end
 
         unless block.nil?
@@ -73,6 +72,7 @@ module IronWorkerNG
 
         unless @exec.nil?
           @name ||= guess_name(@exec.path)
+          IronCore::Logger.info 'IronWorkerNG', "defaulting name to #{@name}"
         end
       end
 
