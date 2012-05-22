@@ -2,6 +2,11 @@ require 'rubygems'
 require 'bundler'
 require 'jeweler2'
 
+task :test do
+  # running separate rake process to avoid bundler setup clash
+  sh "rake -f test/Rakefile #{ $*.join' ' }"
+end
+
 Jeweler::Tasks.new do |gem|
   begin
     Bundler.setup(:default, :development)
