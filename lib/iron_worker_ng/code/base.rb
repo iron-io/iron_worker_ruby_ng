@@ -9,7 +9,6 @@ module IronWorkerNG
   module Code
     class Base
       attr_reader :features
-      attr_accessor :name
 
       @@registered_types = []
     
@@ -54,15 +53,19 @@ module IronWorkerNG
 
         unless @exec.nil?
           @name ||= guess_name(@exec.path)
-          IronCore::Logger.info 'IronWorkerNG', "defaulting name to #{@name}"
         end
 
         wfiles = ['Workerfile']
-        wfiles << @name + '.worker' << @name + '.workerfile' if @name
+
+        unless @name.nil?
+          wfiles << @name + '.worker'
+          wfiles << @name + '.workerfile'
+        end
+
         wfiles.each do |wfile|
           if File.exists? wfile
             eval(File.read wfile)
-            IronCore::Logger.info 'IronWorkerNG', "using workerfile #{wfile}"
+            IronCore::Logger.info 'IronWorkerNG', "Processing workerfile #{wfile}"
           end
         end
 
@@ -72,8 +75,17 @@ module IronWorkerNG
 
         unless @exec.nil?
           @name ||= guess_name(@exec.path)
-          IronCore::Logger.info 'IronWorkerNG', "defaulting name to #{@name}"
         end
+      end
+
+      def name(*args)
+        @name = args[0] if args.length == 1
+
+        @name
+      end
+
+      def name=(name)
+        @name = name
       end
 
       def guess_name(path)
