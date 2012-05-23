@@ -128,17 +128,33 @@ module IronWorkerNG
 
         Zip::ZipFile.open(zip_name, Zip::ZipFile::CREATE) do |zip|
           bundle(zip)
-          create_runner(zip)
+
+          zip.get_output_stream('__runner__.sh') do |runner|
+            runner.write <<RUNNER
+#!/bin/sh
+# iron_worker_ng-#{IronWorkerNG.full_version}
+
+root() {
+  while [ $# -gt 0 ]; do
+    if [ "$1" = "-d" ]; then
+      printf "%s\n" "$2"
+      break
+    fi
+  done
+}
+
+cd "$(root "$@")"
+
+#{run_code}
+RUNNER
+          end
         end
 
         zip_name
       end
 
-      def create_runner(zip)
-      end
-
-      def runner
-        nil
+      def run_code
+        ''
       end
     end
   end

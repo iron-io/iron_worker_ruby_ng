@@ -9,7 +9,9 @@ module IronWorkerNG
       include IronWorkerNG::Feature::Ruby::MergeGemfile::InstanceMethods
       include IronWorkerNG::Feature::Ruby::MergeExec::InstanceMethods
 
-      def create_runner(zip)
+      def bundle(zip)
+        super(zip)
+
         gempath_code_array = []
       
         @features.each do |f|
@@ -20,8 +22,8 @@ module IronWorkerNG
 
         gempath_code = gempath_code_array.join("\n")
 
-        zip.get_output_stream(runner) do |runner|
-          runner.write <<RUNNER
+        zip.get_output_stream('__runner__.rb') do |runner|
+          runner.write <<RUBY_RUNNER
 # iron_worker_ng-#{IronWorkerNG.full_version}
 
 module IronWorkerNG
@@ -91,16 +93,14 @@ unless #{@exec.klass == nil}
 
   exec_inst.run
 end
-RUNNER
+RUBY_RUNNER
         end
       end
 
-      def runtime(runtime = nil)
-        'ruby'
-      end
-
-      def runner
-        '__runner__.rb'
+      def run_code
+        <<RUN_CODE
+ruby __runner__.rb "$@"
+RUN_CODE
       end
     end
   end

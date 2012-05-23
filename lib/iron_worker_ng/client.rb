@@ -57,7 +57,7 @@ module IronWorkerNG
 
     def codes_create(code)
       zip_file = code.create_zip
-      res = @api.codes_create(code.name, zip_file, code.runtime, code.runner)
+      res = @api.codes_create(code.name, zip_file, 'sh', '__runner__.sh')
       File.unlink(zip_file)
 
       OpenStruct.new(res)
