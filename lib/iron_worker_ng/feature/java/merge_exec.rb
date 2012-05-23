@@ -45,6 +45,8 @@ module IronWorkerNG
             IronCore::Logger.info 'IronWorkerNG', "Merging java exec with path='#{path}' and class='#{klass}'"
 
             @features << @exec
+
+            guess_name
           end
 
           alias :exec :merge_exec

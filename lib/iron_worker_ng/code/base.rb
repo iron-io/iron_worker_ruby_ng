@@ -51,10 +51,6 @@ module IronWorkerNG
           eval(File.read(File.expand_path wfile))
         end
 
-        unless @exec.nil?
-          @name ||= guess_name(@exec.path)
-        end
-
         wfiles = ['Workerfile']
 
         unless @name.nil?
@@ -72,10 +68,6 @@ module IronWorkerNG
         unless block.nil?
           instance_eval(&block)
         end
-
-        unless @exec.nil?
-          @name ||= guess_name(@exec.path)
-        end
       end
 
       def name(*args)
@@ -88,8 +80,10 @@ module IronWorkerNG
         @name = name
       end
 
-      def guess_name(path)
-        File.basename(path).gsub(/\..*$/, '').capitalize.gsub(/_./) { |x| x[1].upcase }
+      def guess_name
+        if @name.nil? && (not @exec.nil?)
+          @name = File.basename(@exec.path).gsub(/\..*$/, '').capitalize.gsub(/_./) { |x| x[1].upcase }
+        end
       end
 
       def fixate

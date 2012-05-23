@@ -39,6 +39,8 @@ module IronWorkerNG
             IronCore::Logger.info 'IronWorkerNG', "Merging node exec with path='#{path}'"
 
             @features << @exec
+
+            guess_name
           end
 
           alias :exec :merge_exec
