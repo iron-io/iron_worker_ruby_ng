@@ -23,7 +23,6 @@ class ChangeRuntimeTest < IWNGTest
   def sh_worker(code_name)
     c = IronWorkerNG::Code::Binary
     client.codes_create c.new(:name => code_name,
-                              :runtime => 'sh',
                               :exec => (Tempfile.open('sh') do |f|
                                           f << 'echo "hello"'
                                         end).path)
