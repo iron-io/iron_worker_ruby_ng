@@ -40,6 +40,9 @@ class IWNGTest < Test::Unit::TestCase
   end
 
   def get_all_tasks
+    prev_level = IronCore::Logger.logger.level
+    IronCore::Logger.logger.level = ::Logger::INFO
+
     result = []
     page = -1
     begin
@@ -47,6 +50,9 @@ class IWNGTest < Test::Unit::TestCase
                                 :page => page += 1)
       result += tasks
     end while tasks.size == 100
+
+    IronCore::Logger.logger.level = prev_level
+
     result
   end
 
