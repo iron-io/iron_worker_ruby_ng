@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "iron_worker_ng"
-  s.version = "0.4.3"
+  s.version = "0.5.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Andrew Kirilenko", "Iron.io, Inc"]
-  s.date = "2012-05-23"
+  s.date = "2012-05-24"
   s.description = "New generation ruby client for IronWorker"
   s.email = "info@iron.io"
   s.executables = ["iron_worker"]
@@ -29,6 +29,8 @@ Gem::Specification.new do |s|
     "lib/iron_worker_ng/client.rb",
     "lib/iron_worker_ng/code/base.rb",
     "lib/iron_worker_ng/code/binary.rb",
+    "lib/iron_worker_ng/code/creator.rb",
+    "lib/iron_worker_ng/code/initializer.rb",
     "lib/iron_worker_ng/code/java.rb",
     "lib/iron_worker_ng/code/node.rb",
     "lib/iron_worker_ng/code/ruby.rb",
@@ -56,17 +58,20 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<iron_core>, [">= 0"])
       s.add_runtime_dependency(%q<zip>, [">= 0"])
       s.add_runtime_dependency(%q<bundler>, ["> 1.0.0"])
+      s.add_development_dependency(%q<rake>, [">= 0"])
       s.add_development_dependency(%q<jeweler2>, [">= 0"])
     else
       s.add_dependency(%q<iron_core>, [">= 0"])
       s.add_dependency(%q<zip>, [">= 0"])
       s.add_dependency(%q<bundler>, ["> 1.0.0"])
+      s.add_dependency(%q<rake>, [">= 0"])
       s.add_dependency(%q<jeweler2>, [">= 0"])
     end
   else
     s.add_dependency(%q<iron_core>, [">= 0"])
     s.add_dependency(%q<zip>, [">= 0"])
     s.add_dependency(%q<bundler>, ["> 1.0.0"])
+    s.add_dependency(%q<rake>, [">= 0"])
     s.add_dependency(%q<jeweler2>, [">= 0"])
   end
 end
