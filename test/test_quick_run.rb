@@ -24,15 +24,28 @@ class QuickRunTest < IWNGTest
   end
 
   def test_scheduler_quick
-    client.codes.create code_bundle(:name => 'test_schedule',
-                                    :exec => 'test/hello.rb')
+    client.codes.create( code_bundle(:name => 'test_schedule') do
+                           worker_code 'sleep 10 and puts "hello"'
+                         end )
 
-    id = client.schedules.create('test_schedule', :start_at => Time.now + 10).id
-    sleep 5 until client.schedules.get(id).status != 'complete'
+    start = (Time.now + 10).utc
 
-    task = get_all_tasks.find{ |t| t.code_name == 'test_schedule' }
+    id = client.schedules.create('scheduler_quick', :start_at => start).id
+    sleep 5 until client.schedules.get(id).status == 'complete'
 
-    assert task
+    task = get_all_tasks.
+      keep_if{ |t| t.code_name == 'scheduler_quick' }.
+      max_by{ |t| Time.parse t.start_time }
+
+    client.tasks.wait_for task.id
+
+    puts "planned start: ", start
+    puts "actual start: ", Time.parse(task.start_time)
+
+    # if fails, ensure local time is correct, try ntpdate
+    assert Time.parse(task.start_time) >= start
+
+    assert Time.parse(task.start_time) + 10 <= Time.parse(task.end_time)
     assert_equal 'complete', task.status
     assert_equal "hello\n", client.tasks.log(task.id)
   end
