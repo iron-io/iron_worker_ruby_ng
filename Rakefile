@@ -4,7 +4,7 @@ require 'jeweler2'
 
 task :test do
   # running separate rake process to avoid bundler setup clash
-  sh "rake -f test/Rakefile #{ $*.join' ' }"
+  sh "cd test && rake #{$*.join(' ')}"
 end
 
 Jeweler::Tasks.new do |gem|
