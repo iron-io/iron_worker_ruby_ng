@@ -16,18 +16,20 @@ module IronWorkerNG
           end
 
           if args.length == 1 and (opts = args[0]).is_a? Hash and wfile = opts[:workerfile] || opts['workerfile']
+            IronCore::Logger.info 'IronWorkerNG', "Processing workerfile #{wfile}"
             eval(File.read(File.expand_path wfile))
           end
 
           wfiles = ['Workerfile']
 
-          unless @name.nil?
-            wfiles << @name + '.worker'
-            wfiles << @name + '.workerfile'
+          unless name.nil?
+            wfiles << name + '.worker'
+            wfiles << name + '.workerfile'
           end
 
           wfiles.each do |wfile|
             if File.exists?(wfile)
+              IronCore::Logger.info 'IronWorkerNG', "Processing workerfile #{wfile}"
               eval(File.read(wfile))
             end
           end
