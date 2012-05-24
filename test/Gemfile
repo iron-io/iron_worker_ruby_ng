@@ -1,0 +1,5 @@
+source 'http://rubygems.org'
+
+gem 'pry'
+gem 'jeweler2'
+gem 'iron_worker_ng'
