@@ -14,7 +14,7 @@ name 'ShHello'
 exec 'test/hello.sh'
 EOF
     
-    code = IronWorkerNG::Code.create(:workerfile => wf)
+    code = IronWorkerNG::Code::Binary.new(:workerfile => wf)
 
     client.codes.create(code)
 
