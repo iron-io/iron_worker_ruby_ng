@@ -20,8 +20,8 @@ module IronWorkerNG
         initialize_code(*args, &block)
       end
 
-      def name(*args)
-        @name = args[0] if args.length == 1
+      def name(code_name = nil)
+        @name = code_name if code_name
 
         @name
       end
@@ -42,10 +42,6 @@ module IronWorkerNG
 
       def merge_exec(path, *args)
         @exec = path
-
-        if @name.nil? && (not @exec.nil?)
-          @name = IronWorkerNG::Code::Base.guess_name_for_path(@exec)
-        end
       end
 
       alias :exec :merge_exec

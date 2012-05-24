@@ -45,8 +45,13 @@ module IronWorkerNG
         initialize_code(*args, &block)
       end
 
-      def name(*args)
-        @name = args[0] if args.length == 1
+      def name(code_name = nil)
+        @name = code_name if code_name
+
+        if @name.nil? and @exec
+          @name = IronWorkerNG::Code::Base.guess_name_for_path(@exec.path)
+          IronCore::Logger.info 'IronWorkerNG', "defaulting name to #{@name}"
+        end
 
         @name
       end
@@ -59,12 +64,6 @@ module IronWorkerNG
       end
 
       def runtime=(runtime)
-      end
-
-      def guess_name
-        if @name.nil? && (not @exec.nil?)
-          @name = IronWorkerNG::Code::Base.guess_name_for_path(@exec.path)
-        end
       end
 
       def fixate
@@ -94,8 +93,6 @@ module IronWorkerNG
         end
 
         fixate
-
-        @name ||= guess_name(@exec.path)
 
         zip_name = Dir.tmpdir + '/' + Dir::Tmpname.make_tmpname("iron-worker-ng-", "code.zip")
 

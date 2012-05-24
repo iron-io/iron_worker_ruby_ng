@@ -1,3 +1,3 @@
 require 'pry'
-require 'jeweler'
+require 'jeweler2'
 puts "hello"
