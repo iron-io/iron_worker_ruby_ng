@@ -3,8 +3,7 @@ require 'helpers'
 class JavaWorkerTest < IWNGTest
 
   def test_hello
-    code = IronWorkerNG::Code.create do
-      runtime 'java'
+    code = IronWorkerNG::Code::Java.new do
       name 'JavaHello'
       exec 'test/hello.jar'
     end

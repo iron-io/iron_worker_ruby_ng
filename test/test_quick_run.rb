@@ -30,11 +30,12 @@ class QuickRunTest < IWNGTest
 
     start = (Time.now + 10).utc
 
-    id = client.schedules.create('scheduler_quick', :start_at => start).id
-    sleep 5 until client.schedules.get(id).status == 'complete'
+    id = client.schedules.create('test_schedule', :start_at => start).id
+    sleep 5 while client.schedules.get(id).status == 'scheduled'
+    assert_equal 'complete', client.schedules.get(id).status
 
     task = get_all_tasks.
-      keep_if{ |t| t.code_name == 'scheduler_quick' }.
+      keep_if{ |t| t.code_name == 'test_schedule' }.
       max_by{ |t| Time.parse t.start_time }
 
     client.tasks.wait_for task.id
