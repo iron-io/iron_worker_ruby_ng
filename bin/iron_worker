@@ -74,9 +74,13 @@ if command == 'codes.create'
     exit 1
   end
 
-  runtime = 'ruby' if runtime.nil?
+  code = nil
 
-  code = runtimes.find { |r| r[:name] == runtime }[:klass].new(:name => name)
+  if runtime.nil?
+    code = IronWorkerNG::Code::Creator.create(:name => name)
+  else
+    code = runtimes.find { |r| r[:name] == runtime }[:klass].new(:name => name)
+  end
 
   execute_features.each do |f|
     code.send(f[:name], *f[:args])

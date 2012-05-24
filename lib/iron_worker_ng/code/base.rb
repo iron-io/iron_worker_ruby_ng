@@ -30,44 +30,19 @@ module IronWorkerNG
         @@registered_features << feature
       end
 
+      def self.guess_name_for_path(path)
+        File.basename(path).gsub(/\..*$/, '').capitalize.gsub(/_./) { |x| x[1].upcase }
+      end
+
+      include IronWorkerNG::Code::Initializer::InstanceMethods
+
       include IronWorkerNG::Feature::Common::MergeFile::InstanceMethods
       include IronWorkerNG::Feature::Common::MergeDir::InstanceMethods
 
       def initialize(*args, &block)
-        @name = nil
         @features = []
 
-        if args.length == 1 && args[0].class == String
-          merge_exec(args[0])
-        elsif args.length == 1 && args[0].class == Hash
-          @name = args[0][:name] || args[0]['name']
-
-          exec = args[0][:exec] || args[0]['exec'] ||
-            args[0][:worker] || args[0]['worker']
-          merge_exec(exec) unless exec.nil?
-        end
-
-        if args.length == 1 and (opts = args[0]).is_a? Hash and wfile = opts[:workerfile] || opts['workerfile']
-          eval(File.read(File.expand_path wfile))
-        end
-
-        wfiles = ['Workerfile']
-
-        unless @name.nil?
-          wfiles << @name + '.worker'
-          wfiles << @name + '.workerfile'
-        end
-
-        wfiles.each do |wfile|
-          if File.exists? wfile
-            eval(File.read wfile)
-            IronCore::Logger.info 'IronWorkerNG', "Processing workerfile #{wfile}"
-          end
-        end
-
-        unless block.nil?
-          instance_eval(&block)
-        end
+        initialize_code(*args, &block)
       end
 
       def name(*args)
@@ -80,9 +55,15 @@ module IronWorkerNG
         @name = name
       end
 
+      def runtime(*args)
+      end
+
+      def runtime=(runtime)
+      end
+
       def guess_name
         if @name.nil? && (not @exec.nil?)
-          @name = File.basename(@exec.path).gsub(/\..*$/, '').capitalize.gsub(/_./) { |x| x[1].upcase }
+          @name = IronWorkerNG::Code::Base.guess_name_for_path(@exec.path)
         end
       end
 
