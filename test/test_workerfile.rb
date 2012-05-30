@@ -13,8 +13,8 @@ runtime 'binary'
 name 'ShHello'
 exec 'test/hello.sh'
 EOF
-    
-    code = IronWorkerNG::Code::Binary.new(:workerfile => wf)
+
+    code = IronWorkerNG::Code::Creator.create(:workerfile => wf)
 
     client.codes.create(code)
 
