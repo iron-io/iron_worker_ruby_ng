@@ -29,8 +29,8 @@ module IronWorkerNG
       parse_response(get("projects/#{@project_id}/codes/#{id}"))
     end
 
-    def codes_create(name, file, runtime, runner)
-      parse_response(post_file("projects/#{@project_id}/codes", File.new(file, 'rb'), {:name => name, :runtime => runtime, :file_name => runner}))
+    def codes_create(name, file, runtime, runner, options)
+      parse_response(post_file("projects/#{@project_id}/codes", File.new(file, 'rb'), {:name => name, :runtime => runtime, :file_name => runner}.merge(options)))
     end
 
     def codes_delete(id)
