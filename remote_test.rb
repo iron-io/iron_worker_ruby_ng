@@ -18,6 +18,8 @@ client = IronWorkerNG::Client.new
 
 code = IronWorkerNG::Code::Ruby.new do
   exec 'ng_tests_worker.rb'
+  gemfile 'Gemfile'
+  gemfile 'test/Gemfile'
   dir '.', 'iwng'
 end
 

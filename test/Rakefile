@@ -2,16 +2,9 @@ require 'bundler'
 require 'rake/testtask'
 require 'tmpdir'
 
-Dir.chdir(File.dirname(__FILE__) + '/..')
+(ENV['NG_GEM_PATH'] || "").split(':').reverse.each{ $:.unshift p }
 
-tmpdir = Dir.mktmpdir
-File.open(tmpdir + '/Gemfile', 'w') do |f|
-  f << File.read('Gemfile')
-  f << File.read('test/Gemfile')
-end
-Dir.chdir tmpdir do
-  Bundler.setup
-end
+Dir.chdir(File.dirname(__FILE__) + '/..')
 
 Rake::TestTask.new do |t|
   examples_tests_dir = Dir.mktmpdir('iw_examples')
