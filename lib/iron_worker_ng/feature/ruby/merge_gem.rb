@@ -42,9 +42,12 @@ module IronWorkerNG
             if @spec.extensions.length == 0 || IronWorkerNG::Feature::Ruby::MergeGem.merge_binary?
               IronCore::Logger.debug 'IronWorkerNG', "Bundling ruby gem with name='#{@spec.name}' and version='#{@spec.version}'"
 
-              zip.add('__gems__/' + @spec.full_name, gem_path)
+              zip.add('__gems__/gems/' + @spec.full_name, gem_path)
+              zip.add("__gems__/specifications/#{@spec.full_name}.gemspec",
+                      File.expand_path(gem_path + '/../../specifications/' +
+                                       @spec.full_name + '.gemspec'))
               Dir.glob(gem_path + '/**/**') do |path|
-                zip.add('__gems__/' + @spec.full_name + path[gem_path.length .. -1], path)
+                zip.add('__gems__/gems/' + @spec.full_name + path[gem_path.length .. -1], path)
               end
             else
               IronCore::Logger.warn 'IronWorkerNG', "Skipping ruby gem with name='#{@spec.name}' and version='#{@spec.version}' as it contains native extensions"
@@ -53,7 +56,7 @@ module IronWorkerNG
 
           def code_for_gempath
             if @spec.extensions.length == 0 || IronWorkerNG::Feature::Ruby::MergeGem.merge_binary?
-              '$:.unshift("#{root}/__gems__/' + @spec.full_name + '/lib")'
+              '$:.unshift("#{root}/__gems__/gems/' + @spec.full_name + '/lib")'
             else
               '# native gem ' + @spec.full_name
             end

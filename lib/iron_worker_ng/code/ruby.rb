@@ -49,6 +49,10 @@ end
 Dir.chdir(root)
 
 #{gempath_code}
+
+suffix = ':' + prev if prev = ENV['GEM_PATH']
+ENV['GEM_PATH'] = root + '__gems__' + (suffix || '')
+
 $:.unshift("\#{root}")
 
 require 'json'
