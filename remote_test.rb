@@ -20,7 +20,18 @@ code = IronWorkerNG::Code::Ruby.new do
   exec 'ng_tests_worker.rb'
   gemfile 'Gemfile'
   gemfile 'test/Gemfile'
-  dir '.', 'iwng'
+
+  Dir.glob('*').each do |p|
+    dir p, 'iwng'  if Dir.exist? p
+    file p, 'iwng' if File.exist? p
+  end
+
+  file( File.open(Dir.mktmpdir + '/iron.json', 'w') do |f|
+          f << {
+            token: client.api.token,
+            project_id: client.api.project_id
+          }.to_json
+        end.path, 'iwng' )
 end
 
 puts client.codes.create(code)
