@@ -2,9 +2,16 @@ require 'bundler'
 require 'rake/testtask'
 require 'tmpdir'
 
-(ENV['NG_GEM_PATH'] || "").split(':').reverse.each{ $:.unshift p }
-
 Dir.chdir(File.dirname(__FILE__) + '/..')
+
+tmpdir = Dir.mktmpdir
+File.open(tmpdir + '/Gemfile', 'w') do |f|
+  f << File.read('Gemfile')
+  f << File.read('test/Gemfile')
+end
+Dir.chdir tmpdir do
+  Bundler.setup
+end
 
 Rake::TestTask.new do |t|
   examples_tests_dir = Dir.mktmpdir('iw_examples')
@@ -42,6 +49,7 @@ Rake::TestTask.new do |t|
   t.libs << "lib" << "test" << examples_tests_dir
   files = FileList['test/**/test_**.rb',
                    examples_tests_dir + '/**/test_*.rb']
+  $:.each{ |path| t.ruby_opts << "-I#{path}" }
   t.test_files = files.keep_if do |f|
     f =~ Regexp.new(ENV['TESTP'] || '') and
       not ( r = ENV['EXCLP'] and
