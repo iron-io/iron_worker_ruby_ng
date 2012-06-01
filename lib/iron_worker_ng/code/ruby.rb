@@ -1,7 +1,6 @@
 require_relative '../feature/ruby/merge_gem'
 require_relative '../feature/ruby/merge_gemfile'
 require_relative '../feature/ruby/merge_exec'
-require_relative '../feature/ruby/iron_io_config'
 
 module IronWorkerNG
   module Code
@@ -9,7 +8,6 @@ module IronWorkerNG
       include IronWorkerNG::Feature::Ruby::MergeGem::InstanceMethods
       include IronWorkerNG::Feature::Ruby::MergeGemfile::InstanceMethods
       include IronWorkerNG::Feature::Ruby::MergeExec::InstanceMethods
-      include IronWorkerNG::Feature::Ruby::IronIOConfig::InstanceMethods
 
       def bundle(zip)
         super(zip)
