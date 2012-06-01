@@ -26,12 +26,7 @@ code = IronWorkerNG::Code::Ruby.new do
     file p, 'iwng' if File.exist? p
   end
 
-  file( File.open(Dir.mktmpdir + '/iron.json', 'w') do |f|
-          f << {
-            token: client.api.token,
-            project_id: client.api.project_id
-          }.to_json
-        end.path, 'iwng' )
+  iron_io_config 'iwng'
 end
 
 puts client.codes.create(code)
