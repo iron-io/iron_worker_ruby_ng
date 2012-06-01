@@ -48,8 +48,7 @@ end
 
 #{gempath_code}
 
-suffix = ':' + prev if prev = ENV['GEM_PATH']
-ENV['GEM_PATH'] = root + '__gems__' + (suffix || '')
+ENV['GEM_PATH'] = ([root + '__gems__'] + (ENV['GEM_PATH'] || '').split(':')).join(':')
 
 $:.unshift("\#{root}")
 
