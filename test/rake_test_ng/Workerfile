@@ -1,0 +1,6 @@
+exec 'rake_test_ng.rb'
+gemfile 'Gemfile'
+gemfile '../../Gemfile'
+gemfile '../../test/Gemfile'
+iron_io_config
+file File.expand_path('~/.abt-ng-config')
