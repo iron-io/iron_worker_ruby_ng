@@ -6,11 +6,13 @@ require 'json'
 config = JSON.parse( File.read('.abt-ng-config'),
                      :symbolize_names => true )
 
+root = Dir.pwd
+
 Dir.chdir Dir.tmpdir
-
 puts `git clone "http://github.com/iron-io/iron_worker_ruby_ng.git" iwng`
-
 Dir.chdir('iwng')
+
+FileUtils.cp(root + '/iron.json', '.')
 
 path = "test_log_#{ Time.now.strftime('%F_%H_%M') }.txt"
 
@@ -23,7 +25,7 @@ AWS::S3::S3Object.store(path, open(path), 'abt-ng-logs',
                         :access => :public_read)
 
 msg = "<a href=\"http://s3.amazonaws.com/abt-ng-logs/#{path}\">Full log</a>"
-if log = File.read(path) and pos = log =~ /Finished tests in.*/
+if log = File.read(path) and pos = log =~ /^Finished in.*/
   msg += ' <pre>' + log[pos..-1].gsub(/\n+/,"<br>") + ' </pre>'
 end
 
