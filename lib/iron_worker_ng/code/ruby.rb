@@ -48,8 +48,6 @@ task_id = nil
   task_id = $*[i + 1] if $*[i] == '-id'
 end
 
-Dir.chdir(root)
-
 #{gempath_code}
 
 suffix = ':' + prev if prev = ENV['GEM_PATH']
