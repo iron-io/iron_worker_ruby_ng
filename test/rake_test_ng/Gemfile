@@ -1,0 +1,5 @@
+source 'http://rubygems.org'
+
+gem 'hipchat'
+gem 'aws-s3'
+
