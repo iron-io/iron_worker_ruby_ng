@@ -15,7 +15,9 @@ module IronWorkerNG
         class Feature < IronWorkerNG::Feature::Base
           attr_reader :spec
 
-          def initialize(spec)
+          def initialize(code, spec)
+            super(code)
+
             @spec = spec
           end
 
@@ -95,7 +97,7 @@ module IronWorkerNG
 
                 IronCore::Logger.info 'IronWorkerNG', "Merging ruby gem with name='#{spec.name}' and version='#{spec.version}'"
 
-                @features << IronWorkerNG::Feature::Ruby::MergeGem::Feature.new(spec)
+                @features << IronWorkerNG::Feature::Ruby::MergeGem::Feature.new(self, spec)
               end
             end
           end

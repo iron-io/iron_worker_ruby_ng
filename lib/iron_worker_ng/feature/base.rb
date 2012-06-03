@@ -1,6 +1,10 @@
 module IronWorkerNG
   module Feature
     class Base
+      def initialize(code)
+        @code = code
+      end
+
       def hash_string
         ''
       end

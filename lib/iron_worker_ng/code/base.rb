@@ -9,6 +9,7 @@ module IronWorkerNG
   module Code
     class Base
       attr_reader :features
+      attr_accessor :base_dir
 
       @@registered_types = []
     
@@ -41,6 +42,7 @@ module IronWorkerNG
 
       def initialize(*args, &block)
         @features = []
+        @base_dir = './'
 
         initialize_code(*args, &block)
       end

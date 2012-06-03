@@ -8,7 +8,9 @@ module IronWorkerNG
           attr_reader :path
           attr_reader :dest
 
-          def initialize(path, dest)
+          def initialize(code, path, dest)
+            super(code)
+
             unless File.exist?(path)
               IronCore::Logger.error 'IronWorkerNG', "Can't find file with path='#{path}'"
               raise IronCore::IronError.new("Can't find file with path='#{path}'")
@@ -34,7 +36,7 @@ module IronWorkerNG
           def merge_file(path, dest = '')
             IronCore::Logger.info 'IronWorkerNG', "Merging file with path='#{path}' and dest='#{dest}'"
 
-            @features << IronWorkerNG::Feature::Common::MergeFile::Feature.new(path, dest)
+            @features << IronWorkerNG::Feature::Common::MergeFile::Feature.new(self, path, dest)
           end
 
           alias :file :merge_file

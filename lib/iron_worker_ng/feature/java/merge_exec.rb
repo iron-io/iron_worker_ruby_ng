@@ -6,7 +6,9 @@ module IronWorkerNG
           attr_reader :path
           attr_reader :klass
 
-          def initialize(path, klass)
+          def initialize(code, path, klass)
+            super(code)
+
             unless File.exist?(path)
               IronCore::Logger.error 'IronWorkerNG', "Can't find java exec with path='#{path}'"
               raise IronCore::IronError.new("Can't find java exec with path='#{path}'")
@@ -40,7 +42,7 @@ module IronWorkerNG
               return
             end
 
-            @exec = IronWorkerNG::Feature::Java::MergeExec::Feature.new(path, klass)
+            @exec = IronWorkerNG::Feature::Java::MergeExec::Feature.new(self, path, klass)
 
             IronCore::Logger.info 'IronWorkerNG', "Merging java exec with path='#{path}' and class='#{klass}'"
 

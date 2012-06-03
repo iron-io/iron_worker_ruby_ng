@@ -8,7 +8,9 @@ module IronWorkerNG
           attr_reader :path
           attr_reader :dest
 
-          def initialize(path, dest)
+          def initialize(code, path, dest)
+            super(code)
+
             unless Dir.exist?(path)
               IronCore::Logger.error 'IronWorkerNG', "Can't find directory with path='#{path}'"
               raise IronCore::IronError.new("Can't find directory with path='#{path}'")
@@ -42,7 +44,7 @@ module IronWorkerNG
           def merge_dir(path, dest = '')
             IronCore::Logger.info 'IronWorkerNG', "Merging dir with path='#{path}' and dest='#{dest}'"
 
-            @features << IronWorkerNG::Feature::Common::MergeDir::Feature.new(path, dest)
+            @features << IronWorkerNG::Feature::Common::MergeDir::Feature.new(self, path, dest)
           end
 
           alias :dir :merge_dir

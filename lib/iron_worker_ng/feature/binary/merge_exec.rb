@@ -5,7 +5,9 @@ module IronWorkerNG
         class Feature < IronWorkerNG::Feature::Base
           attr_reader :path
 
-          def initialize(path)
+          def initialize(code, path)
+            super(code)
+
             unless File.exist?(path)
               IronCore::Logger.error 'IronWorkerNG', "Can't find binary exec with path='#{path}'"
               raise IronCore::IronError.new("Can't find binary exec with path='#{path}'")
@@ -34,7 +36,7 @@ module IronWorkerNG
               return
             end
 
-            @exec = IronWorkerNG::Feature::Binary::MergeExec::Feature.new(path)
+            @exec = IronWorkerNG::Feature::Binary::MergeExec::Feature.new(self, path)
 
             IronCore::Logger.info 'IronWorkerNG', "Merging binary exec with path='#{path}'"
 

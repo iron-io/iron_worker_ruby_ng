@@ -8,7 +8,9 @@ module IronWorkerNG
           attr_reader :path
           attr_reader :groups
 
-          def initialize(path, groups)
+          def initialize(code, path, groups)
+            super(code)
+
             @path = File.expand_path(path)
             @groups = groups
           end
@@ -31,7 +33,7 @@ module IronWorkerNG
               merge_gem(spec.name, spec.version.to_s)
             end
 
-            @features << IronWorkerNG::Feature::Ruby::MergeGemfile::Feature.new(path, groups)
+            @features << IronWorkerNG::Feature::Ruby::MergeGemfile::Feature.new(self, path, groups)
           end
 
           alias :gemfile :merge_gemfile
