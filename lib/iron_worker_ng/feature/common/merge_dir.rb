@@ -35,7 +35,7 @@ module IronWorkerNG
             IronCore::Logger.debug 'IronWorkerNG', "Bundling dir with path='#{@path}' and dest='#{@dest}'"
 
             Dir.glob(@path + '/**/**') do |path|
-              zip.add(@dest + File.basename(@path) + path[@path.length .. -1], path)
+              zip_add(zip, @dest + File.basename(@path) + path[@path.length .. -1], path)
             end
           end
         end

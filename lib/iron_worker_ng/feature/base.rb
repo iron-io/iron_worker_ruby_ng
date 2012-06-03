@@ -5,6 +5,10 @@ module IronWorkerNG
         @code = code
       end
 
+      def zip_add(zip, dest, src)
+        zip.add(dest, src)
+      end
+
       def hash_string
         ''
       end

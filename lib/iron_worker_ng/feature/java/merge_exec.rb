@@ -25,7 +25,7 @@ module IronWorkerNG
           def bundle(zip)
             IronCore::Logger.debug 'IronWorkerNG', "Bundling java exec with path='#{@path}' and class='#{@klass}'"
 
-            zip.add(File.basename(@path), @path)
+            zip_add(zip, File.basename(@path), @path)
           end
 
           def code_for_classpath
