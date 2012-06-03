@@ -12,23 +12,13 @@ module IronWorkerNG
       def bundle(zip)
         super(zip)
 
-        gempath_code_array = []
-      
-        @features.each do |f|
-          if f.respond_to?(:code_for_gempath)
-            gempath_code_array << f.send(:code_for_gempath)
-          end
-        end
-
-        gempath_code = gempath_code_array.join("\n")
-
         zip.get_output_stream('__runner__.rb') do |runner|
           runner.write <<RUBY_RUNNER
 # iron_worker_ng-#{IronWorkerNG.full_version}
 
 module IronWorkerNG
-  #{File.read(File.dirname(__FILE__) + '/../../3rdparty/hashie/merge_initializer.rb')}
-  #{File.read(File.dirname(__FILE__) + '/../../3rdparty/hashie/indifferent_access.rb')}
+#{File.read(File.dirname(__FILE__) + '/../../3rdparty/hashie/merge_initializer.rb')}
+#{File.read(File.dirname(__FILE__) + '/../../3rdparty/hashie/indifferent_access.rb')}
 end
 
 class IronWorkerNGHash < Hash
@@ -45,8 +35,6 @@ task_id = nil
   payload_file = $*[i + 1] if $*[i] == '-payload'
   task_id = $*[i + 1] if $*[i] == '-id'
 end
-
-#{gempath_code}
 
 ENV['GEM_PATH'] = ([root + '__gems__'] + (ENV['GEM_PATH'] || '').split(':')).join(':')
 
