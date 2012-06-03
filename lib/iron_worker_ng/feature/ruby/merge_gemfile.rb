@@ -11,7 +11,7 @@ module IronWorkerNG
           def initialize(code, path, groups)
             super(code)
 
-            @path = File.expand_path(path)
+            @path = path
             @groups = groups
           end
 

@@ -8,12 +8,7 @@ module IronWorkerNG
           def initialize(code, path)
             super(code)
 
-            unless File.exist?(path)
-              IronCore::Logger.error 'IronWorkerNG', "Can't find java jar with path='#{path}'"
-              raise IronCore::IronError.new("Can't find java jar with path='#{path}'")
-            end
-
-            @path = File.expand_path(path)
+            @path = path
           end
 
           def hash_string

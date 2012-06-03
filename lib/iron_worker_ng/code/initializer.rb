@@ -30,8 +30,6 @@ module IronWorkerNG
 
           wfiles.each do |wfile|
             if File.exists?(wfile)
-              IronCore::Logger.info 'IronWorkerNG', "Processing workerfile #{wfile}"
-
               eval(File.read(wfile))
 
               @base_dir = File.dirname(wfile) + '/'
