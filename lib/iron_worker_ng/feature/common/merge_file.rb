@@ -17,13 +17,13 @@ module IronWorkerNG
           end
 
           def hash_string
-            Digest::MD5.hexdigest(@path + @dest + File.mtime(@path).to_i.to_s)
+            Digest::MD5.hexdigest(@path + @dest + File.mtime(rebase(@path)).to_i.to_s)
           end
 
           def bundle(zip)
             IronCore::Logger.debug 'IronWorkerNG', "Bundling file with path='#{@path}' and dest='#{@dest}'"
 
-            zip_add(zip, @dest + File.basename(@path), @path)
+            zip_add(zip, @dest + File.basename(@path), rebase(@path))
           end
         end
 

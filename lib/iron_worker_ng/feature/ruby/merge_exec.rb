@@ -14,13 +14,13 @@ module IronWorkerNG
           end
 
           def hash_string
-            Digest::MD5.hexdigest(@path + @klass + File.mtime(@path).to_i.to_s)
+            Digest::MD5.hexdigest(@path + @klass + File.mtime(rebase(@path)).to_i.to_s)
           end
 
           def bundle(zip)
             IronCore::Logger.debug 'IronWorkerNG', "Bundling ruby exec with path='#{path}' and class='#{klass}'"
 
-            zip_add(zip, File.basename(@path), @path)
+            zip_add(zip, File.basename(@path), rebase(@path))
           end
         end
 

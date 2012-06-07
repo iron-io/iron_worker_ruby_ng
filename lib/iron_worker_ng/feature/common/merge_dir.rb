@@ -17,9 +17,9 @@ module IronWorkerNG
           end
 
           def hash_string
-            s = @path + @dest + File.mtime(@path).to_i.to_s
+            s = @path + @dest + File.mtime(rebase(@path)).to_i.to_s
 
-            Dir.glob(@path + '/**/**') do |path|
+            Dir.glob(rebase(@path) + '/**/**') do |path|
               s += path + File.mtime(path).to_i.to_s
             end
 
@@ -29,8 +29,8 @@ module IronWorkerNG
           def bundle(zip)
             IronCore::Logger.debug 'IronWorkerNG', "Bundling dir with path='#{@path}' and dest='#{@dest}'"
 
-            Dir.glob(@path + '/**/**') do |path|
-              zip_add(zip, @dest + File.basename(@path) + path[@path.length .. -1], path)
+            Dir.glob(rebase(@path) + '/**/**') do |path|
+              zip_add(zip, @dest + File.basename(@path) + path[rebase(@path).length .. -1], path)
             end
           end
         end
