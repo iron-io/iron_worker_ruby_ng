@@ -4,7 +4,7 @@ class CodeCreateTest < IWNGTest
 
   def test_create
     code = code_bundle('test/hello.rb')
-    assert_equal File.expand_path('test/hello.rb'), code.exec_path
+    assert_equal 'test/hello.rb', code.exec_path
     assert_equal 'Hello', code.name
 
     code = code_bundle(:name => 'asdfasdf')
@@ -12,7 +12,7 @@ class CodeCreateTest < IWNGTest
     assert_equal 'asdfasdf', code.name
 
     code = code_bundle(:exec => 'test/hello.rb', :name => 'dfdfd')
-    assert_equal File.expand_path('test/hello.rb'), code.exec_path
+    assert_equal 'test/hello.rb', code.exec_path
     assert_equal 'dfdfd', code.name
 
     code = code_bundle
