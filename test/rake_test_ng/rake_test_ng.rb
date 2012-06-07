@@ -55,14 +55,14 @@ before = run_tests.call
 
 SUMMARY_R = %r/(\d+) tests, (\d+) assertions, (\d+) failures, (\d+) errors, (\d+) skips/
 
-msg += "<pre>before:</pre> "
+msg += "before: "
 msg += "<a href=\"http://s3.amazonaws.com/abt-ng-logs/#{before}\">full log</a> "
 if log = File.read(before) and log =~ SUMMARY_R
   msg += $&
 end
 msg += "\n"
 
-msg += "<pre>after:  </pre>  "
+msg += "after: "
 msg += "<a href=\"http://s3.amazonaws.com/abt-ng-logs/#{after}\">full log</a> "
 if log = File.read(after) and pos = log =~ /^Finished in/
   res = log[pos .. -1]
