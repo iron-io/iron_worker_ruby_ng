@@ -3,8 +3,7 @@ require 'helpers'
 class WorkerfileTest < IWNGTest
 
   def workerfile(str)
-    dir = Dir.mktmpdir('workerfile_test')
-    File.open(dir + '/Workerfile', 'w'){ |f| f << str }.path
+    Tempfile.open('workerfile_test', '.'){ |f| f << str }
   end
 
   def test_basic
@@ -14,7 +13,7 @@ name 'ShHello'
 exec 'test/hello.sh'
 EOF
 
-    code = IronWorkerNG::Code::Creator.create(:workerfile => wf)
+    code = IronWorkerNG::Code::Creator.create(:workerfile => wf.path)
 
     client.codes.create(code)
 

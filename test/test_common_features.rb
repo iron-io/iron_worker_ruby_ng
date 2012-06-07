@@ -28,14 +28,16 @@ class CommonFeaturesTest < IWNGTest
   def test_missing_file
     assert_raise IronCore::IronError, "should check if merged file exists" do
       code_bundle('test') do
-        merge_dir('krumplumpl', 'test/data')
-      end
+        merge_file('krumplumpl', 'test/data')
+      end.create_zip
     end
+  end
 
+  def test_missing_dir
     assert_raise IronCore::IronError, "should check if merged dir exists" do
       code_bundle('test') do
         merge_dir('dir2', 'test/data')
-      end
+      end.create_zip
     end
   end
 
