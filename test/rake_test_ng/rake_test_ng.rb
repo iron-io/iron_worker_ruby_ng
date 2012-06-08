@@ -6,6 +6,8 @@ require 'cgi'
 
 push = JSON.parse(CGI::parse(payload)['payload'][0])
 
+exit(0) unless push[:ref] =~ /master/
+
 config = JSON.parse( File.read('.abt-ng-config'),
                      :symbolize_names => true )
 
