@@ -15,22 +15,26 @@ module IronWorkerNG
             merge_exec(exec) unless exec.nil?
           end
 
-          if args.length == 1 and (opts = args[0]).is_a? Hash and wfile = opts[:workerfile] || opts['workerfile']
-            IronCore::Logger.info 'IronWorkerNG', "Processing workerfile #{wfile}"
-            eval(File.read(File.expand_path wfile))
-          end
+          wfiles = []
 
-          wfiles = ['Workerfile']
+          if args.length == 1 && args[0].class == Hash && (args[0][:workerfile] || args[0]['workerfile'])
+            wfiles << args[0][:workerfile] || args[0]['workerfile']
+          end
 
           unless name.nil?
             wfiles << name + '.worker'
             wfiles << name + '.workerfile'
           end
 
+          wfiles << 'Workerfile'
+
           wfiles.each do |wfile|
             if File.exists?(wfile)
-              IronCore::Logger.info 'IronWorkerNG', "Processing workerfile #{wfile}"
               eval(File.read(wfile))
+
+              @base_dir = File.dirname(wfile) + '/'
+
+              break
             end
           end
 

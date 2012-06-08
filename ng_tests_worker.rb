@@ -1,2 +1,5 @@
 Dir.chdir 'iwng'
-exec 'rake -f test/Rakefile test'
+cmd = 'rake -f test/Rakefile test ' + params[:args]
+puts cmd
+STDOUT.flush
+exec cmd

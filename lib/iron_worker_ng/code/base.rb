@@ -9,6 +9,7 @@ module IronWorkerNG
   module Code
     class Base
       attr_reader :features
+      attr_accessor :base_dir
 
       @@registered_types = []
     
@@ -41,6 +42,7 @@ module IronWorkerNG
 
       def initialize(*args, &block)
         @features = []
+        @base_dir = './'
 
         initialize_code(*args, &block)
       end
@@ -107,11 +109,13 @@ module IronWorkerNG
 # iron_worker_ng-#{IronWorkerNG.full_version}
 
 root() {
-  while [ $# -gt 0 ]; do
+  while [ $# -gt 1 ]; do
     if [ "$1" = "-d" ]; then
-      printf "%s\n" "$2"
+      printf "%s" "$2"
       break
     fi
+
+    shift
   done
 }
 

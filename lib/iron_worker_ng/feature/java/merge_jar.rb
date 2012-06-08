@@ -5,23 +5,20 @@ module IronWorkerNG
         class Feature < IronWorkerNG::Feature::Base
           attr_reader :path
 
-          def initialize(path)
-            unless File.exist?(path)
-              IronCore::Logger.error 'IronWorkerNG', "Can't find java jar with path='#{path}'"
-              raise IronCore::IronError.new("Can't find java jar with path='#{path}'")
-            end
+          def initialize(code, path)
+            super(code)
 
-            @path = File.expand_path(path)
+            @path = path
           end
 
           def hash_string
-            Digest::MD5.hexdigest(@path + File.mtime(@path).to_i.to_s)
+            Digest::MD5.hexdigest(@path + File.mtime(rebase(@path)).to_i.to_s)
           end
 
           def bundle(zip)
             IronCore::Logger.debug 'IronWorkerNG', "Bundling java jar with path='#{@path}'"
 
-            zip.add(File.basename(@path), @path)
+            zip_add(zip, File.basename(@path), rebase(@path))
           end
 
           def code_for_classpath
@@ -33,7 +30,7 @@ module IronWorkerNG
           def merge_jar(path)
             IronCore::Logger.info 'IronWorkerNG', "Merging java jar with path='#{path}'"
 
-            @features << IronWorkerNG::Feature::Java::MergeJar::Feature.new(path)
+            @features << IronWorkerNG::Feature::Java::MergeJar::Feature.new(self, path)
           end
 
           alias :jar :merge_jar

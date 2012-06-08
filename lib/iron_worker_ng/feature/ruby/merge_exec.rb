@@ -6,24 +6,21 @@ module IronWorkerNG
           attr_reader :path
           attr_reader :klass
 
-          def initialize(path, klass)
-            unless File.exist?(path)
-              IronCore::Logger.error 'IronWorkerNG', "Can't find ruby exec with path='#{path}'"
-              raise IronCore::IronError.new("Can't find ruby exec with path='#{path}'")
-            end
+          def initialize(code, path, klass)
+            super(code)
 
-            @path = File.expand_path(path)
+            @path = path
             @klass = klass
           end
 
           def hash_string
-            Digest::MD5.hexdigest(@path + @klass + File.mtime(@path).to_i.to_s)
+            Digest::MD5.hexdigest(@path + @klass + File.mtime(rebase(@path)).to_i.to_s)
           end
 
           def bundle(zip)
             IronCore::Logger.debug 'IronWorkerNG', "Bundling ruby exec with path='#{path}' and class='#{klass}'"
 
-            zip.add(File.basename(@path), @path)
+            zip_add(zip, File.basename(@path), rebase(@path))
           end
         end
 
@@ -36,7 +33,7 @@ module IronWorkerNG
               return
             end
 
-            @exec = IronWorkerNG::Feature::Ruby::MergeExec::Feature.new(path, klass)
+            @exec = IronWorkerNG::Feature::Ruby::MergeExec::Feature.new(self, path, klass)
 
             IronCore::Logger.info 'IronWorkerNG', "Merging ruby exec with path='#{path}' and class='#{klass}'"
 

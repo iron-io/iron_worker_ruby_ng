@@ -27,10 +27,11 @@ gem install typhoeus
 
 # Creating A Worker
 
-Each IronWorkerNG Ruby worker is just Ruby code. It can be as simple or as complex as you want. For example, the following is an acceptable worker:
+Each IronWorkerNG Ruby worker is just Ruby code. It can be as simple or as complex as you want. For example, 
+the following is an acceptable worker:
 
 ```ruby
-puts "I'm worker"
+puts "Hello Worker!"
 puts "My task_id is #{@iron_worker_task_id}"
 puts "I got '#{params}' parameters"
 ```
@@ -39,15 +40,48 @@ All output to `STDOUT` will be logged and available for your review when your wo
 
 # Creating The Code Package
 
-Because your worker will be executed in the cloud, you'll need to bundle all the necessary gems, supplementary data, and other dependencies with it. `IronWorkerNG::Code::Ruby` makes this easy.
+Before you can run use IronWorker, be sure you've [created a free account with Iron.io](http://www.iron.io)
+and [setup your Iron.io credentials on your system](http://dev.iron.io/articles/configuration/) (either in a json 
+file or using ENV variables). You only need to do that once for your machine. If you've done that, then you can continue. 
+
+Since our worker will be executed in the cloud, you'll need to bundle all the necessary gems, 
+supplementary data, and other dependencies with it. `.worker` files make it easy to define your worker.
 
 ```ruby
-code = IronWorkerNG::Code::Ruby.new
+# define the runtime language, this can be ruby, java, node, php, go, etc. 
+runtime "ruby"
+# exec is the file that will be executed:
+exec "hello_worker.rb"
+```
 
-code.merge_exec 'my_worker.rb'
-code.merge_file '../lib/utils.rb'
-code.merge_dir '../config'
-code.merge_gem 'activerecord'
+You can read more about `.worker` files here: http://dev.iron.io/worker/reference/worker-files/
+
+## Uploading the Code Package
+
+If your .worker file is called `hello.worker`, then run: 
+
+    iron_worker upload hello
+
+This will upload your worker with the name "hello" so you can reference it like that when queuing up tasks for it.
+
+## Queue Up a Task for your Worker
+
+You can quicky queue up a task for your worker from the command line using:
+
+    iron_worker queue hello
+
+Use the `-p` parameter to pass in a payload:
+
+    iron_worker queue hello -p "{\"hi\": \"world\"}"
+
+Most commonly you'll be queuing up tasks from code though, so you can do this:
+
+```ruby
+require "iron_worker_ng"
+client = IronWorkerNG::Client.new
+100.times do 
+   client.tasks.create("hello", "foo"=>"bar")
+end
 ```
 
 ## IronWorkerNG::Code::Ruby API

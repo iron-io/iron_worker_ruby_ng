@@ -3,6 +3,7 @@ require 'test/unit'
 require 'tempfile'
 
 require_relative '../lib/iron_worker_ng'
+require_relative 'iron_io_config.rb'
 
 def code_bundle(*args,&block)
   code = IronWorkerNG::Code::Ruby.new(*args)

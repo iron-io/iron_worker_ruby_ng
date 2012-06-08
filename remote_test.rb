@@ -13,6 +13,7 @@ end
 $LOAD_PATH.unshift 'lib'
 
 require 'iron_worker_ng'
+require_relative 'test/iron_io_config.rb'
 
 client = IronWorkerNG::Client.new
 
@@ -33,7 +34,7 @@ puts client.codes.create(code)
 
 puts code.create_zip
 
-task = client.tasks.create 'NgTestsWorker'
+task = client.tasks.create 'NgTestsWorker', args: $*.join(' ')
 
 client.tasks.wait_for task.id
 
