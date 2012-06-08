@@ -14,6 +14,7 @@ class WorkerFile
   attr_accessor :wname
   attr_accessor :exec_file
   attr_accessor :files
+  attr_accessor :build_command
 
   def initialize(raw)
     @files = []
@@ -39,6 +40,13 @@ class WorkerFile
     @files << s
   end
 
+  def build_command(s=nil)
+    if s
+      @build_command = s
+    end
+    @build_command
+  end
+
 end
 
 
@@ -47,6 +55,10 @@ code = nil
 def get_code_by_runtime(runtime)
   if runtime == "ruby"
     return IronWorkerNG::Code::Ruby.new()
+  elsif runtime == "binary"
+    return IronWorkerNG::Code::Binary.new()
+  else
+    raise "No runtime found for #{runtime}!"
   end
 end
 
@@ -68,13 +80,21 @@ if params['worker_file_url']
     endpoint_dir = File.dirname(raw_url)
     puts "endpoint_dir: " + endpoint_dir
 
-    get_files = worker_file.files + [worker_file.exec_file]
+    get_files = worker_file.files
+    unless worker_file.build_command
+      # need to build first, exec isn't on server
+      get_files += [worker_file.exec_file]
+    end
     get_files.each do |f|
       open(f, 'w') do |file|
         url = "#{endpoint_dir}/#{f}"
         puts "Getting #{url}"
         file << open(url).read
       end
+    end
+
+    if worker_file.build_command
+      puts `#{worker_file.build_command}`
     end
 
     code = get_code_by_runtime(worker_file.wruntime)
