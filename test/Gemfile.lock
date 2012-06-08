@@ -7,7 +7,7 @@ GEM
       bundler (> 1.0.0)
       rest
       rest-client
-    iron_worker_ng (0.5.1)
+    iron_worker_ng (0.6.0)
       bundler (> 1.0.0)
       iron_core
       zip
@@ -25,7 +25,7 @@ GEM
     rest-client (1.6.7)
       mime-types (>= 1.16)
     slop (2.4.4)
-    test-unit (2.4.8)
+    test-unit (2.5.0)
     zip (2.0.2)
 
 PLATFORMS
