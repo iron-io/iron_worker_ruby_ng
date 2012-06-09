@@ -66,6 +66,13 @@ def iron_task_id
   @iron_task_id
 end
 
+begin
+  # load bundle if it's here
+  require_relative 'bundle/bundler/setup'
+  puts "loaded standalone bundle"
+rescue LoadError => ex
+end
+
 require '#{File.basename(@exec.path)}'
 
 unless #{@exec.klass == nil}

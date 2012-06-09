@@ -10,14 +10,16 @@ puts `ls -al`
 
 class WorkerFile
 
-  attr_accessor :wruntime
-  attr_accessor :wname
-  attr_accessor :exec_file
-  attr_accessor :files
-  attr_accessor :build_command
+  attr_accessor :wruntime,
+                :wname,
+                :exec_file,
+                :files,
+                :gems,
+                :build_command
 
   def initialize(raw)
     @files = []
+    @gems = []
 
     puts 'evaling'
     eval(raw)
@@ -38,6 +40,10 @@ class WorkerFile
 
   def file(s)
     @files << s
+  end
+
+  def gem(s)
+    @gems << s
   end
 
   def build_command(s=nil)
@@ -93,11 +99,30 @@ if params['worker_file_url']
       end
     end
 
+    code = get_code_by_runtime(worker_file.wruntime)
+
+    if worker_file.gems && worker_file.gems.size > 0
+      open("Gemfile", 'w') do |gemfile|
+        gemfile << "source 'http://rubygems.org'\n"
+        worker_file.gems.each do |gem|
+          gemfile << "gem '#{gem}'\n"
+        end
+      end
+
+      puts `ls -al`
+
+      # now build bundle
+      puts "building bundle"
+      puts `bundle install --standalone`
+      code.merge_dir 'bundle'
+    end
+
+
     if worker_file.build_command
       puts `#{worker_file.build_command}`
     end
 
-    code = get_code_by_runtime(worker_file.wruntime)
+
     code.name = params['name'] || worker_file.wname
     code.merge_exec worker_file.exec_file
     worker_file.files.each do |f|
