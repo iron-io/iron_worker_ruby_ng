@@ -14,6 +14,8 @@ module IronWorkerNG
       end
 
       def zip_add(zip, dest, src)
+        src = File.expand_path(src)
+
         unless File.exists?(src)
           IronCore::Logger.error 'IronWorkerNG', "Can't find src with path='#{src}'"
           raise IronCore::IronError.new("Can't find src with path='#{src}'")

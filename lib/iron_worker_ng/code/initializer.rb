@@ -32,7 +32,7 @@ module IronWorkerNG
             if File.exists?(wfile)
               eval(File.read(wfile))
 
-              @base_dir = File.dirname(wfile) + '/'
+              @base_dir = File.dirname(wfile) == '.' ? '' : File.dirname(wfile) + '/'
 
               break
             end
