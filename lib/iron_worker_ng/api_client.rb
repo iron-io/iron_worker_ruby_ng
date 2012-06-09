@@ -82,9 +82,6 @@ module IronWorkerNG
     end
 
     def schedules_create(code_name, payload, options = {})
-      raise "Seems you pass schedule options in payload param!" if
-        %w(run_every end_at run_times priority start_at).any? { |x| payload[x] or payload[x.to_sym] } and options.empty?
-
       options[:start_at] = options[:start_at].iso8601 if (not options[:start_at].nil?) && options[:start_at].class == Time
       options[:end_at] = options[:end_at].iso8601 if (not options[:end_at].nil?) && options[:end_at].class == Time
 
