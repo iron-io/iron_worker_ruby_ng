@@ -1,7 +1,8 @@
+gem 'test-unit'
 require 'test/unit'
 require 'tempfile'
 
-require './lib/iron_worker_ng.rb'
+require_relative '../lib/iron_worker_ng'
 require_relative 'iron_io_config.rb'
 
 def code_bundle(*args,&block)
@@ -31,7 +32,7 @@ def inspect_zip(code)
   File.unlink zip_file
 end
 
-IronCore::Logger.logger.level = ::Logger::DEBUG
+#IronCore::Logger.logger.level = ::Logger::DEBUG
 
 class IWNGTest < Test::Unit::TestCase
   attr_accessor :client

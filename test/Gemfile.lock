@@ -1,11 +1,3 @@
-PATH
-  remote: ..
-  specs:
-    iron_worker_ng (0.5.0)
-      bundler (> 1.0.0)
-      iron_core
-      zip
-
 GEM
   remote: http://rubygems.org/
   specs:
@@ -15,11 +7,15 @@ GEM
       bundler (> 1.0.0)
       rest
       rest-client
+    iron_worker_ng (0.6.0)
+      bundler (> 1.0.0)
+      iron_core
+      zip
     jeweler2 (2.0.9)
       git (>= 1.2.5)
     method_source (0.7.1)
     mime-types (1.18)
-    pry (0.9.9.4)
+    pry (0.9.9.6)
       coderay (~> 1.0.5)
       method_source (~> 0.7.1)
       slop (>= 2.4.4, < 3)
@@ -29,12 +25,14 @@ GEM
     rest-client (1.6.7)
       mime-types (>= 1.16)
     slop (2.4.4)
+    test-unit (2.5.0)
     zip (2.0.2)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  iron_worker_ng!
+  iron_worker_ng
   jeweler2
   pry
+  test-unit
