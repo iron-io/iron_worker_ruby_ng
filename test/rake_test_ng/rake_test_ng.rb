@@ -4,17 +4,20 @@ require 'tmpdir'
 require 'json'
 require 'cgi'
 
-push = JSON.parse(CGI::parse(payload)['payload'][0])
+push = JSON.parse(CGI::parse(payload)['payload'][0], :symbolize_names => true)
 
-exit(0) unless push[:ref] =~ /master/
+if push[:ref] !~ /master/
+  puts 'Commit not to master branch -- ignoring.'
+  exit(0)
+end
 
 config = JSON.parse( File.read('.abt-ng-config'),
                      :symbolize_names => true )
 
-msg = "#{push['pusher']['name']} have pushed:\n" +
-  ( push['commits'].map do |c|
-      "<a href=\"#{c['url']}\">#{ CGI::escapeHTML(c['message']) }</a>" +
-        " by #{c['author']['name']}"
+msg = "#{push[:pusher][:name]} have pushed:\n" +
+  ( push[:commits].map do |c|
+      "<a href=\"#{c[:url]}\">#{ CGI::escapeHTML(c[:message]) }</a>" +
+        " by #{c[:author][:name]}"
     end.join("\n") )
 msg += "\n"
 
@@ -52,7 +55,7 @@ run_tests = Proc.new do
 end
 
 after = run_tests.call
-puts `git checkout #{push['before']}`
+puts `git checkout #{push[:before]}`
 before = run_tests.call
 
 SUMMARY_R = %r/(\d+) tests, (\d+) assertions, (\d+) failures, (\d+) errors, (\d+) skips/
@@ -75,7 +78,7 @@ if log = File.read(after) and pos = log =~ /^Finished in/
   msg += ' <pre>' + CGI::escapeHTML(res) + ' </pre>'
   msg = msg.gsub( %r|#{Dir.pwd}/(.*):(\d+)|,
                   '<a href="https://github.com/iron-io/iron_worker_ruby_ng/' +
-                  'blob/' + push['after'] + '/\1#L\2">\0</a>' )
+                  'blob/' + push[:after] + '/\1#L\2">\0</a>' )
 end
 
 msg = msg.gsub(/\n+/,"<br>")
