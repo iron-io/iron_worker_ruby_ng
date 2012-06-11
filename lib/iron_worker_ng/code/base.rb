@@ -12,28 +12,23 @@ module IronWorkerNG
       attr_reader :features
       attr_accessor :base_dir
 
-      @@registered_types = []
+      @registered_types = []
+      @registered_features = []
 
-      def self.registered_types
-        @@registered_types
-      end
+      class << self
+        attr_reader :registered_types, :registered_features
 
-      def self.register_type(type)
-        @@registered_types << type
-      end
+        def register_type(type)
+          @registered_types << type
+        end
 
-      @@registered_features = []
+        def register_feature(feature)
+          @registered_features << feature
+        end
 
-      def self.registered_features
-        @@registered_features
-      end
-
-      def self.register_feature(feature)
-        @@registered_features << feature
-      end
-
-      def self.guess_name_for_path(path)
-        File.basename(path).gsub(/\..*$/, '').capitalize.gsub(/_./) { |x| x[1].upcase }
+        def guess_name_for_path(path)
+          File.basename(path).gsub(/\..*$/, '').capitalize.gsub(/_./) { |x| x[1].upcase }
+        end
       end
 
       include IronWorkerNG::Code::Initializer::InstanceMethods
