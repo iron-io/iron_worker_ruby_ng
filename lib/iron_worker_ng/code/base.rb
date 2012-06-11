@@ -1,4 +1,5 @@
 require 'tmpdir'
+require 'set'
 require 'zip/zip'
 
 require_relative '../feature/base'
@@ -12,21 +13,21 @@ module IronWorkerNG
       attr_accessor :base_dir
 
       @@registered_types = []
-    
+
       def self.registered_types
         @@registered_types
       end
-    
+
       def self.register_type(type)
         @@registered_types << type
       end
 
       @@registered_features = []
-    
+
       def self.registered_features
         @@registered_features
       end
-    
+
       def self.register_feature(feature)
         @@registered_features << feature
       end
@@ -41,7 +42,7 @@ module IronWorkerNG
       include IronWorkerNG::Feature::Common::MergeDir::InstanceMethods
 
       def initialize(*args, &block)
-        @features = []
+        @features = Set.new
         @base_dir = ''
 
         initialize_code(*args, &block)
