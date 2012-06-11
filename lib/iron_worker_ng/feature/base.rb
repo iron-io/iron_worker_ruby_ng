@@ -21,7 +21,13 @@ module IronWorkerNG
           raise IronCore::IronError.new("Can't find src with path='#{src}'")
         end
 
-        zip.add(dest, src)
+        if File.directory?(src)
+          Dir.glob(src + '/**/**') do |path|
+            zip.add(dest + path[src.length .. -1], path)
+          end
+        else
+          zip.add(dest, src)
+        end
       end
 
       def hash_string

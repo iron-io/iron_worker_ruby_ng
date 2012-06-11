@@ -46,10 +46,6 @@ module IronWorkerNG
 
               zip_add(zip, '__gems__/gems/' + @spec.full_name, gem_path)
               zip_add(zip, "__gems__/specifications/#{@spec.full_name}.gemspec", File.expand_path(gem_path + '/../../specifications/' + @spec.full_name + '.gemspec'))
-
-              Dir.glob(gem_path + '/**/**') do |path|
-                zip_add(zip, '__gems__/gems/' + @spec.full_name + path[gem_path.length .. -1], path)
-              end
             else
               IronCore::Logger.warn 'IronWorkerNG', "Skipping ruby gem with name='#{@spec.name}' and version='#{@spec.version}' as it contains native extensions"
             end
