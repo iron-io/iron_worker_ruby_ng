@@ -4,7 +4,7 @@ require 'zip/zip'
 class CommonFeaturesTest < IWNGTest
 
   def test_merge_file
-    code = code_bundle('test') do
+    code = code_bundle do
       merge_file('test', 'test/data/dir2')
       merge_exec('test/hello.rb')
     end
@@ -15,7 +15,7 @@ class CommonFeaturesTest < IWNGTest
   end
 
   def test_merge_file_no_dest
-    code = code_bundle('test') do
+    code = code_bundle do
       merge_file('Gemfile')
       merge_exec('test/hello.rb')
     end
@@ -27,7 +27,7 @@ class CommonFeaturesTest < IWNGTest
 
   def test_missing_file
     assert_raise IronCore::IronError, "should check if merged file exists" do
-      code_bundle('test') do
+      code_bundle do
         merge_file('krumplumpl', 'test/data')
       end.create_zip
     end
@@ -35,14 +35,14 @@ class CommonFeaturesTest < IWNGTest
 
   def test_missing_dir
     assert_raise IronCore::IronError, "should check if merged dir exists" do
-      code_bundle('test') do
+      code_bundle do
         merge_dir('dir2', 'test/data')
       end.create_zip
     end
   end
 
   def test_merge_dir
-    code = code_bundle('test') do
+    code = code_bundle do
       merge_dir('test/data/dir2', 'test/data')
       merge_exec('test/hello.rb')
     end
@@ -53,7 +53,7 @@ class CommonFeaturesTest < IWNGTest
   end
 
   def test_merge_dir_no_dest
-    code = code_bundle('test') do
+    code = code_bundle do
       merge_dir('test')
       merge_exec('test/hello.rb')
     end
