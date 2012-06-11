@@ -5,7 +5,7 @@ class CommonFeaturesTest < IWNGTest
 
   def test_merge_file
     code = code_bundle do
-      merge_file('test', 'test/data/dir2')
+      merge_file('test/data/dir2/test', 'test/data/dir2')
       merge_exec('test/hello.rb')
     end
 
@@ -61,6 +61,26 @@ class CommonFeaturesTest < IWNGTest
     inspect_zip(code) do |zip|
       assert zip.find_entry('test/hello.rb')
     end
+  end
+
+  def test_wrong_merges
+    def check(msg, &block)
+      assert_raise IronCore::IronError, msg do
+        code_bundle(&block).create_zip
+      end
+    end
+
+    check "should check if merged file is a regular file" do
+      file 'test'
+      exec 'test/hello.rb'
+    end
+
+    check "should check if merged dir is a dir" do
+      dir 'Gemfile'
+      exec 'test/hello.rb'
+    end
+
+    check("should check if merged exec is a file"){ exec 'test' }
   end
 
   def test_symlinks
