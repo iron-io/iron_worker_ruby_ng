@@ -4,8 +4,8 @@ require 'zip/zip'
 class CommonFeaturesTest < IWNGTest
 
   def test_merge_file
-    code = code_bundle('test') do
-      merge_file('test', 'test/data/dir2')
+    code = code_bundle do
+      merge_file('test/data/dir2/test', 'test/data/dir2')
       merge_exec('test/hello.rb')
     end
 
@@ -15,7 +15,7 @@ class CommonFeaturesTest < IWNGTest
   end
 
   def test_merge_file_no_dest
-    code = code_bundle('test') do
+    code = code_bundle do
       merge_file('Gemfile')
       merge_exec('test/hello.rb')
     end
@@ -27,7 +27,7 @@ class CommonFeaturesTest < IWNGTest
 
   def test_missing_file
     assert_raise IronCore::IronError, "should check if merged file exists" do
-      code_bundle('test') do
+      code_bundle do
         merge_file('krumplumpl', 'test/data')
       end.create_zip
     end
@@ -35,14 +35,14 @@ class CommonFeaturesTest < IWNGTest
 
   def test_missing_dir
     assert_raise IronCore::IronError, "should check if merged dir exists" do
-      code_bundle('test') do
+      code_bundle do
         merge_dir('dir2', 'test/data')
       end.create_zip
     end
   end
 
   def test_merge_dir
-    code = code_bundle('test') do
+    code = code_bundle do
       merge_dir('test/data/dir2', 'test/data')
       merge_exec('test/hello.rb')
     end
@@ -53,7 +53,7 @@ class CommonFeaturesTest < IWNGTest
   end
 
   def test_merge_dir_no_dest
-    code = code_bundle('test') do
+    code = code_bundle do
       merge_dir('test')
       merge_exec('test/hello.rb')
     end
@@ -61,6 +61,26 @@ class CommonFeaturesTest < IWNGTest
     inspect_zip(code) do |zip|
       assert zip.find_entry('test/hello.rb')
     end
+  end
+
+  def test_wrong_merges
+    def check(msg, &block)
+      assert_raise IronCore::IronError, msg do
+        code_bundle(&block).create_zip
+      end
+    end
+
+    check "should check if merged file is a regular file" do
+      file 'test'
+      exec 'test/hello.rb'
+    end
+
+    check "should check if merged dir is a dir" do
+      dir 'Gemfile'
+      exec 'test/hello.rb'
+    end
+
+    check("should check if merged exec is a file"){ exec 'test' }
   end
 
   def test_symlinks
