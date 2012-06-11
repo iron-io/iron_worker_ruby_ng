@@ -23,8 +23,12 @@ command = 'tasks.create' if command == 'queue'
 command = 'schedules.create' if command == 'schedule'
 command = 'tasks.log' if command == 'log'
 
-if level = ENV['LOG_LEVEL']
-  IronCore::Logger.logger.level = eval "::Logger::#{level}"
+IronCore::Logger.logger.datetime_format = ''
+
+if $*.include?('--debug')
+  IronCore::Logger.logger.level = ::Logger::DEBUG
+
+  $*.reject! { |p| p == '--debug' }
 end
 
 client = IronWorkerNG::Client.new
