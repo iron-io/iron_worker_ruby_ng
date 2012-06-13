@@ -23,8 +23,8 @@ code = IronWorkerNG::Code::Ruby.new do
   gemfile 'test/Gemfile'
 
   Dir.glob('*').each do |p|
-    dir p, 'iwng'  if Dir.exist? p
-    file p, 'iwng' if File.exist? p
+    dir  p, 'iwng' if File.directory?  p
+    file p, 'iwng' if File.file? p
   end
 
   iron_io_config 'iwng'
