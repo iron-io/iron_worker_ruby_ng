@@ -9,15 +9,16 @@ class CLITest < IWNGTest
       end
     end
 
+    args << '--debug'
+
     out = Tempfile.new('cli_output').path
     args << "2>&1 >#{out}"
 
-    cmd = 'ruby test/cli_runner.rb ' + args.join(' ')
+    cmd = 'ruby -Ilib bin/iron_worker ' + args.join(' ')
     puts cmd
 
     puts "----------------------------------------------------------"
 
-    ENV['LOG_LEVEL'] = 'DEBUG'
     exec(cmd) if fork.nil?
     Process.wait
 
