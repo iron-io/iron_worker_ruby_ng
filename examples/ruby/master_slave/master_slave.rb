@@ -3,28 +3,25 @@ require 'iron_worker_ng'
 # initializing client object
 client = IronWorkerNG::Client.new
 
+root = File.dirname(__FILE__)
+
 # create master code bundle
-master = IronWorkerNG::Code::Ruby.new
-master.merge_exec(File.dirname(__FILE__) + '/master_worker.rb')
-master.merge_gem('iron_worker_ng') # we need it to queue slave workers
+master = IronWorkerNG::Code::Ruby.new :workerfile => "#{root}/master.worker"
 
 # create slave code bundle
-slave = IronWorkerNG::Code::Ruby.new
-slave.merge_exec(File.dirname(__FILE__) + '/slave_worker.rb')
+slave = IronWorkerNG::Code::Ruby.new :workerfile => "#{root}/slave.worker"
 
 # upload both
 client.codes.create(master)
 client.codes.create(slave)
 
+# client.api.options is a hash containing iron.io *token*,
+# *project_id* and other connection-related info
+payload = client.api.options.merge(:args => [ [1, 2, 3],
+                                              [4, 5, 6],
+                                              [7, 8, 9] ])
 # run master task
-task_id = client.tasks.create('MasterWorker',
-                              { 
-                                :token => client.api.token,
-                                :project_id => client.api.project_id,
-                                :args => [ [1, 2, 3],
-                                           [4, 5, 6],
-                                           [7, 8, 9] ]
-                              }).id
+task_id = client.tasks.create('MasterWorker', payload).id
 
 # wait for the task to finish
 client.tasks.wait_for(task_id)

@@ -26,6 +26,7 @@ module IronWorkerNG
     end
 
     def codes_get(id)
+      raise "Expecting id string, not #{id.class}" unless id.is_a? String
       parse_response(get("projects/#{@project_id}/codes/#{id}"))
     end
 
@@ -34,14 +35,17 @@ module IronWorkerNG
     end
 
     def codes_delete(id)
+      raise "Expecting id string, not #{id.class}" unless id.is_a? String
       parse_response(delete("projects/#{@project_id}/codes/#{id}"))
     end
 
     def codes_revisions(id, options = {})
+      raise "Expecting id string, not #{id.class}" unless id.is_a? String
       parse_response(get("projects/#{@project_id}/codes/#{id}/revisions", options))
     end
 
     def codes_download(id, options = {})
+      raise "Expecting id string, not #{id.class}" unless id.is_a? String
       parse_response(get("projects/#{@project_id}/codes/#{id}/download", options), false)
     end
 
@@ -50,6 +54,7 @@ module IronWorkerNG
     end
 
     def tasks_get(id)
+      raise "Expecting id string, not #{id.class}" unless id.is_a? String
       parse_response(get("projects/#{@project_id}/tasks/#{id}"))
     end
 
@@ -58,18 +63,22 @@ module IronWorkerNG
     end
 
     def tasks_cancel(id)
+      raise "Expecting id string, not #{id.class}" unless id.is_a? String
       parse_response(post("projects/#{@project_id}/tasks/#{id}/cancel"))
     end
 
     def tasks_cancel_all(code_id)
+      raise "Expecting id string, not #{id.class}" unless id.is_a? String
       parse_response(post("projects/#{@project_id}/codes/#{code_id}/cancel_all"))
     end
 
     def tasks_log(id)
+      raise "Expecting id string, not #{id.class}" unless id.is_a? String
       parse_response(get("projects/#{@project_id}/tasks/#{id}/log"), false)
     end
 
     def tasks_set_progress(id, options = {})
+      raise "Expecting id string, not #{id.class}" unless id.is_a? String
       parse_response(post("projects/#{@project_id}/tasks/#{id}/progress", options))
     end
 
@@ -78,6 +87,7 @@ module IronWorkerNG
     end
 
     def schedules_get(id)
+      raise "Expecting id string, not #{id.class}" unless id.is_a? String
       parse_response(get("projects/#{@project_id}/schedules/#{id}"))
     end
 
