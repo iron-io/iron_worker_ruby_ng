@@ -6,11 +6,7 @@ module IronWorkerNG
       end
 
       def rebase(path)
-        if not path.start_with?('/')
-          path = @code.base_dir + path
-        end
-
-        path
+        File.expand_path path, @code.base_dir
       end
 
       def zip_add(zip, dest, src)
