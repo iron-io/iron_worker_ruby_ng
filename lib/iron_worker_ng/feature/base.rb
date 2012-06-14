@@ -6,7 +6,7 @@ module IronWorkerNG
       end
 
       def rebase(path)
-        File.expand_path path, @code.base_dir
+        File.expand_path(path, @code.base_dir)
       end
 
       def zip_add(zip, dest, src)

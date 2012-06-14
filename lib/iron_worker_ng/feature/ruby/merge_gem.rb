@@ -24,13 +24,10 @@ module IronWorkerNG
           def gem_path
             path = @spec.full_gem_path
 
-            # when running under bundle exec it sometimes duplicates gem path suffix
-            
-            suffix_index = path.rindex('/gems/')
-            suffix = path[suffix_index .. -1]
+            # bundler fix 
 
-            if path.end_with?(suffix + suffix)
-              path = path[0 .. suffix_index - 1]
+            ['/gems//gems', '/gems/gems'].each do |bad_part|
+              path.gsub!(bad_part, '/gems')
             end
 
             path
