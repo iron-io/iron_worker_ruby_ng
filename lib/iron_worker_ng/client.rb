@@ -1,5 +1,6 @@
 require 'ostruct'
 require 'json'
+require 'base64'
 
 require_relative 'api_client'
 
@@ -91,6 +92,12 @@ module IronWorkerNG
       OpenStruct.new(res['tasks'][0])
     end
 
+    def tasks_create_legacy(code_name, params = {}, options = {})
+      res = @api.tasks_create(code_name, params_for_legacy(code_name, params), options)
+
+      OpenStruct.new(res['tasks'][0])
+    end
+
     def tasks_cancel(task_id)
       @api.tasks_cancel(task_id)
 
@@ -141,10 +148,34 @@ module IronWorkerNG
       OpenStruct.new(res['schedules'][0])
     end
 
+    def schedules_create_legacy(code_name, params = {}, options = {})
+      res = @api.schedules_create(code_name, params_for_legacy(code_name, params), options)
+
+      OpenStruct.new(res['schedules'][0])
+    end
+
     def schedules_cancel(schedule_id)
       @api.schedules_cancel(schedule_id)
 
       true
+    end
+
+    private
+
+    def params_for_legacy(code_name, params)
+      attrs = params
+
+      if params.class != String
+        attrs = {}
+        
+        params.keys.each do |k|
+          attrs['@' + k.to_s] = params[k]
+        end
+
+        attrs = attrs.to_json
+      end
+
+      {:class_name => code_name, :attr_encoded => Base64.encode64(attrs), :sw_config => {:project_id => project_id, :token => token}}.to_json
     end
   end
 end
