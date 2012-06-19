@@ -163,17 +163,17 @@ module IronWorkerNG
     private
 
     def params_for_legacy(code_name, params)
-      attrs = params
-
-      if params.class != String
-        attrs = {}
-        
-        params.keys.each do |k|
-          attrs['@' + k.to_s] = params[k]
-        end
-
-        attrs = attrs.to_json
+      if params.class == String
+        params = JSON.parse(params)
       end
+
+      attrs = {}
+        
+      params.keys.each do |k|
+        attrs['@' + k.to_s] = params[k]
+      end
+
+      attrs = attrs.to_json
 
       {:class_name => code_name, :attr_encoded => Base64.encode64(attrs), :sw_config => {:project_id => project_id, :token => token}}.to_json
     end
