@@ -26,8 +26,8 @@ module IronWorkerNG
 
             # bundler fix 
 
-            ['/gems//gems', '/gems/gems'].each do |bad_part|
-              path.gsub!(bad_part, '/gems')
+            ['/gems/' + @spec.full_name, '/gems'].each do |bad_part|
+              path.gsub!(bad_part + bad_part, bad_part)
             end
 
             path
