@@ -40,15 +40,16 @@ class IWNGTest < Test::Unit::TestCase
     @client = IronWorkerNG::Client.new
   end
 
-  def get_all_tasks
+  def get_all_tasks(options = { :from_time => (Time.now - 60 * 60).to_i })
     prev_level = IronCore::Logger.logger.level
     IronCore::Logger.logger.level = ::Logger::INFO
 
     result = []
     page = -1
     begin
-      tasks = client.tasks.list(:per_page => 100,
-                                :page => page += 1)
+      tasks = client.tasks.list({ :per_page => 100,
+                                  :page => page += 1
+                                }.merge(options))
       result += tasks
     end while tasks.size == 100
 
