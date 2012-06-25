@@ -44,7 +44,8 @@ class QuickRunTest < IWNGTest
     puts "actual start: ", Time.parse(task.start_time)
 
     # if fails, ensure local time is correct, try ntpdate
-    assert Time.parse(task.start_time) >= start
+    assert Time.parse(task.start_time) >= start,
+           "actual start is earlier than expected"
 
     assert Time.parse(task.start_time) + 10 <= Time.parse(task.end_time)
     assert_equal 'complete', task.status
