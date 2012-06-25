@@ -67,6 +67,8 @@ module IronWorkerNG
         @api.codes_create(builder_code_name, zip_file, 'sh', '__runner__.sh', options)
         builder_task_id = tasks.create(builder_code_name, :iron_token => token, :iron_project_id => project_id, :code_name => code.name, :codes_create_options => options.to_json).id
         tasks.wait_for(builder_task_id)
+
+        res = {} # TODO: fetch real res from build worker
       end
 
       File.unlink(zip_file)
