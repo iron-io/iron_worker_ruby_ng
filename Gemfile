@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'iron_core'
+gem 'iron_core', '>= 0.1.4'
 gem 'zip'
 gem 'bundler', '> 1.0.0'
 
