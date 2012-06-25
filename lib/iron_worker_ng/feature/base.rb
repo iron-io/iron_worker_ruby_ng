@@ -19,10 +19,10 @@ module IronWorkerNG
 
         if File.directory?(src)
           Dir.glob(src + '/**/**') do |path|
-            zip.add(dest + path[src.length .. -1], path)
+            zip.add(@code.dest_dir + dest + path[src.length .. -1], path)
           end
         else
-          zip.add(dest, src)
+          zip.add(@code.dest_dir + dest, src)
         end
       end
 

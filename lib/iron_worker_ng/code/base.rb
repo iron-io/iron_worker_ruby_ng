@@ -10,6 +10,7 @@ module IronWorkerNG
     class Base
       attr_reader :features
       attr_accessor :base_dir
+      attr_accessor :dest_dir
 
       @@registered_types = []
     
@@ -28,6 +29,8 @@ module IronWorkerNG
       end
     
       def self.register_feature(feature)
+        return if feature[:for_klass].to_s == 'IronWorkerNG::Code::Builder'
+
         @@registered_features << feature
       end
 
@@ -43,12 +46,13 @@ module IronWorkerNG
       def initialize(*args, &block)
         @features = []
         @base_dir = ''
+        @dest_dir = ''
 
         initialize_code(*args, &block)
       end
 
-      def name(code_name = nil)
-        @name = code_name if code_name
+      def name(name = nil)
+        @name = name if name
 
         if @name.nil? and @exec
           @name = IronWorkerNG::Code::Base.guess_name_for_path(@exec.path)
@@ -62,6 +66,16 @@ module IronWorkerNG
         @name = name
       end
 
+      def remote_build_command(remote_build_command = nil)
+        @remote_build_command = remote_build_command if remote_build_command
+
+        @remote_build_command
+      end
+
+      def remote_build_command=(remote_build_command)
+        @remote_build_command = remote_build_command
+      end
+
       def runtime(*args)
       end
 
@@ -70,7 +84,7 @@ module IronWorkerNG
 
       def fixate
         IronWorkerNG::Code::Base.registered_features.each do |rf|
-          if rf[:for_klass] == self.class && respond_to?(rf[:name] + '_fixate')
+          if (rf[:for_klass] == self.class || self.class == IronWorkerNG::Code::Builder) && respond_to?(rf[:name] + '_fixate')
             send(rf[:name] + '_fixate')
           end
         end
@@ -86,24 +100,9 @@ module IronWorkerNG
         @features.each do |feature|
           feature.bundle(zip)
         end
-      end
 
-      def create_zip
-        unless @exec
-          IronCore::Logger.error 'IronWorkerNG', 'No exec specified'
-          raise IronCore::IronError.new('No exec specified')
-        end
-
-        fixate
-
-        zip_name = Dir.tmpdir + '/' + Dir::Tmpname.make_tmpname("iron-worker-ng-", "code.zip")
-
-        IronCore::Logger.debug 'IronWorkerNG', "Creating code zip '#{zip_name}'"
-
-        Zip::ZipFile.open(zip_name, Zip::ZipFile::CREATE) do |zip|
-          bundle(zip)
-
-          zip.get_output_stream('__runner__.sh') do |runner|
+        unless self.class == IronWorkerNG::Code::Base
+          zip.get_output_stream(@dest_dir + '__runner__.sh') do |runner|
             runner.write <<RUNNER
 #!/bin/sh
 # iron_worker_ng-#{IronWorkerNG.full_version}
@@ -124,6 +123,42 @@ cd "$(root "$@")"
 #{run_code}
 RUNNER
           end
+        end
+      end
+
+      def create_zip
+        unless self.class == IronWorkerNG::Code::Base
+          unless @exec
+            IronCore::Logger.error 'IronWorkerNG', 'No exec specified'
+            raise IronCore::IronError.new('No exec specified')
+          end
+        end
+
+        fixate
+
+        zip_name = Dir.tmpdir + '/' + Dir::Tmpname.make_tmpname("iron-worker-ng-", "code.zip")
+
+        IronCore::Logger.debug 'IronWorkerNG', "Creating code zip '#{zip_name}'"
+
+        if @remote_build_command
+          @dest_dir = '__build__/'
+        end
+
+        Zip::ZipFile.open(zip_name, Zip::ZipFile::CREATE) do |zip|
+          bundle(zip)
+
+          if @remote_build_command
+            IronCore::Logger.info 'IronWorkerNG', 'Creating builder'
+
+            builder = IronWorkerNG::Code::Builder.new
+            builder.remote_build_command = @remote_build_command
+
+            builder.gem('iron_worker_ng')
+            builder.fixate
+
+            builder.bundle(zip)
+          end
+
         end
 
         zip_name

@@ -58,7 +58,17 @@ module IronWorkerNG
 
     def codes_create(code, options = {})
       zip_file = code.create_zip
-      res = @api.codes_create(code.name, zip_file, 'sh', '__runner__.sh', options)
+
+      if code.remote_build_command.nil?
+        res = @api.codes_create(code.name, zip_file, 'sh', '__runner__.sh', options)
+      else
+        builder_code_name = code.name + 'Builder'
+
+        @api.codes_create(builder_code_name, zip_file, 'sh', '__runner__.sh', options)
+        builder_task_id = tasks.create(builder_code_name, :iron_token => token, :iron_project_id => project_id, :code_name => code.name, :codes_create_options => options.to_json).id
+        tasks.wait_for(builder_task_id)
+      end
+
       File.unlink(zip_file)
 
       OpenStruct.new(res)

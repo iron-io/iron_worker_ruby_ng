@@ -4,6 +4,7 @@ require_relative 'ruby'
 require_relative 'java'
 require_relative 'node'
 require_relative 'binary'
+require_relative 'builder'
 
 module IronWorkerNG
   module Code
@@ -20,14 +21,20 @@ module IronWorkerNG
         initialize_code(*args, &block)
       end
 
-      def name(code_name = nil)
-        @name = code_name if code_name
+      def name(name = nil)
+        @name = name if name
 
         @name
       end
 
       def name=(name)
         @name = name
+      end
+
+      def remote_build_command(remote_build_command = nil)
+      end
+
+      def remote_build_command=(remote_build_command)
       end
 
       def runtime(*args)

@@ -12,7 +12,7 @@ module IronWorkerNG
       def bundle(zip)
         super(zip)
 
-        zip.get_output_stream('__runner__.rb') do |runner|
+        zip.get_output_stream(@dest_dir + '__runner__.rb') do |runner|
           runner.write <<RUBY_RUNNER
 # iron_worker_ng-#{IronWorkerNG.full_version}
 
