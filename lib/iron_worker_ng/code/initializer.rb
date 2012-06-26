@@ -45,8 +45,10 @@ module IronWorkerNG
           wfiles << 'Workerfile'
 
           wfiles.each do |wfile|
-            if File.exists?(wfile)
-              eval(File.read(wfile))
+            src, clean = IronWorkerNG::Fetcher.fetch(wfile)
+
+            unless src.nil?
+              eval(src)
 
               @base_dir = File.dirname(wfile) == '.' ? '' : File.dirname(wfile) + '/'
 

@@ -1,3 +1,5 @@
+require 'fileutils'
+
 module IronWorkerNG
   module Feature
     class Base
@@ -6,10 +8,12 @@ module IronWorkerNG
       end
 
       def rebase(path)
-        File.expand_path(path, @code.base_dir)
+        @code.base_dir + path
       end
 
       def zip_add(zip, dest, src)
+        src, clean = IronWorkerNG::Fetcher.fetch(src, true)
+
         src = File.expand_path(src)
 
         unless File.exists?(src)
@@ -23,6 +27,10 @@ module IronWorkerNG
           end
         else
           zip.add(@code.dest_dir + dest, src)
+        end
+
+        unless clean.nil?
+          FileUtils.rm_f(clean)
         end
       end
 
