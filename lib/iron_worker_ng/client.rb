@@ -65,10 +65,15 @@ module IronWorkerNG
         builder_code_name = code.name + 'Builder'
 
         @api.codes_create(builder_code_name, zip_file, 'sh', '__runner__.sh', options)
-        builder_task_id = tasks.create(builder_code_name, :iron_token => token, :iron_project_id => project_id, :code_name => code.name, :codes_create_options => options.to_json).id
-        tasks.wait_for(builder_task_id)
 
-        res = {} # TODO: fetch real res from build worker
+        builder_task_id = tasks.create(builder_code_name, :iron_token => token, :iron_project_id => project_id, :code_name => code.name, :codes_create_options => options.to_json).id
+        task = tasks.wait_for(builder_task_id)
+
+        if task.status != 'complete'
+          raise IronCore::IronError.new("Error while remote building: \"#{tasks.log(task.id)}\"")
+        end
+
+        res = JSON.parse(task.msg)
       end
 
       File.unlink(zip_file)

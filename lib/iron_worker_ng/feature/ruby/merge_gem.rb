@@ -42,7 +42,7 @@ module IronWorkerNG
               IronCore::Logger.debug 'IronWorkerNG', "Bundling ruby gem with name='#{@spec.name}' and version='#{@spec.version}'"
 
               zip_add(zip, '__gems__/gems/' + @spec.full_name, gem_path)
-              zip_add(zip, "__gems__/specifications/#{@spec.full_name}.gemspec", File.expand_path(gem_path + '/../../specifications/' + @spec.full_name + '.gemspec'))
+              zip_add(zip, "__gems__/specifications/#{@spec.full_name}.gemspec", gem_path + '/../../specifications/' + @spec.full_name + '.gemspec')
             else
               IronCore::Logger.warn 'IronWorkerNG', "Skipping ruby gem with name='#{@spec.name}' and version='#{@spec.version}' as it contains native extensions"
             end

@@ -34,10 +34,6 @@ module IronWorkerNG
         @@registered_features << feature
       end
 
-      def self.guess_name_for_path(path)
-        File.basename(path).gsub(/\..*$/, '').capitalize.gsub(/_./) { |x| x[1].upcase }
-      end
-
       include IronWorkerNG::Code::Initializer::InstanceMethods
 
       include IronWorkerNG::Feature::Common::MergeFile::InstanceMethods
@@ -53,11 +49,6 @@ module IronWorkerNG
 
       def name(name = nil)
         @name = name if name
-
-        if @name.nil? and @exec
-          @name = IronWorkerNG::Code::Base.guess_name_for_path(@exec.path)
-          IronCore::Logger.info 'IronWorkerNG', "defaulting name to #{@name}"
-        end
 
         @name
       end
@@ -131,6 +122,10 @@ RUNNER
           unless @exec
             IronCore::Logger.error 'IronWorkerNG', 'No exec specified'
             raise IronCore::IronError.new('No exec specified')
+          end
+
+          if @name.nil?
+            @name = guess_name_for_path(@exec.path)
           end
         end
 

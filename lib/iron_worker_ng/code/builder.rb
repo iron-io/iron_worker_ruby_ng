@@ -28,7 +28,7 @@ BUILDER_SH
 require 'iron_worker_ng'
 require 'json'
 
-puts `cd __build__ && sh ../__builder__.sh && cd ..`
+exit 1 unless system('cd __build__ && sh ../__builder__.sh && cd ..')
 
 Dir.chdir('__build__')
 
@@ -38,7 +38,9 @@ code.dir '.'
 
 client = IronWorkerNG::Client.new(:token => params[:iron_token], :project_id => params[:iron_project_id])
 
-client.codes.create(code, JSON.parse(params[:codes_create_options]))
+res = client.codes.create(code, JSON.parse(params[:codes_create_options]))
+
+client.tasks.set_progress(iron_task_id, :msg => res.marshal_dump.to_json)
 BUILDER_RUBY
         end
       end

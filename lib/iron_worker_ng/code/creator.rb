@@ -48,7 +48,7 @@ module IronWorkerNG
       end
 
       def merge_exec(path, *args)
-        @exec = path
+        @exec = OpenStruct.new(:path => path)
       end
 
       alias :exec :merge_exec
