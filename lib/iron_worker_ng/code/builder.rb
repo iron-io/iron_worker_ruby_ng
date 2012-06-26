@@ -3,6 +3,12 @@ require_relative '../feature/ruby/merge_gem'
 module IronWorkerNG
   module Code
     class Builder < IronWorkerNG::Code::Ruby
+      def initialize(*args, &block)
+        @features = []
+        @base_dir = ''
+        @dest_dir = ''
+      end
+
       def bundle(zip)
         @exec = IronWorkerNG::Feature::Ruby::MergeExec::Feature.new(self, '__builder__.rb', nil)
 
