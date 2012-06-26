@@ -35,4 +35,14 @@ class CodeCreateTest < IWNGTest
     assert resp.id =~ /[0-9a-f]{24}/, "has id"
   end
 
+  def test_block_init
+    i = 0
+    IronWorkerNG::Code::Creator.create do
+      exec 'test/hello.rb'
+      i += 1
+    end
+    assert_equal 1, i,
+                 "block should be executed once"
+  end
+
 end
