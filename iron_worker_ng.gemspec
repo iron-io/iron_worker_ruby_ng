@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = "iron_worker_ng"
-  s.version = "0.7.1"
+  s.version = "0.7.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Andrew Kirilenko", "Iron.io, Inc"]
@@ -45,6 +45,7 @@ Gem::Specification.new do |s|
     "lib/iron_worker_ng/feature/ruby/merge_exec.rb",
     "lib/iron_worker_ng/feature/ruby/merge_gem.rb",
     "lib/iron_worker_ng/feature/ruby/merge_gemfile.rb",
+    "lib/iron_worker_ng/fetcher.rb",
     "lib/iron_worker_ng/version.rb",
     "ng_tests_worker.rb",
     "remote_test.rb"
