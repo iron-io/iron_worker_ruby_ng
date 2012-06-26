@@ -12,14 +12,16 @@ module IronWorkerNG
       end
 
       def zip_add(zip, dest, src)
-        src, clean = IronWorkerNG::Fetcher.fetch(src, true)
+        new_src, clean = IronWorkerNG::Fetcher.fetch(src, true)
 
-        src = File.expand_path(src)
+        new_src = File.expand_path(new_src) unless new_src.nil?
 
-        unless File.exists?(src)
+        if new_src.nil? || (not File.exists?(new_src))
           IronCore::Logger.error 'IronWorkerNG', "Can't find src with path='#{src}'"
           raise IronCore::IronError.new("Can't find src with path='#{src}'")
         end
+
+        src = new_src
 
         if File.directory?(src)
           Dir.glob(src + '/**/**') do |path|
