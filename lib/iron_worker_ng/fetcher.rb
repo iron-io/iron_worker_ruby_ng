@@ -18,7 +18,7 @@ module IronWorkerNG
         response = http.request(Net::HTTP::Get.new(uri.request_uri))
 
         if response.kind_of?(Net::HTTPRedirection)
-          IronWorkerNG::Fetcher.fetch(response['location'], to_file)
+          return IronWorkerNG::Fetcher.fetch(response['location'], to_file)
         end
 
         if to_file
