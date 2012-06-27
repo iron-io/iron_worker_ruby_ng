@@ -13,7 +13,7 @@ name 'ShHello'
 exec 'test/hello.sh'
 EOF
 
-    code = IronWorkerNG::Code::Creator.create(:workerfile => wf.path)
+    code = IronWorkerNG::Code.new(:workerfile => wf.path)
 
     client.codes.create(code)
 

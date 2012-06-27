@@ -6,10 +6,10 @@ client = IronWorkerNG::Client.new
 root = File.dirname(__FILE__)
 
 # create master code bundle
-master = IronWorkerNG::Code::Ruby.new :workerfile => "#{root}/master.worker"
+master = IronWorkerNG::Code.new :workerfile => "#{root}/master.worker"
 
 # create slave code bundle
-slave = IronWorkerNG::Code::Ruby.new :workerfile => "#{root}/slave.worker"
+slave = IronWorkerNG::Code.new :workerfile => "#{root}/slave.worker"
 
 # upload both
 client.codes.create(master)
@@ -29,4 +29,4 @@ client.tasks.wait_for(task_id)
 # retriving task log
 log = client.tasks.log(task_id)
 
-#> log.lines.find{ |l| l =~ /Sum =/ } == "Sum = 45\n" -- correct result in log
+#> log =~ /^Sum = 45\n/ -- correct result in log

@@ -4,8 +4,10 @@ require 'iron_worker_ng'
 client = IronWorkerNG::Client.new
 
 # create ruby code bundle
-code = IronWorkerNG::Code::Ruby.new
-code.merge_exec(File.dirname(__FILE__) + '/hello_worker.rb')
+code = IronWorkerNG::Code.new do
+  runtime 'ruby'
+  exec(File.dirname(__FILE__) + '/hello_worker.rb')
+end
 
 # upload it to iron.io
 client.codes.create(code)

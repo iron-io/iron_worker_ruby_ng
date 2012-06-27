@@ -38,7 +38,7 @@ if command == 'codes.create'
     $*.unshift('-n')
   end
 
-  runtimes = IronWorkerNG::Code::Base.registered_types
+  runtimes = IronWorkerNG::Code.registered_types
   runtimes_help = runtimes[0][:name] + ' (default)' + (runtimes.size == 1 ? '' : ', ') + runtimes.map { |r| r[:name] }[1 .. -1].join(', ')
 
   features = []
@@ -58,10 +58,10 @@ if command == 'codes.create'
       name = v
     end
 
-    IronWorkerNG::Code::Base.registered_features.each do |f|
+    IronWorkerNG::Code.registered_features.each do |f|
       prefix = ''
 
-      if f[:for_klass] != IronWorkerNG::Code::Base
+      if f[:for_klass] != IronWorkerNG::Code
         prefix = runtimes.find { |r| r[:klass] == f[:for_klass] }[:name] + '-'
       end
 
@@ -78,16 +78,11 @@ if command == 'codes.create'
     exit 1
   end
 
-  code = nil
-
-  if runtime.nil?
-    code = IronWorkerNG::Code::Creator.create(:name => name) do
-      execute_features.each do |f|
-        send(f[:name], *f[:args])
-      end
-    end
-  else
-    code = runtimes.find { |r| r[:name] == runtime }[:klass].new(:name => name)
+  rt = runtime
+  nm = name
+  code = IronWorkerNG::Code.new do
+    runtime(rt ? rt : 'ruby')
+    name(nm)
   end
 
   execute_features.each do |f|

@@ -17,7 +17,9 @@ require_relative 'test/iron_io_config.rb'
 
 client = IronWorkerNG::Client.new
 
-code = IronWorkerNG::Code::Ruby.new do
+code = IronWorkerNG::Code.new do
+  runtime 'ruby'
+
   exec 'ng_tests_worker.rb'
   gemfile 'Gemfile'
   gemfile 'test/Gemfile'

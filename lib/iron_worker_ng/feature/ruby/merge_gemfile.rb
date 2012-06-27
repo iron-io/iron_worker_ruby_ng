@@ -39,7 +39,7 @@ module IronWorkerNG
           alias :gemfile :merge_gemfile
 
           def self.included(base)
-            IronWorkerNG::Code::Base.register_feature(:name => 'merge_gemfile', :for_klass => base, :args => 'PATH[,GROUP...]')
+            IronWorkerNG::Code.register_feature(:name => 'merge_gemfile', :for_klass => base, :args => 'PATH[,GROUP...]')
           end
         end
       end

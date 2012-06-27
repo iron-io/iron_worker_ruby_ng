@@ -14,18 +14,20 @@ client = IronWorkerNG::Client.new(# optinal
 path = File.dirname(__FILE__) + '/sample_worker.rb'
 
 # if not specified, name default to worker name converted from underscore to camel style
-code = IronWorkerNG::Code::Ruby.new do
+code = IronWorkerNG::Code.new do
   merge_exec path
 end
 #> code.name == 'SampleWorker'
 
 # still can pass name in constructor and exec
-code = IronWorkerNG::Code::Ruby.new(:name => 'transmogrify',
-                                    :exec => path)
+code = IronWorkerNG::Code.new do
+  name 'transmogrify'
+  exec path
+end
 #> code.name == 'transmogrify'
 
 # or in block (like other intance methods)
-code = IronWorkerNG::Code::Ruby.new do
+code = IronWorkerNG::Code.new do
   name 'transmogrify'
   merge_exec path
 end

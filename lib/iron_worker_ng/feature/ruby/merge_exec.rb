@@ -46,7 +46,7 @@ module IronWorkerNG
           alias :worker :merge_worker
 
           def self.included(base)
-            IronWorkerNG::Code::Base.register_feature(:name => 'merge_exec', :for_klass => base, :args => 'PATH[,CLASS]')
+            IronWorkerNG::Code.register_feature(:name => 'merge_exec', :for_klass => base, :args => 'PATH[,CLASS]')
           end
         end
       end

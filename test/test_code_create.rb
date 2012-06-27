@@ -37,7 +37,7 @@ class CodeCreateTest < IWNGTest
 
   def test_block_init
     i = 0
-    IronWorkerNG::Code::Creator.create do
+    IronWorkerNG::Code.new do
       exec 'test/hello.rb'
       i += 1
     end
