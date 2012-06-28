@@ -14,17 +14,17 @@ class CLITest < IWNGTest
     out = Tempfile.new('cli_output').path
     args << "2>&1 >#{out}"
 
-    cmd = 'ruby -Ilib bin/iron_worker ' + args.join(' ')
+    cmd = 'ruby -Ilib test/cli_runner.rb ' + args.join(' ')
     puts cmd
 
-    puts "----------------------------------------------------------"
+    puts "--- cli output begin -------------------------------------"
 
     exec(cmd) if fork.nil?
     Process.wait
 
     puts File.read(out)
 
-    puts "----------------------------------------------------------"
+    puts "--- cli output end ---------------------------------------"
 
     assert $?.success?
 
