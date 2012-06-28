@@ -35,7 +35,7 @@ Dir.chdir('__build__')
 
 code = IronWorkerNG::Code.new do
   runtime '#{src.runtime}'
-  name '#{src.code_name}'
+  name '#{src.name}'
   exec '#{src.exec}'
   dir '.'
 end
