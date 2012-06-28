@@ -45,4 +45,9 @@ class CLITest < IWNGTest
       /Scheduled/
   end
 
+  def test_workerfile
+    assert cli('upload', 'test/workers/wfile_paths/wfile_paths.worker') =~
+      /Upload successful/
+  end
+
 end

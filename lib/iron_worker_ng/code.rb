@@ -56,12 +56,7 @@ module IronWorkerNG
       wfiles = []
 
       if args.length == 1 && args[0].class == String
-        if args[0] =~ /(.*)\.worker(file)?$/
-          @name = File.basename($1)
-          wfiles << args[0]
-        else
-          merge_exec(args[0])
-        end
+        merge_exec(args[0])
       elsif args.length == 1 && args[0].class == Hash
         opt = args[0]
 
@@ -96,7 +91,7 @@ module IronWorkerNG
         src, clean = IronWorkerNG::Fetcher.fetch(wfile)
 
         unless src.nil?
-          IronWorkerNG::Logger.info "Using workerfile #{wfile}"
+          IronCore::Logger.info 'IronWorkerNG', "Using workerfile #{wfile}"
 
           eval(src)
 
