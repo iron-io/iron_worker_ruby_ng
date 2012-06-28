@@ -45,8 +45,11 @@ class CLITest < IWNGTest
       /Scheduled/
   end
 
-  def test_workerfile
+  def test_argument
     assert cli('upload', 'test/workers/wfile_paths/wfile_paths.worker') =~
+      /Upload successful/
+
+    assert cli('upload', 'krumplumpl', ruby_merge_exec: 'test/hello.rb') =~
       /Upload successful/
   end
 
