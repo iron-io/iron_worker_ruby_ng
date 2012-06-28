@@ -96,6 +96,8 @@ module IronWorkerNG
         src, clean = IronWorkerNG::Fetcher.fetch(wfile)
 
         unless src.nil?
+          IronWorkerNG::Logger.info "Using workerfile #{wfile}"
+
           eval(src)
 
           @base_dir = File.dirname(wfile) == '.' ? '' : File.dirname(wfile) + '/'
