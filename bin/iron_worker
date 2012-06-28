@@ -78,12 +78,8 @@ if command == 'codes.create'
     exit 1
   end
 
-  rt = runtime
-  nm = name
-  code = IronWorkerNG::Code.new do
-    runtime(rt ? rt : 'ruby')
-    name(nm)
-  end
+  code = IronWorkerNG::Code.new(:name => name,
+                                :runtime => runtime)
 
   execute_features.each do |f|
     code.send(f[:name], *f[:args])
