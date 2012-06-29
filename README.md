@@ -83,6 +83,12 @@ client = IronWorkerNG::Client.new
    client.tasks.create("hello", "foo"=>"bar")
 end
 ```
+### Debugging
+
+To get a bunch of extra output to debug things, turn it on using:
+
+    IronCore::Logger.logger.level = ::Logger::DEBUG
+
 
 ## IronWorkerNG::Code::Ruby API
 
