@@ -1,28 +1,29 @@
 require_relative '../feature/ruby/merge_gem'
 
 module IronWorkerNG
-  module Code
-    class Builder < IronWorkerNG::Code::Ruby
-      def initialize(*args, &block)
-        @features = []
-        @base_dir = ''
-        @dest_dir = ''
-      end
+  class Builder < Code
 
-      def bundle(zip)
-        @exec = IronWorkerNG::Feature::Ruby::MergeExec::Feature.new(self, '__builder__.rb', nil)
+    def initialize(src)
+      @features = []
+      @base_dir = ''
+      @dest_dir = ''
 
-        super(zip)
+      @name = nil
+      @exec = nil
 
-        zip.get_output_stream(@dest_dir + '__builder__.sh') do |builder|
-          builder.write <<BUILDER_SH
+      runtime 'ruby'
+
+      gem 'iron_worker_ng'
+
+      file(File.open(Dir.mktmpdir + '/__builder__.sh', 'w') do |f|
+             f <<<<BUILDER_SH
 # iron_worker_ng-#{IronWorkerNG.full_version}
-#{remote_build_command}
+#{src.remote_build_command}
 BUILDER_SH
-        end
+           end.path)
 
-        zip.get_output_stream(@dest_dir + '__builder__.rb') do |builder|
-          builder.write <<BUILDER_RUBY
+      exec(File.open(Dir.mktmpdir + '/__builder__.rb', 'w') do |f|
+             f <<<<BUILDER_RUBY
 # iron_worker_ng-#{IronWorkerNG.full_version}
 
 require 'iron_worker_ng'
@@ -32,9 +33,13 @@ exit 1 unless system('cd __build__ && sh ../__builder__.sh && cd ..')
 
 Dir.chdir('__build__')
 
-code = IronWorkerNG::Code::Base.new
-code.name params[:code_name]
-code.dir '.'
+code = IronWorkerNG::Code::Creator.create do
+  runtime 'binary'
+  name '#{src.name}'
+  `mv __runner__.sh __actual_runner__.sh`
+  exec '__actual_runner__.sh'
+  dir '.'
+end
 
 client = IronWorkerNG::Client.new(:token => params[:iron_token], :project_id => params[:iron_project_id])
 
@@ -42,8 +47,7 @@ res = client.codes.create(code, JSON.parse(params[:codes_create_options]))
 
 client.tasks.set_progress(iron_task_id, :msg => res.marshal_dump.to_json)
 BUILDER_RUBY
-        end
-      end
+           end.path)
     end
   end
 end

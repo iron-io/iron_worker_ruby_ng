@@ -28,8 +28,8 @@ module IronWorkerNG
     end
   end
 
-  module Code
-    class Ruby
+  module Runtime
+    module Ruby
       def iron_io_config(*args)
         dest = ''
         api = IronWorkerNG::Client.new.api

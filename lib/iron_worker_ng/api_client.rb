@@ -16,8 +16,8 @@ module IronWorkerNG
                      :api_version => 2,
                      :user_agent => IronWorkerNG.full_version})
 
-      if (not @token) || (not @project_id)
-        IronCore::Logger.error 'IronWorkerNG', 'Both token and project_id must be specified' 
+      unless [@token, @project_id].all? { |x| x and x =~ /^[0-9A-Za-z]{24,27}$/ }
+        IronCore::Logger.error 'IronWorkerNG', "Both token and project_id must be specified and valid (token: '#{@token}', project_id: '#{project_id}')"
         raise IronCore::IronError.new('Both token and project_id must be specified')
       end
     end
