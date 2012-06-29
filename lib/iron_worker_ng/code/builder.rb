@@ -15,15 +15,15 @@ module IronWorkerNG
 
       gem 'iron_worker_ng'
 
-      file(File.open(Dir.mktmpdir + '/__builder__.sh') do |f|
-             f <<BUILDER_SH
+      file(File.open(Dir.mktmpdir + '/__builder__.sh', 'w') do |f|
+             f <<<<BUILDER_SH
 # iron_worker_ng-#{IronWorkerNG.full_version}
 #{src.remote_build_command}
 BUILDER_SH
            end.path)
 
       exec(File.open(Dir.mktmpdir + '/__builder__.rb', 'w') do |f|
-             f <<BUILDER_RUBY
+             f <<<<BUILDER_RUBY
 # iron_worker_ng-#{IronWorkerNG.full_version}
 
 require 'iron_worker_ng'
@@ -33,10 +33,11 @@ exit 1 unless system('cd __build__ && sh ../__builder__.sh && cd ..')
 
 Dir.chdir('__build__')
 
-code = IronWorkerNG::Code.new do
-  runtime '#{src.runtime}'
+code = IronWorkerNG::Code::Creator.create do
+  runtime 'binary'
   name '#{src.name}'
-  exec '#{src.exec}'
+  `mv __runner__.sh __actual_runner__.sh`
+  exec '__actual_runner__.sh'
   dir '.'
 end
 

@@ -25,8 +25,10 @@ module IronWorkerNG
         end
 
         module InstanceMethods
-          def merge_exec(path, klass = nil)
+          def merge_exec(path = nil, klass = nil)
             @exec ||= nil 
+
+            return @exec unless path
 
             unless @exec.nil?
               IronCore::Logger.warn 'IronWorkerNG', "Ignoring attempt to merge ruby exec with path='#{path}' and class='#{klass}'"

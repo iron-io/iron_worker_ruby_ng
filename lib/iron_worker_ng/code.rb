@@ -216,6 +216,7 @@ RUNNER
         if @remote_build_command
           IronCore::Logger.info 'IronWorkerNG', 'Creating builder'
           builder = IronWorkerNG::Builder.new self
+          builder.fixate
           builder.bundle(zip)
         end
       end

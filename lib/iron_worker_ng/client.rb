@@ -77,7 +77,7 @@ module IronWorkerNG
           raise IronCore::IronError.new("Error while remote building: " + log)
         end
 
-        res = JSON.parse(task.msg)
+        res = JSON.parse(builder_task.msg)
       end
 
       File.unlink(zip_file)
