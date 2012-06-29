@@ -11,8 +11,6 @@ class BuilderTest < IWNGTest
       worker_code 'exec("./a.out")'
     end
 
-    puts code.create_zip
-
     start = Time.now
     client.codes.create(code)
     puts "uploading finished in #{(Time.now - start).to_i} seconds"
