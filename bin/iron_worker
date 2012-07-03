@@ -34,17 +34,14 @@ end
 client = IronWorkerNG::Client.new
 
 if command == 'codes.create'
-  if $*.size > 0 && $*[0][0] != '-'
-    $*.unshift('-n')
-  end
-
-  runtimes = IronWorkerNG::Code::Base.registered_types
+  runtimes = IronWorkerNG::Code.registered_types
   runtimes_help = runtimes[0][:name] + ' (default)' + (runtimes.size == 1 ? '' : ', ') + runtimes.map { |r| r[:name] }[1 .. -1].join(', ')
 
   features = []
 
   name = nil
   runtime = nil
+  wfile = nil
   execute_features = []
 
   opts = OptionParser.new do |opts|
@@ -58,10 +55,10 @@ if command == 'codes.create'
       name = v
     end
 
-    IronWorkerNG::Code::Base.registered_features.each do |f|
+    IronWorkerNG::Code.registered_features.each do |f|
       prefix = ''
 
-      if f[:for_klass] != IronWorkerNG::Code::Base
+      if f[:for_klass] != IronWorkerNG::Code
         prefix = runtimes.find { |r| r[:klass] == f[:for_klass] }[:name] + '-'
       end
 
@@ -78,17 +75,19 @@ if command == 'codes.create'
     exit 1
   end
 
-  code = nil
-
-  if runtime.nil?
-    code = IronWorkerNG::Code::Creator.create(:name => name) do
-      execute_features.each do |f|
-        send(f[:name], *f[:args])
-      end
+  unless $*.empty?
+    arg = $*.first
+    if arg =~ /(.*)\.worker(file)?$/
+      name ||= File.basename($1)
+      wfile = arg
+    else
+      name = arg
     end
-  else
-    code = runtimes.find { |r| r[:name] == runtime }[:klass].new(:name => name)
   end
+
+  code = IronWorkerNG::Code.new(:name => name,
+                                :runtime => runtime,
+                                :workerfile => wfile)
 
   execute_features.each do |f|
     code.send(f[:name], *f[:args])

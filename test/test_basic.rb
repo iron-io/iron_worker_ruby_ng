@@ -2,9 +2,11 @@ require 'helpers'
 
 class BasicTest < IWNGTest
   def test_basic
-    code = IronWorkerNG::Code::Ruby.new
-    code.name('test_basic')
-    code.merge_exec(File.dirname(__FILE__) + '/hello.rb')
+    code = IronWorkerNG::Code.new do
+      name 'test_basic'
+      exec(File.dirname(__FILE__) + '/hello.rb')
+    end
+
     client.codes_create(code)
     task_id = client.tasks_create('test_basic').id
 

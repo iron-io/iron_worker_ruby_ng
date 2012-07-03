@@ -21,11 +21,13 @@ class ChangeRuntimeTest < IWNGTest
   end
 
   def sh_worker(code_name)
-    c = IronWorkerNG::Code::Binary
-    client.codes_create c.new(:name => code_name,
-                              :exec => (Tempfile.open('sh') do |f|
-                                          f << 'echo "hello"'
-                                        end).path)
+    code = IronWorkerNG::Code.new do
+      runtime 'binary'
+      name code_name
+      exec(Tempfile.open('sh') do |f|
+             f << 'echo "hello"'
+           end.path)
+    end
 
     task = client.tasks.create(code_name)
     client.tasks.wait_for task.id

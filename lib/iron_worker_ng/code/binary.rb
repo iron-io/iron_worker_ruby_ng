@@ -1,8 +1,8 @@
 require_relative '../feature/binary/merge_exec'
 
 module IronWorkerNG
-  module Code
-    class Binary < IronWorkerNG::Code::Base
+  module Runtime
+    module Binary
       include IronWorkerNG::Feature::Binary::MergeExec::InstanceMethods
 
       def run_code
@@ -16,4 +16,4 @@ RUN_CODE
   end
 end
 
-IronWorkerNG::Code::Base.register_type(:name => 'binary', :klass => IronWorkerNG::Code::Binary)
+IronWorkerNG::Code.register_type(:name => 'binary', :klass => IronWorkerNG::Runtime::Binary)
