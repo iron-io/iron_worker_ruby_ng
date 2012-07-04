@@ -230,7 +230,7 @@ elsif command == 'tasks.log'
   if live
     begin
       log = client.tasks.log(task_id)
-    rescue IronCore::IronError
+    rescue IronCore::Error
     end
   else
     log = client.tasks.log(task_id)
@@ -245,7 +245,7 @@ elsif command == 'tasks.log'
           next_log = client.tasks.log(task_id)
           print next_log[log.length .. - 1]
           log = next_log
-        rescue IronCore::IronError
+        rescue IronCore::Error
         end
       end
     end
@@ -253,7 +253,7 @@ elsif command == 'tasks.log'
     begin
       next_log = client.tasks.log(task_id)
       print next_log[log.length .. - 1]
-    rescue IronCore::IronError
+    rescue IronCore::Error
     end
   end
 end

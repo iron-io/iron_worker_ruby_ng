@@ -141,7 +141,8 @@ module IronWorkerNG
     def runtime(runtime = nil)
       return @runtime unless runtime
 
-      raise "Runtime is already set to #{@runtime}" if @runtime
+      IronCore::Logger.error 'IronWorkerNG', "Runtime is already set to #{@runtime}", IronCore::Error if @runtime
+
       rt = Code.registered_types.find { |r| r[:name] == runtime }
       self.extend(rt[:klass])
 
@@ -192,8 +193,7 @@ RUNNER
 
     def create_zip
       unless @exec
-        IronCore::Logger.error 'IronWorkerNG', 'No exec specified'
-        raise IronCore::IronError.new('No exec specified')
+        IronCore::Logger.error 'IronWorkerNG', 'No exec specified', IronCore::Error
       end
 
       if @name.nil?

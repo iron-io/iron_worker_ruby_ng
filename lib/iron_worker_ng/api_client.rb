@@ -7,19 +7,25 @@ module IronWorkerNG
     AWS_US_EAST_HOST = 'worker-aws-us-east-1.iron.io'
 
     def initialize(options = {})
-      super('worker', options)
+      default_options = {
+        :scheme => 'https',
+        :host => IronWorkerNG::APIClient::AWS_US_EAST_HOST,
+        :port => 443,
+        :api_version => 2,
+        :user_agent => IronWorkerNG.full_version
+      }
 
-      load_from_hash('defaults', {
-                     :scheme => 'https',
-                     :host => IronWorkerNG::APIClient::AWS_US_EAST_HOST,
-                     :port => 443,
-                     :api_version => 2,
-                     :user_agent => IronWorkerNG.full_version})
+      super('iron', 'worker', options, default_options, [:project_id, :token, :api_version])
 
       unless [@token, @project_id].all? { |x| x and x =~ /^[0-9A-Za-z]{24,27}$/ }
-        IronCore::Logger.error 'IronWorkerNG', "Both token and project_id must be specified and valid (token: '#{@token}', project_id: '#{project_id}')"
-        raise IronCore::IronError.new('Both token and project_id must be specified')
+        IronCore::Logger.error 'IronWorkerNG', "Both token and project_id must be specified and valid (token: '#{@token}', project_id: '#{project_id}')", IronCore::Error
       end
+
+      @headers = {'Authorization' => "OAuth #{@token}"}
+    end
+
+    def url
+      super + @api_version.to_s + '/'
     end
 
     def codes_list(options = {})
@@ -27,26 +33,26 @@ module IronWorkerNG
     end
 
     def codes_get(id)
-      raise "Expecting id string, not #{id.class}" unless id.is_a? String
+      check_id(id)
       parse_response(get("projects/#{@project_id}/codes/#{id}"))
     end
 
     def codes_create(name, file, runtime, runner, options)
-      parse_response(post_file("projects/#{@project_id}/codes", File.new(file, 'rb'), {:name => name, :runtime => runtime, :file_name => runner}.merge(options)))
+      parse_response(post_file("projects/#{@project_id}/codes", :file, File.new(file, 'rb'), :data, {:name => name, :runtime => runtime, :file_name => runner}.merge(options)))
     end
 
     def codes_delete(id)
-      raise "Expecting id string, not #{id.class}" unless id.is_a? String
+      check_id(id)
       parse_response(delete("projects/#{@project_id}/codes/#{id}"))
     end
 
     def codes_revisions(id, options = {})
-      raise "Expecting id string, not #{id.class}" unless id.is_a? String
+      check_id(id)
       parse_response(get("projects/#{@project_id}/codes/#{id}/revisions", options))
     end
 
     def codes_download(id, options = {})
-      raise "Expecting id string, not #{id.class}" unless id.is_a? String
+      check_id(id)
       parse_response(get("projects/#{@project_id}/codes/#{id}/download", options), false)
     end
 
@@ -55,7 +61,7 @@ module IronWorkerNG
     end
 
     def tasks_get(id)
-      raise "Expecting id string, not #{id.class}" unless id.is_a? String
+      check_id(id)
       parse_response(get("projects/#{@project_id}/tasks/#{id}"))
     end
 
@@ -64,22 +70,22 @@ module IronWorkerNG
     end
 
     def tasks_cancel(id)
-      raise "Expecting id string, not #{id.class}" unless id.is_a? String
+      check_id(id)
       parse_response(post("projects/#{@project_id}/tasks/#{id}/cancel"))
     end
 
     def tasks_cancel_all(code_id)
-      raise "Expecting id string, not #{id.class}" unless id.is_a? String
+      check_id(id)
       parse_response(post("projects/#{@project_id}/codes/#{code_id}/cancel_all"))
     end
 
     def tasks_log(id)
-      raise "Expecting id string, not #{id.class}" unless id.is_a? String
+      check_id(id)
       parse_response(get("projects/#{@project_id}/tasks/#{id}/log"), false)
     end
 
     def tasks_set_progress(id, options = {})
-      raise "Expecting id string, not #{id.class}" unless id.is_a? String
+      check_id(id)
       parse_response(post("projects/#{@project_id}/tasks/#{id}/progress", options))
     end
 
@@ -88,7 +94,7 @@ module IronWorkerNG
     end
 
     def schedules_get(id)
-      raise "Expecting id string, not #{id.class}" unless id.is_a? String
+      check_id(id)
       parse_response(get("projects/#{@project_id}/schedules/#{id}"))
     end
 
@@ -101,6 +107,10 @@ module IronWorkerNG
 
     def schedules_cancel(id)
       parse_response(post("projects/#{@project_id}/schedules/#{id}/cancel"))
+    end
+
+    def check_id(id)
+      IronCore::Logger.error 'IronWorkerNG', "Expecting id string, not #{id.class}", IronCore::Error unless id.is_a?(String)
     end
   end
 end

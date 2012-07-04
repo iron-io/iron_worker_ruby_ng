@@ -18,7 +18,7 @@ module IronWorkerNG
 
         if new_src.nil? || (not File.exists?(new_src))
           IronCore::Logger.error 'IronWorkerNG', "Can't find src with path='#{src}'"
-          raise IronCore::IronError.new("Can't find src with path='#{src}'")
+          raise IronCore::Error.new("Can't find src with path='#{src}'")
         end
 
         src = new_src

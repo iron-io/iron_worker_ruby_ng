@@ -74,7 +74,7 @@ module IronWorkerNG
 
         unless builder_task.status == 'complete'
           log = tasks.log(builder_task.id)
-          raise IronCore::IronError.new("Error while remote building: " + log)
+          IronCore::Logger.error 'IronWorkerNG', 'Error while remote building: ' + log, IronCore::Error
         end
 
         res = JSON.parse(builder_task.msg)
@@ -180,8 +180,6 @@ module IronWorkerNG
 
       true
     end
-
-    private
 
     def params_for_legacy(code_name, params)
       if params.class == String
