@@ -248,8 +248,8 @@ RUNNER
         zip_name
       end
 
-      def run_code
-        ''
+      def to_s
+        "runtime='#{@runtime}', name='#{@name}', exec='#{@exec.path}'"
       end
     end
   end
