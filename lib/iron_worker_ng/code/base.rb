@@ -39,7 +39,7 @@ module IronWorkerNG
 
         if args.length == 1 && args[0].is_a?(String)
           if args[0].end_with?('.worker') || args[0].end_with?('.workerfile')
-            wfiles << args[0]
+            @name = args[0].gsub(/\.worker$/, '').gsub(/\.workerfile$/, '')
           else
             @name = args[0]
           end
@@ -49,7 +49,7 @@ module IronWorkerNG
           wfile = args[0][:workerfile] || args[0]['workerfile']
           wfiles << wfile unless wfile.nil?
 
-          exec = args[0][:exec] || args[0]['exec'] || args[0][:worker] || opt['worker']
+          exec = args[0][:exec] || args[0]['exec'] || args[0][:worker] || args[0]['worker']
           unless exec.nil?
             merge_exec(exec)
           end
