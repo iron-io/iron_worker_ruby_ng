@@ -31,40 +31,19 @@ if $*.include?('--debug')
   $*.reject! { |p| p == '--debug' }
 end
 
-client = IronWorkerNG::Client.new
-
 if command == 'codes.create'
-  runtimes = IronWorkerNG::Code.registered_types
-  runtimes_help = runtimes[0][:name] + ' (default)' + (runtimes.size == 1 ? '' : ', ') + runtimes.map { |r| r[:name] }[1 .. -1].join(', ')
-
-  features = []
+  if $*.size > 0 && $*[0][0] != '-'
+    $*.unshift('-n')
+  end
 
   name = nil
-  runtime = nil
   wfile = nil
-  execute_features = []
 
   opts = OptionParser.new do |opts|
     opts.banner = "usage: iron_worker #{command} [OPTIONS]"
 
-    opts.on('-r', '--runtime RUNTIME', runtimes.map { |r| r[:name] }, "#{runtimes_help}") do |v|
-      runtime = v
-    end
-
-    opts.on('-n', '--name NAME', 'code name') do |v|
+    opts.on('-n', '--name NAME', 'code name or workerfile') do |v|
       name = v
-    end
-
-    IronWorkerNG::Code.registered_features.each do |f|
-      prefix = ''
-
-      if f[:for_klass] != IronWorkerNG::Code
-        prefix = runtimes.find { |r| r[:klass] == f[:for_klass] }[:name] + '-'
-      end
-
-      opts.on("--#{prefix}#{f[:name].gsub('_', '-')} #{f[:args]}", Array) do |v|
-        execute_features << {:name => f[:name], :args => v}
-      end
     end
   end
 
@@ -75,23 +54,14 @@ if command == 'codes.create'
     exit 1
   end
 
-  unless $*.empty?
-    arg = $*.first
-    if arg =~ /(.*)\.worker(file)?$/
-      name ||= File.basename($1)
-      wfile = arg
-    else
-      name = arg
-    end
+  if name.nil?
+    puts opts
+    exit 1
   end
 
-  code = IronWorkerNG::Code.new(:name => name,
-                                :runtime => runtime,
-                                :workerfile => wfile)
+  code = IronWorkerNG::Code::Base.new(name)
 
-  execute_features.each do |f|
-    code.send(f[:name], *f[:args])
-  end
+  client = IronWorkerNG::Client.new
 
   client.codes.create(code)
 elsif command == 'tasks.create' || command == 'schedules.create'
@@ -184,6 +154,8 @@ elsif command == 'tasks.create' || command == 'schedules.create'
     options[:run_every] = run_every unless run_every.nil?
   end
 
+  client = IronWorkerNG::Client.new
+
   id = nil
 
   if command == 'tasks.create'
@@ -224,6 +196,8 @@ elsif command == 'tasks.log'
     puts opts
     exit 1
   end
+
+  client = IronWorkerNG::Client.new
 
   log = ''
 

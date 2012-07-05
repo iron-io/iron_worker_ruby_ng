@@ -17,7 +17,7 @@ module IronWorkerNG
 
       super('iron', 'worker', options, default_options, [:project_id, :token, :api_version])
 
-      IronCore::Logger.error 'IronWorkerNG', "Token is not set", IronCore::Error
+      IronCore::Logger.error 'IronWorkerNG', "Token is not set", IronCore::Error if @token.nil?
 
       check_id(@project_id, 'project_id')
 

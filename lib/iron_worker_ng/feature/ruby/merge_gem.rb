@@ -57,6 +57,10 @@ module IronWorkerNG
 
             @merge_gem_reqs ||= []
             @merge_gem_reqs << Bundler::Dependency.new(name, version.split(', '))
+
+            unless @fixators.include?(:merge_gem_fixate)
+              @fixators << :merge_gem_fixate
+            end
           end
 
           alias :gem :merge_gem
@@ -93,10 +97,6 @@ module IronWorkerNG
                 @features << IronWorkerNG::Feature::Ruby::MergeGem::Feature.new(self, spec)
               end
             end
-          end
-
-          def self.included(base)
-            IronWorkerNG::Code.register_feature(:name => 'merge_gem', :for_klass => base, :args => 'NAME[,VERSION]')
           end
         end
       end

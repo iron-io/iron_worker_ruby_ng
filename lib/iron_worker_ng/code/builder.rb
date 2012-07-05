@@ -1,7 +1,7 @@
 require_relative '../feature/ruby/merge_gem'
 
 module IronWorkerNG
-  class Builder < Code
+  class Builder < IronWorkerNG::Code::Base
 
     def initialize(src)
       @features = []

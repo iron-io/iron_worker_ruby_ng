@@ -35,10 +35,6 @@ module IronWorkerNG
           end
 
           alias :file :merge_file
-
-          def self.included(base)
-            IronWorkerNG::Code.register_feature(:name => 'merge_file', :for_klass => base, :args => 'PATH[,DEST]')
-          end
         end
       end
     end

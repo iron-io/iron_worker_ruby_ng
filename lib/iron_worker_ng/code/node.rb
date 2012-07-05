@@ -1,17 +1,13 @@
-require_relative '../feature/node/merge_exec'
+require_relative 'runtime/node'
 
 module IronWorkerNG
-  module Runtime
-    module Node
-      include IronWorkerNG::Feature::Node::MergeExec::InstanceMethods
+  module Code
+    class Node < IronWorkerNG::Code::Base
+      def initialize(*args, &block)
+        runtime(:node)
 
-      def run_code
-        <<RUN_CODE
-node #{File.basename(@exec.path)} "$@"
-RUN_CODE
+        super(*args, &block)
       end
     end
   end
 end
-
-IronWorkerNG::Code.register_type(:name => 'node', :klass => IronWorkerNG::Runtime::Node)

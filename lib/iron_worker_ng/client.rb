@@ -16,7 +16,7 @@ module IronWorkerNG
       if @client.respond_to?(full_name)
         @client.send(full_name, *args, &block)
       else
-        super
+        super(name, *args, &block)
       end
     end
   end
@@ -44,7 +44,7 @@ module IronWorkerNG
       if args.length == 0
         IronWorkerNG::ClientProxyCaller.new(self, name)
       else
-        super
+        super(name, *args, &block)
       end
     end
 
@@ -68,7 +68,7 @@ module IronWorkerNG
       if code.remote_build_command.nil?
         res = @api.codes_create(code.name, zip_file, 'sh', '__runner__.sh', options)
       else
-        builder_code_name = code.name + '::Builder'
+        builder_code_name = code.name + '::builder'
 
         @api.codes_create(builder_code_name, zip_file, 'sh', '__runner__.sh', options)
 

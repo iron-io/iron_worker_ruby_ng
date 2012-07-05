@@ -1,19 +1,13 @@
-require_relative '../feature/binary/merge_exec'
+require_relative 'runtime/binary'
 
 module IronWorkerNG
-  module Runtime
-    module Binary
-      include IronWorkerNG::Feature::Binary::MergeExec::InstanceMethods
+  module Code
+    class Binary < IronWorkerNG::Code::Base
+      def initialize(*args, &block)
+        runtime(:binary)
 
-      def run_code
-        <<RUN_CODE
-chmod +x #{File.basename(@exec.path)}
-
-LD_LIBRARY_PATH=. ./#{File.basename(@exec.path)} "$@"
-RUN_CODE
+        super(*args, &block)
       end
     end
   end
 end
-
-IronWorkerNG::Code.register_type(:name => 'binary', :klass => IronWorkerNG::Runtime::Binary)

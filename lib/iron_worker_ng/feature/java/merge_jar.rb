@@ -34,10 +34,6 @@ module IronWorkerNG
           end
 
           alias :jar :merge_jar
-
-          def self.included(base)
-            IronWorkerNG::Code.register_feature(:name => 'merge_jar', :for_klass => base, :args => 'PATH')
-          end
         end
       end
     end
