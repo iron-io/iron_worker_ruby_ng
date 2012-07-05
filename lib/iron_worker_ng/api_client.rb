@@ -17,7 +17,8 @@ module IronWorkerNG
 
       super('iron', 'worker', options, default_options, [:project_id, :token, :api_version])
 
-      check_id(@token, 'token', 27)
+      IronCore::Logger.error 'IronWorkerNG', "Token is not set", IronCore::Error
+
       check_id(@project_id, 'project_id')
 
       @headers = {'Authorization' => "OAuth #{@token}"}
