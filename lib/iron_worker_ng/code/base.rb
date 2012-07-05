@@ -14,6 +14,8 @@ module IronWorkerNG
       attr_accessor :base_dir
       attr_accessor :dest_dir
 
+      attr_accessor :inside_builder
+
       undef exec
 
       include IronWorkerNG::Feature::Common::MergeFile::InstanceMethods
@@ -30,6 +32,8 @@ module IronWorkerNG
 
         @name = nil
         @exec = nil
+
+        @inside_builder = false
 
         wfiles = []
 
@@ -84,7 +88,9 @@ module IronWorkerNG
           @name = guess_name_for_path(@exec.path)
         end
 
-        @name = File.basename(@name)
+        unless @name.nil?
+          @name = File.basename(@name)
+        end
       end
 
       def method_missing(name, *args, &block)
@@ -171,8 +177,9 @@ module IronWorkerNG
           feature.bundle(zip)
         end
 
-        zip.get_output_stream(@dest_dir + '__runner__.sh') do |runner|
-          runner.write <<RUNNER
+        unless @inside_builder
+          zip.get_output_stream(@dest_dir + '__runner__.sh') do |runner|
+            runner.write <<RUNNER
 #!/bin/sh
 # iron_worker_ng-#{IronWorkerNG.full_version}
 
@@ -191,18 +198,21 @@ cd "$(root "$@")"
 
 #{runtime_run_code}
 RUNNER
+          end
         end
 
         runtime_bundle(zip)
       end
 
       def create_zip
-        if @exec.nil?
-          IronCore::Logger.error 'IronWorkerNG', 'No exec specified', IronCore::Error
-        end
+        unless @inside_builder
+          if @exec.nil?
+            IronCore::Logger.error 'IronWorkerNG', 'No exec specified', IronCore::Error
+          end
 
-        if @name.nil?
-          @name = guess_name_for_path(@exec.path)
+          if @name.nil?
+            @name = guess_name_for_path(@exec.path)
+          end
         end
 
         fixate
@@ -220,7 +230,12 @@ RUNNER
 
           if @remote_build_command
             IronCore::Logger.info 'IronWorkerNG', 'Creating builder'
-            builder = IronWorkerNG::Builder.new self
+
+            builder = IronWorkerNG::Code::Builder.new
+            builder.remote_build_command = @remote_build_command
+
+            builder.gem('iron_worker_ng')
+
             builder.fixate
             builder.bundle(zip)
           end

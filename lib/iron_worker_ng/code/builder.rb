@@ -1,29 +1,32 @@
 require_relative '../feature/ruby/merge_gem'
 
 module IronWorkerNG
-  class Builder < IronWorkerNG::Code::Base
+  module Code
+    class Builder < IronWorkerNG::Code::Base
+      def initialize(*args, &block)
+        @features = []
+        @fixators = []
 
-    def initialize(src)
-      @features = []
-      @base_dir = ''
-      @dest_dir = ''
+        @base_dir = ''
+        @dest_dir = ''
 
-      @name = nil
-      @exec = nil
+        runtime(:ruby)
+      end
 
-      runtime 'ruby'
+      def bundle(zip)
+        @exec = IronWorkerNG::Feature::Ruby::MergeExec::Feature.new(self, '__builder__.rb', nil)
 
-      gem 'iron_worker_ng'
+        super(zip)
 
-      file(File.open(Dir.mktmpdir + '/__builder__.sh', 'w') do |f|
-             f <<<<BUILDER_SH
+        zip.get_output_stream(@dest_dir + '__builder__.sh') do |builder|
+          builder.write <<BUILDER_SH
 # iron_worker_ng-#{IronWorkerNG.full_version}
-#{src.remote_build_command}
+#{remote_build_command}
 BUILDER_SH
-           end.path)
+        end
 
-      exec(File.open(Dir.mktmpdir + '/__builder__.rb', 'w') do |f|
-             f <<<<BUILDER_RUBY
+        zip.get_output_stream(@dest_dir + '__builder__.rb') do |builder|
+          builder.write <<BUILDER_RUBY
 # iron_worker_ng-#{IronWorkerNG.full_version}
 
 require 'iron_worker_ng'
@@ -33,21 +36,20 @@ exit 1 unless system('cd __build__ && sh ../__builder__.sh && cd ..')
 
 Dir.chdir('__build__')
 
-code = IronWorkerNG::Code::Creator.create do
-  runtime 'binary'
-  name '#{src.name}'
-  `mv __runner__.sh __actual_runner__.sh`
-  exec '__actual_runner__.sh'
-  dir '.'
-end
+code = IronWorkerNG::Code::Base.new
+code.inside_builder = true
 
-client = IronWorkerNG::Client.new(:token => params[:iron_token], :project_id => params[:iron_project_id])
+code.name params[:code_name]
+code.dir '.'
+
+client = IronWorkerNG::Client.new(JSON.parse(params[:client_options]))
 
 res = client.codes.create(code, JSON.parse(params[:codes_create_options]))
 
 client.tasks.set_progress(iron_task_id, :msg => res.marshal_dump.to_json)
 BUILDER_RUBY
-           end.path)
+        end
+      end
     end
   end
 end

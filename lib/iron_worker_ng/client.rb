@@ -72,7 +72,7 @@ module IronWorkerNG
 
         @api.codes_create(builder_code_name, zip_file, 'sh', '__runner__.sh', options)
 
-        builder_task = tasks.create(builder_code_name, :iron_token => token, :iron_project_id => project_id, :codes_create_options => options.to_json)
+        builder_task = tasks.create(builder_code_name, :code_name => code.name, :client_options => @api.options.to_json, :codes_create_options => options.to_json)
         builder_task = tasks.wait_for(builder_task.id)
 
         unless builder_task.status == 'complete'
