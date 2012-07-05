@@ -17,9 +17,8 @@ module IronWorkerNG
 
       super('iron', 'worker', options, default_options, [:project_id, :token, :api_version])
 
-      unless [@token, @project_id].all? { |x| x and x =~ /^[0-9A-Za-z]{24,27}$/ }
-        IronCore::Logger.error 'IronWorkerNG', "Both token and project_id must be specified and valid (token: '#{@token}', project_id: '#{project_id}')", IronCore::Error
-      end
+      check_id(@token, 'token', 27)
+      check_id(@project_id, 'project_id')
 
       @headers = {'Authorization' => "OAuth #{@token}"}
     end
@@ -106,11 +105,14 @@ module IronWorkerNG
     end
 
     def schedules_cancel(id)
+      check_id(id)
       parse_response(post("projects/#{@project_id}/schedules/#{id}/cancel"))
     end
 
-    def check_id(id)
-      IronCore::Logger.error 'IronWorkerNG', "Expecting id string, not #{id.class}", IronCore::Error unless id.is_a?(String)
+    def check_id(id, name = 'id', length = 24)
+      if (not id.is_a?(String)) || id.length != length
+        IronCore::Logger.error 'IronWorkerNG', "Expecting #{length} symbol #{name} string", IronCore::Error
+      end
     end
   end
 end
