@@ -99,8 +99,8 @@ module IronWorkerNG
     end
 
     def schedules_create(code_name, payload, options = {})
-      options[:start_at] = options[:start_at].iso8601 if (not options[:start_at].nil?) && options[:start_at].class == Time
-      options[:end_at] = options[:end_at].iso8601 if (not options[:end_at].nil?) && options[:end_at].class == Time
+      options[:start_at] = options[:start_at].iso8601 if (not options[:start_at].nil?) && options[:start_at].respond_to?(:iso8601)
+      options[:end_at] = options[:end_at].iso8601 if (not options[:end_at].nil?) && options[:end_at].respond_to?(:iso8601)
 
       parse_response(post("projects/#{@project_id}/schedules", {:schedules => [{:code_name => code_name, :payload => payload}.merge(options)]}))
     end
