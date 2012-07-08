@@ -3,12 +3,14 @@ GEM
   specs:
     git (1.2.5)
     iron_core (0.2.0)
-      rest (> 0.3.0)
+      rest (>= 1.2.1)
     jeweler2 (2.0.9)
       git (>= 1.2.5)
     mime-types (1.19)
+    net-http-persistent (2.7)
     rake (0.9.2.2)
-    rest (1.1.0)
+    rest (1.2.1)
+      net-http-persistent
       rest-client (>= 0.3.0)
     rest-client (1.6.7)
       mime-types (>= 1.16)

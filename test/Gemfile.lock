@@ -3,23 +3,23 @@ GEM
   specs:
     coderay (1.0.7)
     git (1.2.5)
-    iron_core (0.1.4)
+    iron_core (0.2.0)
+      rest (>= 1.2.1)
+    iron_worker_ng (0.8.0)
       bundler (> 1.0.0)
-      rest
-      rest-client
-    iron_worker_ng (0.7.0)
-      bundler (> 1.0.0)
-      iron_core (>= 0.1.4)
+      iron_core (>= 0.2.0)
       zip
     jeweler2 (2.0.9)
       git (>= 1.2.5)
     method_source (0.7.1)
     mime-types (1.19)
+    net-http-persistent (2.7)
     pry (0.9.9.6)
       coderay (~> 1.0.5)
       method_source (~> 0.7.1)
       slop (>= 2.4.4, < 3)
-    rest (1.0.0)
+    rest (1.2.1)
+      net-http-persistent
       rest-client (>= 0.3.0)
     rest-client (1.6.7)
       mime-types (>= 1.16)
