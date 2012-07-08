@@ -4,7 +4,7 @@ require 'iron_worker_ng'
 client = IronWorkerNG::Client.new
 
 # create ruby code bundle
-code = IronWorkerNG::Code.new do
+code = IronWorkerNG::Code::Base.new do
   runtime 'ruby'
   exec(File.dirname(__FILE__) + '/hello_worker.rb')
 end

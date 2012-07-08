@@ -6,10 +6,10 @@ client = IronWorkerNG::Client.new
 root = File.dirname(__FILE__)
 
 # create master code bundle
-master = IronWorkerNG::Code.new :workerfile => "#{root}/master.worker"
+master = IronWorkerNG::Code::Base.new :workerfile => "#{root}/master.worker"
 
 # create slave code bundle
-slave = IronWorkerNG::Code.new :workerfile => "#{root}/slave.worker"
+slave = IronWorkerNG::Code::Base.new :workerfile => "#{root}/slave.worker"
 
 # upload both
 client.codes.create(master)

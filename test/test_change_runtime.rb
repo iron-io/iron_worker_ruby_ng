@@ -21,7 +21,7 @@ class ChangeRuntimeTest < IWNGTest
   end
 
   def sh_worker(code_name)
-    code = IronWorkerNG::Code.new do
+    code = IronWorkerNG::Code::Base.new do
       runtime 'binary'
       name code_name
       exec(Tempfile.open('sh') do |f|

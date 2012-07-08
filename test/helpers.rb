@@ -5,7 +5,7 @@ require './lib/iron_worker_ng.rb'
 require_relative 'iron_io_config.rb'
 
 def code_bundle(*args,&block)
-  code = IronWorkerNG::Code.new(*args)
+  code = IronWorkerNG::Code::Base.new(*args)
 
   class << code
     def worker_code(str)
@@ -61,9 +61,11 @@ class IWNGTest < Test::Unit::TestCase
 end
 
 module IronWorkerNG
-  class Code
-    def exec_path
-      exec = @features.find{|f| f.is_a? IronWorkerNG::Feature::Ruby::MergeExec::Feature } and exec.path
+  module Code
+    class Base
+      def exec_path
+        exec = @features.find{|f| f.is_a? IronWorkerNG::Feature::Ruby::MergeExec::Feature } and exec.path
+      end
     end
   end
 end

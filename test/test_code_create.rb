@@ -3,10 +3,6 @@ require 'helpers'
 class CodeCreateTest < IWNGTest
 
   def test_create
-    code = code_bundle('test/hello.rb')
-    assert_equal 'test/hello.rb', code.exec_path
-    assert_equal 'Hello', code.name
-
     code = code_bundle(:name => 'asdfasdf')
     assert_equal nil, code.exec_path
     assert_equal 'asdfasdf', code.name
@@ -37,7 +33,7 @@ class CodeCreateTest < IWNGTest
 
   def test_block_init
     i = 0
-    IronWorkerNG::Code.new do
+    IronWorkerNG::Code::Base.new do
       exec 'test/hello.rb'
       i += 1
     end

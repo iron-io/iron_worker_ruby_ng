@@ -3,7 +3,7 @@ require 'helpers.rb'
 class RubyRunnerTest < IWNGTest
 
   def test_script
-    code = code_bundle 'test/workers/ruby_runner_test_script.rb'
+    code = code_bundle :exec => 'test/workers/ruby_runner_test_script.rb'
     client.codes_create(code)
     task_id = client.tasks_create('RubyRunnerTestScript',
                                   :a => 1, :b => 2).id

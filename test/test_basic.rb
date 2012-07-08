@@ -2,7 +2,7 @@ require 'helpers'
 
 class BasicTest < IWNGTest
   def test_basic
-    code = IronWorkerNG::Code.new do
+    code = IronWorkerNG::Code::Base.new do
       name 'test_basic'
       exec(File.dirname(__FILE__) + '/hello.rb')
     end
