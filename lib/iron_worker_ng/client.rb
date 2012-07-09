@@ -68,7 +68,7 @@ module IronWorkerNG
       if code.remote_build_command.nil?
         res = @api.codes_create(code.name, zip_file, 'sh', '__runner__.sh', options)
       else
-        builder_code_name = code.name + '::builder'
+        builder_code_name = code.name + (code.name.capitalize == code.name ? '::Builder' : '::builder')
 
         @api.codes_create(builder_code_name, zip_file, 'sh', '__runner__.sh', options)
 

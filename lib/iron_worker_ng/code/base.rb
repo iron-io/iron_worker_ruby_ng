@@ -249,7 +249,7 @@ RUNNER
       end
 
       def to_s
-        "runtime='#{@runtime}', name='#{@name}', exec='#{@exec.path}'"
+        "runtime='#{@runtime}', name='#{@name}', exec='#{@inside_builder ? '' : @exec.path}'"
       end
     end
   end
