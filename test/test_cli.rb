@@ -17,22 +17,23 @@ class CLITest < IWNGTest
     cmd = 'ruby -Ilib test/cli_runner.rb ' + args.join(' ')
     puts cmd
 
-    puts "--- cli output begin -------------------------------------"
-
     exec(cmd) if fork.nil?
     Process.wait
+
+    puts "--- cli output begin -------------------------------------"
 
     puts File.read(out)
 
     puts "--- cli output end ---------------------------------------"
 
+    puts $?
     assert $?.success?
 
     File.read(out)
   end
 
   def test_basic
-    assert cli('codes.create', ruby_merge_exec: 'test/hello.rb') =~
+    assert cli('codes.create', 'test/hello.worker') =~
       /Upload successful/
 
     assert cli('tasks.create', name: 'Hello') =~
@@ -49,8 +50,10 @@ class CLITest < IWNGTest
     assert cli('upload', 'test/workers/wfile_paths/wfile_paths.worker') =~
       /Upload successful/
 
-    assert cli('upload', 'krumplumpl', ruby_merge_exec: 'test/hello.rb') =~
+    tmp = File.open('krumplumpl.worker', 'w') { |f| f << 'exec "test/hello.rb"' }
+    assert cli('upload', 'krumplumpl') =~
       /Upload successful/
+    File.unlink tmp
   end
 
 end
