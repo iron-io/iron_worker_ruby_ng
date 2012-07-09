@@ -137,10 +137,15 @@ module IronWorkerNG
         end
 
         runtime_module = nil
+        runtime = runtime.to_s
 
         begin
-          runtime_module = IronWorkerNG::Code::Runtime.const_get(runtime.to_s.capitalize)
+          runtime_module = IronWorkerNG::Code::Runtime.const_get(runtime.capitalize)
         rescue
+          begin
+            runtime_module = IronWorkerNG::Code::Runtime.const_get(runtime.upcase)
+          rescue
+          end
         end
 
         if runtime_module.nil?
