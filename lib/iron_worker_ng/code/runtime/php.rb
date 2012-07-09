@@ -33,6 +33,7 @@ function getArgs() {
       }
     }
   }
+
   return $args;
 }
 
