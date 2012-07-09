@@ -19,12 +19,6 @@ Also, you'll need a Ruby 1.9 interpreter and the IronWorkerNG gem. Install it us
 gem install iron_worker_ng
 ```
 
-We recommend that you install the `typhoeus` gem as well for faster API interaction.
-
-```sh
-gem install typhoeus
-```
-
 # Creating A Worker
 
 Each IronWorkerNG Ruby worker is just Ruby code. It can be as simple or as complex as you want. For example, 
@@ -101,7 +95,6 @@ Create new code package with the specified args.
 ```ruby
 code_with_name = IronWorkerNG::Code::Ruby.new(:exec => 'cool_worker.rb', :name => 'CoolWorker')
 code_with_guessed_name = IronWorkerNG::Code::Ruby.new(:exec => 'cool_worker.rb')
-code_with_short_form_syntax = IronWorkeNG::Code::Ruby.new('cool_worker.rb')
 code = IronWorkerNG::Code::Ruby.new # will need to use code.merge_exec later
 ```
 
