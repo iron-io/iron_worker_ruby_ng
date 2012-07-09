@@ -126,6 +126,9 @@ module IronWorkerNG
         @remote_build_command = remote_build_command
       end
 
+      alias :build :remote_build_command
+      alias :build= :remote_build_command=
+
       def runtime(runtime = nil)
         return @runtime unless runtime
 

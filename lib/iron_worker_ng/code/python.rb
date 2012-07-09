@@ -1,4 +1,4 @@
-require_relative 'runtime/mono'
+require_relative 'runtime/python'
 
 module IronWorkerNG
   module Code
