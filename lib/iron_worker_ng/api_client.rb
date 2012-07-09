@@ -20,8 +20,10 @@ module IronWorkerNG
       IronCore::Logger.error 'IronWorkerNG', "Token is not set", IronCore::Error if @token.nil?
 
       check_id(@project_id, 'project_id')
+    end
 
-      @headers = {'Authorization' => "OAuth #{@token}"}
+    def headers
+      super.merge({'Authorization' => "OAuth #{@token}"})
     end
 
     def url
@@ -108,12 +110,6 @@ module IronWorkerNG
     def schedules_cancel(id)
       check_id(id)
       parse_response(post("projects/#{@project_id}/schedules/#{id}/cancel"))
-    end
-
-    def check_id(id, name = 'id', length = 24)
-      if (not id.is_a?(String)) || id.length != length
-        IronCore::Logger.error 'IronWorkerNG', "Expecting #{length} symbol #{name} string", IronCore::Error
-      end
     end
   end
 end
