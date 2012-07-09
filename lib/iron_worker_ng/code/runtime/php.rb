@@ -10,7 +10,7 @@ module IronWorkerNG
           zip.get_output_stream(@dest_dir + '__runner__.php') do |runner|
             runner.write <<PHP_RUNNER
 <?php
-/* iron_worker_ng-#{IronWorkerNG.full_version} */
+/* #{IronWorkerNG.full_version} */
 
 function getArgs() { 
   global $argv; 

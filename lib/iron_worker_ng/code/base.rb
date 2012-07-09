@@ -189,7 +189,7 @@ module IronWorkerNG
           zip.get_output_stream(@dest_dir + '__runner__.sh') do |runner|
             runner.write <<RUNNER
 #!/bin/sh
-# iron_worker_ng-#{IronWorkerNG.full_version}
+# #{IronWorkerNG.full_version}
 
 root() {
   while [ $# -gt 1 ]; do

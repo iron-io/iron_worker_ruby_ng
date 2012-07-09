@@ -13,7 +13,7 @@ module IronWorkerNG
         def runtime_bundle(zip)
           zip.get_output_stream(@dest_dir + '__runner__.rb') do |runner|
             runner.write <<RUBY_RUNNER
-# iron_worker_ng-#{IronWorkerNG.full_version}
+# #{IronWorkerNG.full_version}
 
 module IronWorkerNG
 #{File.read(File.dirname(__FILE__) + '/../../../3rdparty/hashie/merge_initializer.rb')}

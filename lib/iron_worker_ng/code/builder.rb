@@ -20,14 +20,14 @@ module IronWorkerNG
 
         zip.get_output_stream(@dest_dir + '__builder__.sh') do |builder|
           builder.write <<BUILDER_SH
-# iron_worker_ng-#{IronWorkerNG.full_version}
+# #{IronWorkerNG.full_version}
 #{remote_build_command}
 BUILDER_SH
         end
 
         zip.get_output_stream(@dest_dir + '__builder__.rb') do |builder|
           builder.write <<BUILDER_RUBY
-# iron_worker_ng-#{IronWorkerNG.full_version}
+# #{IronWorkerNG.full_version}
 
 require 'iron_worker_ng'
 require 'json'
