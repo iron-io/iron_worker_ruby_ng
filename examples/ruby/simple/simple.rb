@@ -17,7 +17,6 @@ path = File.dirname(__FILE__) + '/sample_worker.rb'
 code = IronWorkerNG::Code::Base.new do
   merge_exec path
 end
-#> code.name == 'SampleWorker'
 
 # still can pass name in constructor and exec
 code = IronWorkerNG::Code::Base.new do
@@ -48,7 +47,7 @@ code.merge_gemfile(File.dirname(__FILE__) + '/Gemfile',
 client.codes_create(code)
 
 # we can retrive code packages list
-codes = client.codes_list
+codes = client.codes_list(:per_page => 100)
 #> codes.map{|c| c.name}.include?('transmogrify')
 
 code_info = codes.find{|c| c.name == 'transmogrify'}
