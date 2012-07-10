@@ -164,7 +164,7 @@ elsif command == 'tasks.create' || command == 'schedules.create'
     id = client.schedules.create(name, payload, options).id
   end
 
-  print id if print_id
+  puts id if print_id
 elsif command == 'tasks.log'
   if $*.size > 0 && $*[0][0] != '-'
     $*.unshift('-t')
