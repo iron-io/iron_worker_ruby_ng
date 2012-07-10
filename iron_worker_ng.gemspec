@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "iron_worker_ng"
-  s.version = "0.7.4"
+  s.version = "0.8.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Andrew Kirilenko", "Iron.io, Inc"]
-  s.date = "2012-06-26"
+  s.date = "2012-07-10"
   s.description = "New generation ruby client for IronWorker"
   s.email = "info@iron.io"
   s.executables = ["iron_worker"]
@@ -30,18 +30,29 @@ Gem::Specification.new do |s|
     "lib/iron_worker_ng/code/base.rb",
     "lib/iron_worker_ng/code/binary.rb",
     "lib/iron_worker_ng/code/builder.rb",
-    "lib/iron_worker_ng/code/creator.rb",
-    "lib/iron_worker_ng/code/initializer.rb",
     "lib/iron_worker_ng/code/java.rb",
+    "lib/iron_worker_ng/code/mono.rb",
     "lib/iron_worker_ng/code/node.rb",
+    "lib/iron_worker_ng/code/php.rb",
+    "lib/iron_worker_ng/code/python.rb",
     "lib/iron_worker_ng/code/ruby.rb",
+    "lib/iron_worker_ng/code/runtime/binary.rb",
+    "lib/iron_worker_ng/code/runtime/java.rb",
+    "lib/iron_worker_ng/code/runtime/mono.rb",
+    "lib/iron_worker_ng/code/runtime/node.rb",
+    "lib/iron_worker_ng/code/runtime/php.rb",
+    "lib/iron_worker_ng/code/runtime/python.rb",
+    "lib/iron_worker_ng/code/runtime/ruby.rb",
     "lib/iron_worker_ng/feature/base.rb",
     "lib/iron_worker_ng/feature/binary/merge_exec.rb",
     "lib/iron_worker_ng/feature/common/merge_dir.rb",
     "lib/iron_worker_ng/feature/common/merge_file.rb",
     "lib/iron_worker_ng/feature/java/merge_exec.rb",
     "lib/iron_worker_ng/feature/java/merge_jar.rb",
+    "lib/iron_worker_ng/feature/mono/merge_exec.rb",
     "lib/iron_worker_ng/feature/node/merge_exec.rb",
+    "lib/iron_worker_ng/feature/php/merge_exec.rb",
+    "lib/iron_worker_ng/feature/python/merge_exec.rb",
     "lib/iron_worker_ng/feature/ruby/merge_exec.rb",
     "lib/iron_worker_ng/feature/ruby/merge_gem.rb",
     "lib/iron_worker_ng/feature/ruby/merge_gemfile.rb",
@@ -59,20 +70,20 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<iron_core>, [">= 0.1.4"])
+      s.add_runtime_dependency(%q<iron_core>, [">= 0.2.0"])
       s.add_runtime_dependency(%q<zip>, [">= 0"])
       s.add_runtime_dependency(%q<bundler>, ["> 1.0.0"])
       s.add_development_dependency(%q<rake>, [">= 0"])
       s.add_development_dependency(%q<jeweler2>, [">= 0"])
     else
-      s.add_dependency(%q<iron_core>, [">= 0.1.4"])
+      s.add_dependency(%q<iron_core>, [">= 0.2.0"])
       s.add_dependency(%q<zip>, [">= 0"])
       s.add_dependency(%q<bundler>, ["> 1.0.0"])
       s.add_dependency(%q<rake>, [">= 0"])
       s.add_dependency(%q<jeweler2>, [">= 0"])
     end
   else
-    s.add_dependency(%q<iron_core>, [">= 0.1.4"])
+    s.add_dependency(%q<iron_core>, [">= 0.2.0"])
     s.add_dependency(%q<zip>, [">= 0"])
     s.add_dependency(%q<bundler>, ["> 1.0.0"])
     s.add_dependency(%q<rake>, [">= 0"])
