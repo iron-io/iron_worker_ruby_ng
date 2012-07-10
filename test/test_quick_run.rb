@@ -38,7 +38,7 @@ class QuickRunTest < IWNGTest
       keep_if{ |t| t.code_name == 'test_schedule' }.
       max_by{ |t| Time.parse t.start_time }
 
-    client.tasks.wait_for task.id
+    task = client.tasks.wait_for task.id
 
     puts "planned start: ", start
     puts "actual start: ", Time.parse(task.start_time)
@@ -47,7 +47,9 @@ class QuickRunTest < IWNGTest
     assert Time.parse(task.start_time) >= start,
            "actual start is earlier than expected"
 
-    assert Time.parse(task.start_time) + 10 <= Time.parse(task.end_time)
+    assert Time.parse(task.start_time) + 10 <= Time.parse(task.end_time),
+           ("worker complete in less than 10 seconds, "+
+            "start at #{task.start_time}, finish at #{task.end_time}")
     assert_equal 'complete', task.status
     assert_equal "hello\n", client.tasks.log(task.id)
   end
