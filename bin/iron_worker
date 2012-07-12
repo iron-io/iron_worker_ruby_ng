@@ -181,6 +181,7 @@ elsif command == 'tasks.log'
 
   task_id = nil
   live = false
+  wait = false
 
   opts = OptionParser.new do |opts|
     opts.banner = "usage: iron_worker #{command} [OPTIONS]"
@@ -190,7 +191,7 @@ elsif command == 'tasks.log'
     end
 
     opts.on('-w', '--wait', 'wait for task') do |v|
-      live = true
+      wait = true
     end
   end
 
@@ -216,6 +217,10 @@ elsif command == 'tasks.log'
     rescue IronCore::Error
     end
   else
+    if wait
+      client.tasks.wait_for(task_id)
+    end
+    
     log = client.tasks.log(task_id)
   end
 
