@@ -71,6 +71,7 @@ elsif command == 'tasks.create' || command == 'schedules.create'
   
   name = nil
   payload = nil
+  payload_file = nil
 
   priority = nil
   timeout = nil
@@ -92,6 +93,10 @@ elsif command == 'tasks.create' || command == 'schedules.create'
 
     opts.on('-p', '--payload PAYLOAD', String, 'payload to pass') do |v|
       payload = v
+    end
+
+    opts.on('-f', '--payload-file PAYLOAD_FILE', String, 'payload file to pass') do |v|
+      payload_file = v
     end
 
     opts.on('--priority PRIORITY', Integer, '0 (default), 1, 2') do |v|
@@ -139,6 +144,10 @@ elsif command == 'tasks.create' || command == 'schedules.create'
   if name.nil?
     puts opts
     exit 1
+  end
+
+  if payload.nil? and (not payload_file.nil?)
+    payload = File.read(payload_file)
   end
 
   options = {}
