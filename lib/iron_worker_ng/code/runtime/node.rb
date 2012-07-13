@@ -6,7 +6,7 @@ module IronWorkerNG
       module Node
         include IronWorkerNG::Feature::Node::MergeExec::InstanceMethods
 
-        def runtime_run_code
+        def runtime_run_code(local = false)
           <<RUN_CODE
 node #{File.basename(@exec.path)} "$@"
 RUN_CODE

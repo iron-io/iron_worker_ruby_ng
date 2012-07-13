@@ -17,10 +17,10 @@ module IronWorkerNG
             Digest::MD5.hexdigest(@path + @klass + File.mtime(rebase(@path)).to_i.to_s)
           end
 
-          def bundle(zip)
+          def bundle(container)
             IronCore::Logger.debug 'IronWorkerNG', "Bundling java exec with path='#{@path}' and class='#{@klass}'"
 
-            zip_add(zip, File.basename(@path), rebase(@path))
+            container_add(container, File.basename(@path), rebase(@path))
           end
 
           def code_for_classpath

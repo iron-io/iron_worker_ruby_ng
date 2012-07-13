@@ -10,8 +10,8 @@ module IronWorkerNG
         include IronWorkerNG::Feature::Ruby::MergeGemfile::InstanceMethods
         include IronWorkerNG::Feature::Ruby::MergeExec::InstanceMethods
 
-        def runtime_bundle(zip)
-          zip.get_output_stream(@dest_dir + '__runner__.rb') do |runner|
+        def runtime_bundle(container)
+          container.get_output_stream(@dest_dir + '__runner__.rb') do |runner|
             runner.write <<RUBY_RUNNER
 # #{IronWorkerNG.full_version}
 
@@ -85,9 +85,9 @@ RUBY_RUNNER
           end
         end
 
-        def runtime_run_code
+        def runtime_run_code(local = false)
           <<RUN_CODE
-ruby __runner__.rb "$@"
+#{local ? 'GEM_PATH="" ' : ''}ruby __runner__.rb "$@"
 RUN_CODE
         end
       end

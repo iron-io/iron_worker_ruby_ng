@@ -25,9 +25,9 @@ if $*.size == 1 && ($*[0] == '-v' || $*[0] == '--version')
   exit 0
 end
 
-if $*.size == 0 || (not ['codes.create', 'upload', 'tasks.create', 'queue', 'schedules.create', 'schedule', 'tasks.log', 'log'].include?($*[0]))
+if $*.size == 0 || (not ['codes.create', 'upload', 'tasks.create', 'queue', 'schedules.create', 'schedule', 'tasks.log', 'log', 'run'].include?($*[0]))
   puts 'usage: iron_worker COMMAND [OPTIONS]'
-  puts '    COMMAND: codes.create (upload), tasks.create (queue), schedules.create (schedule), tasks.log (log)'
+  puts '    COMMAND: codes.create (upload), tasks.create (queue), schedules.create (schedule), tasks.log (log), run'
   puts '    run iron_worker COMMAND --help to get more information about each command'
   exit 1
 end
@@ -53,7 +53,6 @@ if command == 'codes.create'
   end
 
   name = nil
-  wfile = nil
 
   opts = OptionParser.new do |opts|
     opts.banner = "usage: iron_worker #{command} [OPTIONS]"
@@ -268,4 +267,50 @@ elsif command == 'tasks.log'
     rescue IronCore::Error
     end
   end
+elsif command == 'run'
+  if $*.size > 0 && $*[0][0] != '-'
+    $*.unshift('-n')
+  end
+
+  name = nil
+  payload = nil
+  payload_file = nil
+
+  opts = OptionParser.new do |opts|
+    opts.banner = "usage: iron_worker #{command} [OPTIONS]"
+
+    opts.on('-n', '--name NAME', 'code name or workerfile') do |v|
+      name = v
+    end
+
+    opts.on('-p', '--payload PAYLOAD', String, 'payload to pass') do |v|
+      payload = v
+    end
+
+    opts.on('-f', '--payload-file PAYLOAD_FILE', String, 'payload file to pass') do |v|
+      payload_file = v
+    end
+  end
+
+  begin
+    opts.parse!
+  rescue OptionParser::ParseError
+    puts $!.to_s
+    exit 1
+  end
+
+  if name.nil?
+    puts opts
+    exit 1
+  end
+
+  if payload.nil? and (not payload_file.nil?)
+    payload = File.read(payload_file)
+  end
+
+  code = IronWorkerNG::Code::Base.new(name)
+
+  IronCore::Logger.info 'IronWorkerNG', "Worker '#{name}' run started"
+  
+  code.run(payload)
 end

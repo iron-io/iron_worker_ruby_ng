@@ -8,7 +8,7 @@ module IronWorkerNG
         include IronWorkerNG::Feature::Java::MergeJar::InstanceMethods
         include IronWorkerNG::Feature::Java::MergeExec::InstanceMethods
 
-        def runtime_run_code
+        def runtime_run_code(local = false)
           classpath_array = []
 
           @features.each do |f|

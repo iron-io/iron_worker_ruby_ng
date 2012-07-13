@@ -6,7 +6,7 @@ module IronWorkerNG
       module Binary
         include IronWorkerNG::Feature::Binary::MergeExec::InstanceMethods
 
-        def runtime_run_code
+        def runtime_run_code(local = false)
           <<RUN_CODE
 chmod +x #{File.basename(@exec.path)}
 

@@ -12,9 +12,13 @@ module IronWorkerNG
       end
 
       def add(dest, src)
-        FileUtils.mkdir_p(full_dest(dest))
+        FileUtils.mkdir_p(File.dirname(full_dest(dest)))
 
-        FileUtils.cp(src, full_dest(dest))
+        if File.directory?(src)
+          FileUtils.mkdir(full_dest(dest))
+        else
+          FileUtils.cp(src, full_dest(dest))
+        end
       end
 
       def get_output_stream(dest, &block)

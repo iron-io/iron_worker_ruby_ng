@@ -15,10 +15,10 @@ module IronWorkerNG
             Digest::MD5.hexdigest(@path + File.mtime(rebase(@path)).to_i.to_s)
           end
 
-          def bundle(zip)
+          def bundle(container)
             IronCore::Logger.debug 'IronWorkerNG', "Bundling python exec with path='#{@path}'"
 
-            zip_add(zip, File.basename(@path), rebase(@path))
+            container_add(container, File.basename(@path), rebase(@path))
           end
         end
 

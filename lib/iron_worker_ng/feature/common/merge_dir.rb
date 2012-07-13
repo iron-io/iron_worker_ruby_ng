@@ -26,10 +26,10 @@ module IronWorkerNG
             Digest::MD5.hexdigest(s)
           end
 
-          def bundle(zip)
+          def bundle(container)
             IronCore::Logger.debug 'IronWorkerNG', "Bundling dir with path='#{@path}' and dest='#{@dest}'"
 
-            zip_add(zip, @dest + File.basename(@path), rebase(@path))
+            container_add(container, @dest + File.basename(@path), rebase(@path))
           end
         end
 

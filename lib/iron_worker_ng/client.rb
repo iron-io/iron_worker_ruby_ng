@@ -63,14 +63,14 @@ module IronWorkerNG
     def codes_create(code, options = {})
       IronCore::Logger.debug 'IronWorkerNG', "Calling codes.create with code='#{code.to_s}' and options='#{options.to_s}'"
 
-      zip_file = code.create_zip
+      container_file = code.create_container
 
       if code.remote_build_command.nil?
-        res = @api.codes_create(code.name, zip_file, 'sh', '__runner__.sh', options)
+        res = @api.codes_create(code.name, container_file, 'sh', '__runner__.sh', options)
       else
         builder_code_name = code.name + (code.name.capitalize == code.name ? '::Builder' : '::builder')
 
-        @api.codes_create(builder_code_name, zip_file, 'sh', '__runner__.sh', options)
+        @api.codes_create(builder_code_name, container_file, 'sh', '__runner__.sh', options)
 
         builder_task = tasks.create(builder_code_name, :code_name => code.name, :client_options => @api.options.to_json, :codes_create_options => options.to_json)
         builder_task = tasks.wait_for(builder_task.id)
@@ -83,7 +83,7 @@ module IronWorkerNG
         res = JSON.parse(builder_task.msg)
       end
 
-      File.unlink(zip_file)
+      File.unlink(container_file)
 
       OpenStruct.new(res)
     end
@@ -123,7 +123,7 @@ module IronWorkerNG
     def tasks_create(code_name, params = {}, options = {})
       IronCore::Logger.debug 'IronWorkerNG', "Calling tasks.create with code_name='#{code_name}', params='#{params.to_s}' and options='#{options.to_s}'"
 
-      res = @api.tasks_create(code_name, params.class == String ? params : params.to_json, options)
+      res = @api.tasks_create(code_name, params.is_a?(String) ? params : params.to_json, options)
 
       OpenStruct.new(res['tasks'][0])
     end
@@ -197,7 +197,7 @@ module IronWorkerNG
     def schedules_create(code_name, params = {}, options = {})
       IronCore::Logger.debug 'IronWorkerNG', "Calling schedules.create with code_name='#{code_name}', params='#{params.to_s}' and options='#{options.to_s}'"
 
-      res = @api.schedules_create(code_name, params.class == String ? params : params.to_json, options)
+      res = @api.schedules_create(code_name, params.is_a?(String) ? params : params.to_json, options)
 
       OpenStruct.new(res['schedules'][0])
     end
@@ -227,7 +227,7 @@ module IronWorkerNG
     end
 
     def params_for_legacy(code_name, params)
-      if params.class == String
+      if params.is_a?(String)
         params = JSON.parse(params)
       end
 

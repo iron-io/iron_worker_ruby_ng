@@ -6,8 +6,8 @@ module IronWorkerNG
       module PHP
         include IronWorkerNG::Feature::PHP::MergeExec::InstanceMethods
 
-        def runtime_bundle(zip)
-          zip.get_output_stream(@dest_dir + '__runner__.php') do |runner|
+        def runtime_bundle(container)
+          container.get_output_stream(@dest_dir + '__runner__.php') do |runner|
             runner.write <<PHP_RUNNER
 <?php
 /* #{IronWorkerNG.full_version} */
@@ -48,7 +48,7 @@ PHP_RUNNER
           end
         end
 
-        def runtime_run_code
+        def runtime_run_code(local = false)
           <<RUN_CODE
 TERM=dumb php __runner__.php "$@"
 RUN_CODE

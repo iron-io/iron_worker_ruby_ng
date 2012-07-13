@@ -11,7 +11,7 @@ module IronWorkerNG
         @code.base_dir + path
       end
 
-      def zip_add(zip, dest, src)
+      def container_add(container, dest, src)
         new_src, clean = IronWorkerNG::Fetcher.fetch(src, true)
 
         new_src = File.expand_path(new_src) unless new_src.nil?
@@ -24,10 +24,10 @@ module IronWorkerNG
 
         if File.directory?(src)
           Dir.glob(src + '/**/**') do |path|
-            zip.add(@code.dest_dir + dest + path[src.length .. -1], path)
+            container.add(@code.dest_dir + dest + path[src.length .. -1], path)
           end
         else
-          zip.add(@code.dest_dir + dest, src)
+          container.add(@code.dest_dir + dest, src)
         end
 
         unless clean.nil?
@@ -39,7 +39,7 @@ module IronWorkerNG
         ''
       end
 
-      def bundle(zip)
+      def bundle(container)
       end
     end
   end

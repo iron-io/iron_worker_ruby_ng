@@ -13,19 +13,19 @@ module IronWorkerNG
         runtime(:ruby)
       end
 
-      def bundle(zip)
+      def bundle(container)
         @exec = IronWorkerNG::Feature::Ruby::MergeExec::Feature.new(self, '__builder__.rb', nil)
 
-        super(zip)
+        super(container)
 
-        zip.get_output_stream(@dest_dir + '__builder__.sh') do |builder|
+        container.get_output_stream(@dest_dir + '__builder__.sh') do |builder|
           builder.write <<BUILDER_SH
 # #{IronWorkerNG.full_version}
 #{remote_build_command}
 BUILDER_SH
         end
 
-        zip.get_output_stream(@dest_dir + '__builder__.rb') do |builder|
+        container.get_output_stream(@dest_dir + '__builder__.rb') do |builder|
           builder.write <<BUILDER_RUBY
 # #{IronWorkerNG.full_version}
 
