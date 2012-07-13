@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = "iron_worker_ng"
-  s.version = "0.8.4"
+  s.version = "0.9.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Andrew Kirilenko", "Iron.io, Inc"]
@@ -30,6 +30,7 @@ Gem::Specification.new do |s|
     "lib/iron_worker_ng/code/base.rb",
     "lib/iron_worker_ng/code/binary.rb",
     "lib/iron_worker_ng/code/builder.rb",
+    "lib/iron_worker_ng/code/dir_container.rb",
     "lib/iron_worker_ng/code/go.rb",
     "lib/iron_worker_ng/code/java.rb",
     "lib/iron_worker_ng/code/mono.rb",
