@@ -4,8 +4,8 @@ GEM
     coderay (1.0.7)
     git (1.2.5)
     iron_core (0.2.0)
-      rest (>= 1.2.1)
-    iron_worker_ng (0.8.0)
+      rest (>= 2.0.0)
+    iron_worker_ng (0.9.0)
       bundler (> 1.0.0)
       iron_core (>= 0.2.0)
       zip
@@ -18,7 +18,7 @@ GEM
       coderay (~> 1.0.5)
       method_source (~> 0.7.1)
       slop (>= 2.4.4, < 3)
-    rest (1.2.1)
+    rest (2.0.1)
       net-http-persistent
       rest-client (>= 0.3.0)
     rest-client (1.6.7)
