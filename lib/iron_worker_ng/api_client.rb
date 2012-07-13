@@ -111,5 +111,9 @@ module IronWorkerNG
       check_id(id)
       parse_response(post("projects/#{@project_id}/schedules/#{id}/cancel"))
     end
+
+    def projects_get
+      parse_response(get("projects/#{@project_id}"))
+    end
   end
 end

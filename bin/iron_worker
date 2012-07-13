@@ -4,6 +4,22 @@ require 'optparse'
 require 'time'
 require 'iron_worker_ng'
 
+class IronWorkerCLILoggerFormatter < ::Logger::Formatter
+  def call(severity, time, proname, msg)
+    msg + "\n"
+  end
+end
+
+def create_client
+  client = IronWorkerNG::Client.new
+
+  project = client.projects.get
+  
+  IronCore::Logger.info 'IronWorkerNG', "Working with project '#{project.name}' ('#{project.id}')"
+
+  client
+end
+
 if $*.size == 1 && ($*[0] == '-v' || $*[0] == '--version')
   puts IronWorkerNG.full_version
   exit 0
@@ -23,7 +39,7 @@ command = 'tasks.create' if command == 'queue'
 command = 'schedules.create' if command == 'schedule'
 command = 'tasks.log' if command == 'log'
 
-IronCore::Logger.logger.datetime_format = ''
+IronCore::Logger.logger.formatter = IronWorkerCLILoggerFormatter.new
 
 if $*.include?('--debug')
   IronCore::Logger.logger.level = ::Logger::DEBUG
@@ -59,11 +75,15 @@ if command == 'codes.create'
     exit 1
   end
 
+  client = create_client
+
   code = IronWorkerNG::Code::Base.new(name)
-
-  client = IronWorkerNG::Client.new
-
+  
+  IronCore::Logger.info 'IronWorkerNG', "Worker '#{code.name}' upload started"
+  
   client.codes.create(code)
+
+  IronCore::Logger.info 'IronWorkerNG', "Worker '#{code.name}' uploaded"
 elsif command == 'tasks.create' || command == 'schedules.create'
   if $*.size > 0 && $*[0][0] != '-'
     $*.unshift('-n')
@@ -163,14 +183,18 @@ elsif command == 'tasks.create' || command == 'schedules.create'
     options[:run_every] = run_every unless run_every.nil?
   end
 
-  client = IronWorkerNG::Client.new
+  client = create_client
 
   id = nil
 
   if command == 'tasks.create'
     id = client.tasks.create(name, payload, options).id
+
+    IronCore::Logger.info 'IronWorkerNG', "Worker '#{name}' queued"
   else
     id = client.schedules.create(name, payload, options).id
+
+    IronCore::Logger.info 'IronWorkerNG', "Worker '#{name}' scheduled"
   end
 
   puts id if print_id
@@ -207,7 +231,7 @@ elsif command == 'tasks.log'
     exit 1
   end
 
-  client = IronWorkerNG::Client.new
+  client = create_client
 
   log = ''
 

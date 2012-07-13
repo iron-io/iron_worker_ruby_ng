@@ -218,6 +218,14 @@ module IronWorkerNG
       true
     end
 
+    def projects_get
+      IronCore::Logger.debug 'IronWorkerNG', "Calling projects.get"
+
+      res =@api.projects_get
+
+      OpenStruct.new(res)
+    end
+
     def params_for_legacy(code_name, params)
       if params.class == String
         params = JSON.parse(params)
