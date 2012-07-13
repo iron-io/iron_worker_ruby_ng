@@ -72,7 +72,7 @@ module Hashie
           value
         end
       end
-      
+
       def indifferent_default(key = nil)
         return self[convert_key(key)] if key?(key)
         regular_default(key)
@@ -84,7 +84,7 @@ module Hashie
           self[k] = v
         end
       end
-      
+
       def indifferent_writer(key, value);  regular_writer convert_key(key), convert_value(value) end
       def indifferent_fetch(key, *args);   regular_fetch  convert_key(key), *args                end
       def indifferent_delete(key);         regular_delete convert_key(key)                       end
@@ -92,7 +92,7 @@ module Hashie
       def indifferent_values_at(*indices); indices.map{|i| self[i] }                             end
 
       def indifferent_access?; true end
-      
+
       protected
 
       def hash_lacking_indifference?(other)

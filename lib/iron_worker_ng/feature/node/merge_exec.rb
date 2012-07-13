@@ -24,7 +24,7 @@ module IronWorkerNG
 
         module InstanceMethods
           def merge_exec(path=nil)
-            @exec ||= nil 
+            @exec ||= nil
 
             return @exec unless path
 

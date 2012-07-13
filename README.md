@@ -4,9 +4,9 @@ To run your code in cloud you need to do three things:
 
 - **Create code package**
 - **Upload code package**
-- **Queue or schedule tasks** for execution 
+- **Queue or schedule tasks** for execution
 
-While you can use [REST APIs](http://dev.iron.io/worker/reference/api) for that, it's easier to use an 
+While you can use [REST APIs](http://dev.iron.io/worker/reference/api) for that, it's easier to use an
 IronWorker library created specifically for your language of choice, such as this gem, IronWorkerNG.
 
 # Preparing Your Environment
@@ -21,7 +21,7 @@ gem install iron_worker_ng
 
 # Creating A Worker
 
-Each IronWorkerNG Ruby worker is just Ruby code. It can be as simple or as complex as you want. For example, 
+Each IronWorkerNG Ruby worker is just Ruby code. It can be as simple or as complex as you want. For example,
 the following is an acceptable worker:
 
 ```ruby
@@ -35,14 +35,14 @@ All output to `STDOUT` will be logged and available for your review when your wo
 # Creating The Code Package
 
 Before you can run use IronWorker, be sure you've [created a free account with Iron.io](http://www.iron.io)
-and [setup your Iron.io credentials on your system](http://dev.iron.io/articles/configuration/) (either in a json 
-file or using ENV variables). You only need to do that once for your machine. If you've done that, then you can continue. 
+and [setup your Iron.io credentials on your system](http://dev.iron.io/articles/configuration/) (either in a json
+file or using ENV variables). You only need to do that once for your machine. If you've done that, then you can continue.
 
-Since our worker will be executed in the cloud, you'll need to bundle all the necessary gems, 
+Since our worker will be executed in the cloud, you'll need to bundle all the necessary gems,
 supplementary data, and other dependencies with it. `.worker` files make it easy to define your worker.
 
 ```ruby
-# define the runtime language, this can be ruby, java, node, php, go, etc. 
+# define the runtime language, this can be ruby, java, node, php, go, etc.
 runtime "ruby"
 # exec is the file that will be executed:
 exec "hello_worker.rb"
@@ -52,7 +52,7 @@ You can read more about `.worker` files here: http://dev.iron.io/worker/referenc
 
 ## Uploading the Code Package
 
-If your .worker file is called `hello.worker`, then run: 
+If your .worker file is called `hello.worker`, then run:
 
     iron_worker upload hello
 
@@ -73,7 +73,7 @@ Most commonly you'll be queuing up tasks from code though, so you can do this:
 ```ruby
 require "iron_worker_ng"
 client = IronWorkerNG::Client.new
-100.times do 
+100.times do
    client.tasks.create("hello", "foo"=>"bar")
 end
 ```
@@ -167,7 +167,7 @@ code.merge_gemfile '../Gemfile', 'common', 'worker' # merges gems from common an
 
 # Upload Your Worker
 
-When you have your code package, you are ready to upload and run it on the IronWorker cloud. 
+When you have your code package, you are ready to upload and run it on the IronWorker cloud.
 
 ```ruby
 # Initialize the client
@@ -180,8 +180,8 @@ client.codes.create(code)
 
 # Queue Up Tasks for Your Worker
 
-Now that the code is uploaded, we can create/queue up tasks. You can call this over and over 
-for as many tasks as you want. 
+Now that the code is uploaded, we can create/queue up tasks. You can call this over and over
+for as many tasks as you want.
 
 ```ruby
 client.tasks.create('MyWorker', {:client => 'Joe'})

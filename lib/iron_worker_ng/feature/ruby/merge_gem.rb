@@ -24,7 +24,7 @@ module IronWorkerNG
           def gem_path
             path = @spec.full_gem_path
 
-            # bundler fix 
+            # bundler fix
 
             ['/gems/' + @spec.full_name, '/gems'].each do |bad_part|
               path.gsub!(bad_part + bad_part, bad_part)

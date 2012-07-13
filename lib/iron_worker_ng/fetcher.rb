@@ -25,7 +25,7 @@ module IronWorkerNG
           tmp_dir_name = Dir.tmpdir + '/' + Dir::Tmpname.make_tmpname("iron-worker-ng-", "http")
 
           Dir.mkdir(tmp_dir_name)
- 
+
           File.open(tmp_dir_name + '/' + File.basename(url), 'wb') do |f|
             f.write(response.body)
           end

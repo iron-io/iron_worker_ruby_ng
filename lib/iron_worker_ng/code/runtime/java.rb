@@ -10,7 +10,7 @@ module IronWorkerNG
 
         def runtime_run_code
           classpath_array = []
-      
+
           @features.each do |f|
             if f.respond_to?(:code_for_classpath)
               classpath_array << f.send(:code_for_classpath)
@@ -20,7 +20,7 @@ module IronWorkerNG
           classpath = classpath_array.join(':')
 
           IronCore::Logger.info 'IronWorkerNG', "Collected '#{classpath}' classpath"
-        
+
           <<RUN_CODE
 java -cp #{classpath} #{@exec.klass.nil? ? "-jar #{File.basename(@exec.path)}" : @exec.klass} "$@"
 RUN_CODE

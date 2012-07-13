@@ -12,8 +12,8 @@ module IronWorkerNG
 <?php
 /* #{IronWorkerNG.full_version} */
 
-function getArgs() { 
-  global $argv; 
+function getArgs() {
+  global $argv;
 
   $args = array('task_id' => null, 'dir' => null, 'payload' => array());
 

@@ -224,7 +224,7 @@ module IronWorkerNG
       end
 
       attrs = {}
-        
+
       params.keys.each do |k|
         attrs['@' + k.to_s] = params[k]
       end

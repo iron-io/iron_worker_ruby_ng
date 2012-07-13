@@ -68,7 +68,7 @@ elsif command == 'tasks.create' || command == 'schedules.create'
   if $*.size > 0 && $*[0][0] != '-'
     $*.unshift('-n')
   end
-  
+
   name = nil
   payload = nil
   payload_file = nil
@@ -88,7 +88,7 @@ elsif command == 'tasks.create' || command == 'schedules.create'
     opts.banner = "usage: iron_worker #{command} [OPTIONS]"
 
     opts.on('-n', '--name NAME', 'code name') do |v|
-      name = v 
+      name = v
     end
 
     opts.on('-p', '--payload PAYLOAD', String, 'payload to pass') do |v|
@@ -187,7 +187,7 @@ elsif command == 'tasks.log'
     opts.banner = "usage: iron_worker #{command} [OPTIONS]"
 
     opts.on('-t', '--task-id ID', 'task id') do |v|
-      task_id = v 
+      task_id = v
     end
 
     opts.on('-w', '--wait', 'wait for task') do |v|
@@ -220,7 +220,7 @@ elsif command == 'tasks.log'
     if wait
       client.tasks.wait_for(task_id)
     end
-    
+
     log = client.tasks.log(task_id)
   end
 
