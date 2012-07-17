@@ -27,7 +27,7 @@ class CodeCreateTest < IWNGTest
 
   def test_name
     resp = client.codes_create code_bundle('test/hello.worker')
-    assert_equal 200, resp.status_code, "status ok"
+    assert_equal "Upload successful.", resp.msg
     assert resp.id =~ /[0-9a-f]{24}/, "has id"
   end
 

@@ -8,3 +8,7 @@ group :development do
   gem 'rake'
   gem 'jeweler2'
 end
+
+group :test do
+  gem 'iron_worker_ng' # `rake install` before testing
+end
