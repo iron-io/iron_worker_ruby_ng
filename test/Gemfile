@@ -1,4 +1,0 @@
-source 'http://rubygems.org'
-
-gem 'jeweler2'
-gem 'iron_worker_ng'
