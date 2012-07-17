@@ -1,5 +1,5 @@
 source 'http://rubygems.org'
 
 group :extra do
-  gem 'pry'
+  gem 'iron_core'
 end
