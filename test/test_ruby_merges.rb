@@ -30,4 +30,15 @@ class RubyMergesTest < IWNGTest
                  'correct output'
   end
 
+  def test_merge_gem
+    wf = 'test/workers/merge_gem_worker/merge_gem_worker.worker'
+    client.codes.create IronWorkerNG::Code::Base.new wf
+
+    task = client.tasks.create('merge_gem_worker')
+    client.tasks.wait_for(task.id)
+
+    assert client.tasks.log(task.id) =~ /hello\n/,
+           'correct output'
+  end
+
 end
