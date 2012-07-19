@@ -1,28 +1,15 @@
-require 'bundler'
-require 'tmpdir'
-
-tmpdir = Dir.mktmpdir
-File.open(tmpdir + '/Gemfile', 'w') do |f|
-  f << File.read('Gemfile')
-  f << File.read('test/Gemfile')
-end
-Dir.chdir tmpdir do
-  Bundler.setup
-end
-
-$LOAD_PATH.unshift 'lib'
+puts `rake install`
 
 require 'iron_worker_ng'
-require_relative 'test/iron_io_config.rb'
+require_relative 'iron_io_config.rb'
 
 client = IronWorkerNG::Client.new
 
-code = IronWorkerNG::Code.new do
+code = IronWorkerNG::Code::Base.new do
   runtime 'ruby'
 
-  exec 'ng_tests_worker.rb'
-  gemfile 'Gemfile'
-  gemfile 'test/Gemfile'
+  exec 'test/ng_tests_worker.rb'
+  gemfile 'Gemfile', :default, :development, :test
 
   Dir.glob('*').each do |p|
     dir  p, 'iwng' if File.directory?  p
@@ -33,8 +20,6 @@ code = IronWorkerNG::Code.new do
 end
 
 puts client.codes.create(code)
-
-puts code.create_zip
 
 task = client.tasks.create 'NgTestsWorker', args: $*.join(' ')
 

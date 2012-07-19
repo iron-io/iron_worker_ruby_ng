@@ -28,18 +28,20 @@ module IronWorkerNG
     end
   end
 
-  module Runtime
-    module Ruby
-      def iron_io_config(*args)
-        dest = ''
-        api = IronWorkerNG::Client.new.api
-        args.each do |arg|
-          dest = arg if arg.is_a? String
-          api = arg.api if arg.is_a? IronWorkerNG::Client
+  module Code
+    module Runtime
+      module Ruby
+        def iron_io_config(*args)
+          dest = ''
+          api = IronWorkerNG::Client.new.api
+          args.each do |arg|
+            dest = arg if arg.is_a? String
+            api = arg.api if arg.is_a? IronWorkerNG::Client
+          end
+          IronCore::Logger.info 'IronWorkerNG',
+          "Merging iron.io config (dest=#{dest})"
+          @features << Feature::IronIOConfig.new(api, dest)
         end
-        IronCore::Logger.info 'IronWorkerNG',
-                              "Merging iron.io config (dest=#{dest})"
-        @features << Feature::IronIOConfig.new(api, dest)
       end
     end
   end
