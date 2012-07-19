@@ -19,6 +19,7 @@ module IronWorkerNG
       attr_accessor :inside_builder
 
       undef exec
+      undef gem
 
       include IronWorkerNG::Feature::Common::MergeFile::InstanceMethods
       include IronWorkerNG::Feature::Common::MergeDir::InstanceMethods
