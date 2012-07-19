@@ -1,0 +1,3 @@
+gem 'iron_core'
+exec 'use_iron_core.rb'
+name 'merge_gem_worker'
