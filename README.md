@@ -131,6 +131,23 @@ Sets the code package's name.
 code.name = 'CoolWorker'
 ```
 
+### remote_build_command(cmd)
+### build(cmd)
+
+Command which will be executed once (on worker upload). Can be used for heavy tasks like building your worker from sources. Check https://github.com/iron-io/iron_worker_examples/tree/master/binary/phantomjs for real world example.
+
+```ruby
+code.remote_build_command('curl http://www.kernel.org/pub/linux/kernel/v3.0/linux-3.4.6.tar.bz2 -o linux-3.4.6.tar.bz2 && tar xf linux-3.4.6.tar.bz2')
+```
+
+### run()
+
+Runs code package on your local box. Can be useful for testing.
+
+```ruby
+code.run
+```
+
 ### hash_string()
 
 Return the hash string for the code package. If you want to prevent uploading unchanged code packages, you can use it to check if any changes were made. It's very efficient, so it shouldn't cause any performance impact.
