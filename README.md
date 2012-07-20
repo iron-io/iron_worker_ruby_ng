@@ -84,18 +84,35 @@ To get a bunch of extra output to debug things, turn it on using:
     IronCore::Logger.logger.level = ::Logger::DEBUG
 
 
-## IronWorkerNG::Code::Ruby API
+## IronWorkerNG::Code::Base API
 
-The IronWorkerNG::Code::Ruby class will help you package your code for upload, but to upload it to the cloud, you'll need to use the `IronWorkerNG::Client` class.
+The IronWorkerNG::Code::Base class will help you package your code for upload, but to upload it to the cloud, you'll need to use the `IronWorkerNG::Client` class.
 
 ### initialize(*args)
 
 Create new code package with the specified args.
 
 ```ruby
-code_with_name = IronWorkerNG::Code::Ruby.new(:exec => 'cool_worker.rb', :name => 'CoolWorker')
-code_with_guessed_name = IronWorkerNG::Code::Ruby.new(:exec => 'cool_worker.rb')
-code = IronWorkerNG::Code::Ruby.new # will need to use code.merge_exec later
+code_from_workerfile = IronWorkerNG::Code::Base.new(:workerfile => 'example.worker')
+code_with_name = IronWorkerNG::Code::Base.new(:exec => 'example.rb', :name => 'Example')
+code_with_guessed_name = IronWorkerNG::Code::Base.new(:exec => 'example.rb')
+code = IronWorkerNG::Code::Base.new
+```
+
+### runtime()
+
+Return the code package's runtime.
+
+```ruby
+puts code.runtime
+```
+
+### runtime=(runtime)
+
+Sets the code package's runtime. If no runtime provided it defaults to 'ruby'.
+
+```ruby
+code.runtime = 'ruby'
 ```
 
 ### name()
@@ -123,6 +140,7 @@ puts code.hash_string
 ```
 
 ### merge_file(path, dest = '')
+### file(path, dest = '')
 
 Merge the file located at `path` into the code package. If `dest` is set, it will be used as the path to a directory within the zip, into which the file will be merged. If the directory does not exist, it will be automatically created.
 
@@ -132,6 +150,7 @@ code.merge_file 'clients.csv', 'information/clients' # will be in information/cl
 ```
 
 ### merge_dir(path, dest = '')
+### dir(path, dest = '')
 
 Recursively merge the directory located at path into the code package. If `dest` is set, it will be used as the path to a directory within the zip, into which the directory specified by `path` will be merged. If `dest` is set but does not exist, it will be automatically created.
 
@@ -140,17 +159,23 @@ code.merge_dir '../config' # will be in the same directory as worker
 code.merge_dir 'lib', 'utils' # will be in utils subdirectory, accessible as utils/lib
 ```
 
-### merge_exec(path, name = nil)
+## IronWorkerNG::Code::Ruby API
 
-Merge the worker located at `path`. If `name` is omitted, a camel-cased version of the file name will be used. **You can have only one worker merged per code package.**
+Specific methods for ruby runtime.
+
+### merge_exec(path, klass = nil)
+### exec(path, klass = nil)
+
+Merge the exec located at `path`. If `klass` is provided, it'll try to instantiate it, set attrs from params and fire up `run` method when executed.
 
 ```ruby
-code.merge_exec 'my_worker.rb' # name will be MyWorker
+code.merge_exec 'my_worker.rb'
 ```
 
 ### merge_gem(name, version = '>= 0')
+### gem(name, version = '>= 0')
 
-Merge a gem with dependencies. Please note that gems which contains binary extensions will not be merged for now, as binary extensions are not supported at this time; we have [a set](http://dev.iron.io/worker/reference/environment/?lang=ruby#ruby_gems_installed) of the most common gems with binary extensions preinstalled for your use. You can use version constrains if you need a specific gem version.
+Merge a gem with dependencies. Please note that gems which contains binary extensions will not be merged for now, as binary extensions are not supported at this time; we have [a set](http://dev.iron.io/worker/reference/environment/?lang=ruby#ruby_gems_installed) of the most common gems with binary extensions preinstalled for your use. You can use version constrains if you need a specific gem version. Please note that `git` and `path` gems aren't supported yet.
 
 ```ruby
 code.merge_gem 'activerecord'
@@ -158,11 +183,125 @@ code.merge_gem 'paperclip', '< 3.0.0,>= 2.1.0'
 ```
 
 ### merge_gemfile(path, *groups)
+### gemfile(path, *groups)
 
 Merge all gems from specified the groups in a Gemfile. Please note that this will not auto-require the gems when executing the worker.
 
 ```ruby
 code.merge_gemfile '../Gemfile', 'common', 'worker' # merges gems from common and worker groups
+```
+
+## IronWorkerNG::Code::Binary API
+
+Specific methods for binary (freeform) runtime.
+
+### merge_exec(path)
+### exec(path)
+
+Merge the exec located at `path`. 
+
+```ruby
+code.merge_exec 'my_worker.sh'
+```
+
+## IronWorkerNG::Code::Go API
+
+Specific methods for go runtime. It'll run provided exec via 'go run'.
+
+### merge_exec(path)
+### exec(path)
+
+Merge the exec located at `path`. 
+
+```ruby
+code.merge_exec 'my_worker.go'
+```
+
+## IronWorkerNG::Code::Java API
+
+Specific methods for java runtime.
+
+### merge_exec(path, klass = nil)
+### exec(path, klass = nil)
+
+Merge the exec located at `path`. If class isn't provided, it'll relay on jar's manifest.
+
+```ruby
+code.merge_exec 'my_worker.jar'
+```
+
+### merge_jar(path)
+### jar(path)
+
+Merge the jar located at `path`. It'll be added to classpath when executing your worker.
+
+```ruby
+code.merge_jar 'xerces.jar'
+```
+
+## IronWorkerNG::Code::Mono API
+
+Specific methods for mono (.net) runtime.
+
+### merge_exec(path)
+### exec(path)
+
+Merge the exec located at `path`. 
+
+```ruby
+code.merge_exec 'my_worker.exe'
+```
+
+## IronWorkerNG::Code::Node API
+
+Specific methods for node runtime.
+
+### merge_exec(path)
+### exec(path)
+
+Merge the exec located at `path`. 
+
+```ruby
+code.merge_exec 'my_worker.js'
+```
+
+## IronWorkerNG::Code::Perl API
+
+Specific methods for perl runtime.
+
+### merge_exec(path)
+### exec(path)
+
+Merge the exec located at `path`. 
+
+```ruby
+code.merge_exec 'my_worker.pl'
+```
+
+## IronWorkerNG::Code::PHP API
+
+Specific methods for PHP runtime.
+
+### merge_exec(path)
+### exec(path)
+
+Merge the exec located at `path`. 
+
+```ruby
+code.merge_exec 'my_worker.php'
+```
+
+## IronWorkerNG::Code::Python API
+
+Specific methods for python runtime.
+
+### merge_exec(path)
+### exec(path)
+
+Merge the exec located at `path`. 
+
+```ruby
+code.merge_exec 'my_worker.py'
 ```
 
 # Upload Your Worker
