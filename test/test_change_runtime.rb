@@ -29,6 +29,8 @@ class ChangeRuntimeTest < IWNGTest
            end.path)
     end
 
+    client.codes.create code
+
     task = client.tasks.create(code_name)
     client.tasks.wait_for task.id
 
