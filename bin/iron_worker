@@ -10,14 +10,22 @@ class IronWorkerCLILoggerFormatter < ::Logger::Formatter
   end
 end
 
+@env = nil
+
 def create_client
-  client = IronWorkerNG::Client.new
+  client = IronWorkerNG::Client.new(:env => @env)
 
   project = client.projects.get
   
   IronCore::Logger.info 'IronWorkerNG', "Working with project '#{project.name}' ('#{project.id}')"
 
   client
+end
+
+def env_opt(opts)
+  opts.on('-e', '--env ENV', 'environment') do |v|
+    @env = v
+  end
 end
 
 if $*.size == 1 && ($*[0] == '-v' || $*[0] == '--version')
@@ -60,6 +68,8 @@ if command == 'codes.create'
     opts.on('-n', '--name NAME', 'code name or workerfile') do |v|
       name = v
     end
+
+    env_opt(opts)
   end
 
   begin
@@ -151,6 +161,8 @@ elsif command == 'tasks.create' || command == 'schedules.create'
     opts.on('--print-id', 'prints result id') do |v|
       print_id = true
     end
+
+    env_opt(opts)
   end
 
   begin
@@ -216,6 +228,8 @@ elsif command == 'tasks.log'
     opts.on('-w', '--wait', 'wait for task') do |v|
       wait = true
     end
+
+    env_opt(opts)
   end
 
   begin
