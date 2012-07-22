@@ -61,7 +61,7 @@ if command == 'codes.create'
   end
 
   name = nil
-  max_concurrency = nil
+  options = {}
 
   opts = OptionParser.new do |opts|
     opts.banner = "usage: iron_worker #{command} [OPTIONS]"
@@ -71,7 +71,7 @@ if command == 'codes.create'
     end
 
     opts.on('-c', '--max-concurrency CONCURENCY', Integer, 'max number of concurrent workers for this code package') do |v|
-      max_concurrency = v
+      options[:max_concurrency] = v
     end
 
     env_opt(opts)
@@ -95,7 +95,7 @@ if command == 'codes.create'
   
   IronCore::Logger.info 'IronWorkerNG', "Worker '#{code.name}' upload started"
   
-  client.codes.create(code, :max_concurrency => max_concurrency)
+  client.codes.create(code, options)
 
   IronCore::Logger.info 'IronWorkerNG', "Worker '#{code.name}' uploaded"
 elsif command == 'tasks.create' || command == 'schedules.create'
