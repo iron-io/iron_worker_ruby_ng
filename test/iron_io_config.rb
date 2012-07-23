@@ -39,7 +39,7 @@ module IronWorkerNG
             api = arg.api if arg.is_a? IronWorkerNG::Client
           end
           IronCore::Logger.info 'IronWorkerNG',
-          "Merging iron.io config (dest=#{dest})"
+                                "Merging iron.io config (dest=#{dest})"
           @features << Feature::IronIOConfig.new(api, dest)
         end
       end

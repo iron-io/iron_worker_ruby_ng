@@ -14,12 +14,11 @@ end
 config = JSON.parse( File.read('.abt-ng-config'),
                      :symbolize_names => true )
 
-msg = "#{push[:pusher][:name]} have pushed:\n" +
-  ( push[:commits].map do |c|
-      "<a href=\"#{c[:url]}\">#{ CGI::escapeHTML(c[:message]) }</a>" +
-        " by #{c[:author][:name]}"
-    end.join("\n") )
-msg += "\n"
+msg = "#{push[:pusher][:name]} have pushed:\n"
+push[:commits].each do |c|
+  msg << "<a href=\"#{c[:url]}\">#{ CGI::escapeHTML(c[:message]) }</a>"
+  msg << " by #{c[:author][:name]}\n"
+end
 
 root = Dir.pwd
 
@@ -42,6 +41,9 @@ ENV['GEM_PATH'] = (gem_path + (ENV['GEM_PATH'] || '').split(':')).join(':')
 
 run_tests = Proc.new do
   path = "test_log_#{ Time.now.strftime('%F_%H_%M') }.txt"
+
+  fork { exec 'rake install' }
+  Process.wait
 
   fork { exec "rake -f test/Rakefile test >#{path} 2>&1" }
   Process.wait
@@ -69,7 +71,7 @@ msg += "\n"
 
 msg += "after: "
 msg += "<a href=\"http://s3.amazonaws.com/abt-ng-logs/#{after}\">full log</a> "
-if log = File.read(after) and pos = log =~ /^Finished in/
+if log = File.read(after) and pos = log =~ /^Finished( tests)? in/
   res = log[pos .. -1]
   if pos = res =~ SUMMARY_R
     msg += ' ' + $& + "\n"
