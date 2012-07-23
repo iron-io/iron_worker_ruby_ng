@@ -70,7 +70,7 @@ if command == 'codes.create'
       name = v
     end
 
-    opts.on('-c', '--max-concurrency CONCURENCY', Integer, 'max number of concurrent workers for this code package') do |v|
+    opts.on('-c', '--max-concurrency CONCURRENCY', Integer, 'max number of concurrent workers for this code package') do |v|
       options[:max_concurrency] = v
     end
 
