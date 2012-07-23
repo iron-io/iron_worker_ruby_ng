@@ -1,0 +1,21 @@
+development:
+  host: somehost.mongohq.com
+  port: 12345
+  db_name: worker_test
+  username: ausername
+  password: apassword
+    
+test:
+  host: somehost.mongohq.com
+  port: 12345
+  db_name: worker_test
+  username: ausername
+  password: apassword
+
+production:
+  host: somehost.mongohq.com
+  port: 12345
+  db_name: worker_test
+  username: ausername
+  password: apassword
+  

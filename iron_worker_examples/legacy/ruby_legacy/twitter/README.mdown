@@ -1,0 +1,34 @@
+# IronWorker => Twitter
+### Requirements:
+- IronWorker keys
+- Twitter application keys
+
+### How to obtain your keys
+1. [Go to the Twitter developer portal to create a new application](https://dev.twitter.com/apps)
+![Printscreen for step #1](http://rubynerd.net/dropbox/simpleworker/twitter/1.png)
+2. [Click on the "Create a new application" button](https://dev.twitter.com/apps/new)
+![Printscreen for step #2](http://rubynerd.net/dropbox/simpleworker/twitter/2.png)
+3. Fill in the form
+![Printscreen for step #3](http://rubynerd.net/dropbox/simpleworker/twitter/3.png)
+4. Agree to some legal stuff and fail the Dyslexic test
+![Printscreen for step #4](http://rubynerd.net/dropbox/simpleworker/twitter/4.png)
+5. If all goes well, you should see this:
+![Printscreen for step #5](http://rubynerd.net/dropbox/simpleworker/twitter/5.png)
+6. Grab your Consumer keys
+![Printscreen for step #6](http://rubynerd.net/dropbox/simpleworker/twitter/6.png)
+7. Then go back to the top, click on the "Settings" tab
+![Printscreen for step #9](http://rubynerd.net/dropbox/simpleworker/twitter/9.png)
+8. Then scroll down to the "Application Type" section, and select the "Read and Write" radio button
+![Printscreen for step #10](http://rubynerd.net/dropbox/simpleworker/twitter/10.png)
+9. POST the form
+![Printscreen for step #11](http://rubynerd.net/dropbox/simpleworker/twitter/11.png)
+10. __**WAIT A LONG TIME**__ then request your Access Token
+![Printscreen for step #7](http://rubynerd.net/dropbox/simpleworker/twitter/7.png)
+11. Grab a cup of tea, then hit F5. You should see this:
+![Printscreen for step #8](http://rubynerd.net/dropbox/simpleworker/twitter/8.png)
+12. Swap to your <del>weapon of choice</del> text editor
+13. Put your keys into the twitter.yml file, along with IronWorker keys, then ```ruby twitter_runner.rb```
+14. Check your Twitter page
+
+
+

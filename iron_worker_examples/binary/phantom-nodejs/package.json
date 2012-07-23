@@ -1,0 +1,9 @@
+{
+  "name":"PhantomJsWorker",
+  "version":"1.0.0",
+  "dependencies": {
+    "phantom" : ">=0.3",
+    "iron_worker" : ">=0.0.1"
+  },
+  "private":"true"
+}

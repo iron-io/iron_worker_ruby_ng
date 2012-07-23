@@ -1,0 +1,4 @@
+runtime "ruby"
+exec "twilio_worker.rb"
+
+gem 'twilio-ruby'

@@ -1,0 +1,5 @@
+runtime 'binary'
+name 'HelloGo'
+file 'hello.go'
+exec 'hello'
+build_command 'go build hello.go'

@@ -1,0 +1,3 @@
+runtime 'mono'
+name 'HelloMono'
+exec 'hello.exe'
