@@ -33,16 +33,16 @@ class CLITest < IWNGTest
   end
 
   def test_basic
-    assert cli('codes.create', 'test/hello.worker') =~
+    assert cli('upload', 'test/hello.worker') =~
       /Upload successful/
 
-    assert cli('tasks.create', name: 'hello') =~
+    assert cli('queue', name: 'hello') =~
       /Queued up.*"id":"(.{24})"/
 
-    assert cli('tasks.log', '--wait', task_id: $1) =~
+    assert cli('log', '--wait', task_id: $1) =~
       /\nhello\n/
 
-    assert cli('schedules.create', name: 'hello') =~
+    assert cli('schedule', name: 'hello') =~
       /Scheduled/
   end
 

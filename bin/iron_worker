@@ -33,19 +33,14 @@ if $*.size == 1 && ($*[0] == '-v' || $*[0] == '--version')
   exit 0
 end
 
-if $*.size == 0 || (not ['codes.create', 'upload', 'tasks.create', 'queue', 'schedules.create', 'schedule', 'tasks.log', 'log', 'run'].include?($*[0]))
+if $*.size == 0 || (not ['upload', 'queue', 'schedule', 'log', 'run'].include?($*[0]))
   puts 'usage: iron_worker COMMAND [OPTIONS]'
-  puts '    COMMAND: codes.create (upload), tasks.create (queue), schedules.create (schedule), tasks.log (log), run'
+  puts '    COMMAND: upload, queue, schedule, log, run'
   puts '    run iron_worker COMMAND --help to get more information about each command'
   exit 1
 end
 
 command = $*.shift
-
-command = 'codes.create' if command == 'upload'
-command = 'tasks.create' if command == 'queue'
-command = 'schedules.create' if command == 'schedule'
-command = 'tasks.log' if command == 'log'
 
 IronCore::Logger.logger.formatter = IronWorkerCLILoggerFormatter.new
 
@@ -55,7 +50,7 @@ if $*.include?('--debug')
   $*.reject! { |p| p == '--debug' }
 end
 
-if command == 'codes.create'
+if command == 'upload'
   if $*.size > 0 && $*[0][0] != '-'
     $*.unshift('-n')
   end
@@ -98,7 +93,7 @@ if command == 'codes.create'
   client.codes.create(code, options)
 
   IronCore::Logger.info 'IronWorkerNG', "Worker '#{code.name}' uploaded"
-elsif command == 'tasks.create' || command == 'schedules.create'
+elsif command == 'queue' || command == 'schedule'
   if $*.size > 0 && $*[0][0] != '-'
     $*.unshift('-n')
   end
@@ -145,7 +140,7 @@ elsif command == 'tasks.create' || command == 'schedules.create'
       delay = v
     end
 
-    if command == 'schedules.create'
+    if command == 'schedule'
       opts.on('--start-at TIME', 'start task at specified time') do |v|
         start_at = Time.parse(v)
       end
@@ -192,7 +187,7 @@ elsif command == 'tasks.create' || command == 'schedules.create'
   options[:timeout] = timeout unless timeout.nil?
   options[:delay] = delay unless delay.nil?
 
-  if command == 'schedules.create'
+  if command == 'schedule'
     options[:start_at] = start_at unless start_at.nil?
     options[:end_at] = end_at unless end_at.nil?
     options[:run_times] = run_times unless run_times.nil?
@@ -203,7 +198,7 @@ elsif command == 'tasks.create' || command == 'schedules.create'
 
   id = nil
 
-  if command == 'tasks.create'
+  if command == 'queue'
     id = client.tasks.create(name, payload, options).id
 
     IronCore::Logger.info 'IronWorkerNG', "Worker '#{name}' queued"
@@ -214,7 +209,7 @@ elsif command == 'tasks.create' || command == 'schedules.create'
   end
 
   puts id if print_id
-elsif command == 'tasks.log'
+elsif command == 'log'
   if $*.size > 0 && $*[0][0] != '-'
     $*.unshift('-t')
   end
