@@ -36,13 +36,13 @@ class CLITest < IWNGTest
     assert cli('upload', 'test/hello.worker') =~
       /Upload successful/
 
-    assert cli('queue', name: 'hello') =~
+    assert cli('queue', 'hello') =~
       /Queued up.*"id":"(.{24})"/
 
-    assert cli('log', '--wait', task_id: $1) =~
+    assert cli('log', '--wait', $1) =~
       /\nhello\n/
 
-    assert cli('schedule', name: 'hello') =~
+    assert cli('schedule', 'hello') =~
       /Scheduled/
   end
 

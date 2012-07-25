@@ -51,17 +51,13 @@ if $*.include?('--debug')
 end
 
 if command == 'upload'
-  if $*.size > 0 && $*[0][0] != '-'
-    $*.unshift('-n')
-  end
-
   name = nil
   options = {}
 
   opts = OptionParser.new do |opts|
-    opts.banner = "usage: iron_worker #{command} [OPTIONS]"
+    opts.banner = "usage: iron_worker upload <name or path to workerfile> [OPTIONS]"
 
-    opts.on('-n', '--name NAME', 'code name or workerfile') do |v|
+    opts.on('-n', '--name NAME', 'override for code name') do |v|
       name = v
     end
 
@@ -79,26 +75,23 @@ if command == 'upload'
     exit 1
   end
 
-  if name.nil?
+  unless $*.size == 1
+    puts 'Single argument expected!'
     puts opts
     exit 1
   end
 
   client = create_client
 
-  code = IronWorkerNG::Code::Base.new(name)
-  
+  code = IronWorkerNG::Code::Base.new($*.first)
+  code.name(name) if name
+
   IronCore::Logger.info 'IronWorkerNG', "Worker '#{code.name}' upload started"
   
   client.codes.create(code, options)
 
   IronCore::Logger.info 'IronWorkerNG', "Worker '#{code.name}' uploaded"
 elsif command == 'queue' || command == 'schedule'
-  if $*.size > 0 && $*[0][0] != '-'
-    $*.unshift('-n')
-  end
-
-  name = nil
   payload = nil
   payload_file = nil
 
@@ -114,11 +107,7 @@ elsif command == 'queue' || command == 'schedule'
   print_id = false
 
   opts = OptionParser.new do |opts|
-    opts.banner = "usage: iron_worker #{command} [OPTIONS]"
-
-    opts.on('-n', '--name NAME', 'code name') do |v|
-      name = v
-    end
+    opts.banner = "usage: iron_worker #{command} <code name> [OPTIONS]"
 
     opts.on('-p', '--payload PAYLOAD', String, 'payload to pass') do |v|
       payload = v
@@ -172,10 +161,13 @@ elsif command == 'queue' || command == 'schedule'
     exit 1
   end
 
-  if name.nil?
+  unless $*.size == 1
+    puts 'Single argument expected!'
     puts opts
     exit 1
   end
+
+  name = $*.first
 
   if payload.nil? and (not payload_file.nil?)
     payload = File.read(payload_file)
@@ -210,20 +202,11 @@ elsif command == 'queue' || command == 'schedule'
 
   puts id if print_id
 elsif command == 'log'
-  if $*.size > 0 && $*[0][0] != '-'
-    $*.unshift('-t')
-  end
-
-  task_id = nil
   live = false
   wait = false
 
   opts = OptionParser.new do |opts|
-    opts.banner = "usage: iron_worker #{command} [OPTIONS]"
-
-    opts.on('-t', '--task-id ID', 'task id') do |v|
-      task_id = v
-    end
+    opts.banner = "usage: iron_worker log <task id> [OPTIONS]"
 
     opts.on('-w', '--wait', 'wait for task') do |v|
       wait = true
@@ -239,10 +222,13 @@ elsif command == 'log'
     exit 1
   end
 
-  if task_id.nil?
+  unless $*.size == 1
+    puts 'Single argument expected!'
     puts opts
     exit 1
   end
+
+  task_id = $*.first
 
   client = create_client
 
@@ -282,20 +268,11 @@ elsif command == 'log'
     end
   end
 elsif command == 'run'
-  if $*.size > 0 && $*[0][0] != '-'
-    $*.unshift('-n')
-  end
-
-  name = nil
   payload = nil
   payload_file = nil
 
   opts = OptionParser.new do |opts|
-    opts.banner = "usage: iron_worker #{command} [OPTIONS]"
-
-    opts.on('-n', '--name NAME', 'code name or workerfile') do |v|
-      name = v
-    end
+    opts.banner = "usage: iron_worker run <name or path to workerfile> [OPTIONS]"
 
     opts.on('-p', '--payload PAYLOAD', String, 'payload to pass') do |v|
       payload = v
@@ -313,7 +290,8 @@ elsif command == 'run'
     exit 1
   end
 
-  if name.nil?
+  unless $*.size == 1
+    puts 'Single argument expected!'
     puts opts
     exit 1
   end
@@ -322,9 +300,9 @@ elsif command == 'run'
     payload = File.read(payload_file)
   end
 
-  code = IronWorkerNG::Code::Base.new(name)
+  code = IronWorkerNG::Code::Base.new($*.first)
 
-  IronCore::Logger.info 'IronWorkerNG', "Worker '#{name}' run started"
+  IronCore::Logger.info 'IronWorkerNG', "Worker '#{code.name}' run started"
   
   code.run(payload)
 end
