@@ -93,11 +93,11 @@ if command == 'upload'
 
   IronCore::Logger.info 'IronWorkerNG', "Code package name has been set to '#{code.name}'"
 
-  IronCore::Logger.info 'IronWorkerNG', '------> Creating code package'
+  IronCore::Logger.info 'IronWorkerNG', '------> Uploading code package'
 
   code_id = client.codes.create(code, options).id
 
-  IronCore::Logger.info 'IronWorkerNG', "Code package created with id = #{code_id}"
+  IronCore::Logger.info 'IronWorkerNG', "Code package uploaded with id = #{code_id}"
 
   code_info = client.codes.get(code_id)
 
