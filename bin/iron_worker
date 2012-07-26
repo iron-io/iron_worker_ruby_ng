@@ -36,9 +36,9 @@ if $*.size == 1 && ($*[0] == '-v' || $*[0] == '--version')
   exit 0
 end
 
-if $*.size == 0 || (not ['upload', 'queue', 'schedule', 'log', 'run'].include?($*[0]))
+if $*.size == 0 || (not ['upload', 'queue', 'schedule', 'log', 'run', 'webhook'].include?($*[0]))
   puts 'usage: iron_worker COMMAND [OPTIONS]'
-  puts '    COMMAND: upload, queue, schedule, log, run'
+  puts '    COMMAND: upload, queue, schedule, log, run, webhook'
   puts '    run iron_worker COMMAND --help to get more information about each command'
   exit 1
 end
@@ -331,4 +331,9 @@ elsif command == 'run'
   IronCore::Logger.info 'IronWorkerNG', "------> Running Worker '#{code.name}'"
   
   code.run(payload)
+elsif command == 'webhook'
+  name = $*.first
+  client = create_client
+  IronCore::Logger.info 'IronWorkerNG', "------> Webhook for code '#{name}':"
+  IronCore::Logger.info 'IronWorkerNG', "https://worker-aws-us-east-1.iron.io/2/projects/#{client.api.token}/tasks/webhook?code_name=#{name}&oauth=#{client.api.token}"
 end
