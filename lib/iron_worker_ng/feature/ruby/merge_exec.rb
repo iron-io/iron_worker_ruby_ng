@@ -37,7 +37,8 @@ module IronWorkerNG
 
             @exec = IronWorkerNG::Feature::Ruby::MergeExec::Feature.new(self, path, klass)
 
-            IronCore::Logger.info 'IronWorkerNG', "Merging ruby exec with path='#{path}' and class='#{klass}'"
+            IronCore::Logger.info 'IronWorkerNG', "Ruby executable detected with path = '#{path}'"
+            IronCore::Logger.info 'IronWorkerNG', "Class name has been set to '#{klass}'" if klass
 
             @features << @exec
           end

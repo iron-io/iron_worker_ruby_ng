@@ -6,6 +6,7 @@ require 'iron_worker_ng'
 
 class IronWorkerCLILoggerFormatter < ::Logger::Formatter
   def call(severity, time, proname, msg)
+    msg = ' ' * 8 + msg unless msg.start_with? '------> '
     msg + "\n"
   end
 end
@@ -13,11 +14,13 @@ end
 @env = nil
 
 def create_client
+  IronCore::Logger.info 'IronWorkerNG', '------> Detecting Configuration'
+
   client = IronWorkerNG::Client.new(:env => @env)
 
   project = client.projects.get
   
-  IronCore::Logger.info 'IronWorkerNG', "Working with project '#{project.name}' ('#{project.id}')"
+  IronCore::Logger.info 'IronWorkerNG', "Working with project '#{project.name}' with id #{project.id}"
 
   client
 end
@@ -83,14 +86,25 @@ if command == 'upload'
 
   client = create_client
 
+  IronCore::Logger.info 'IronWorkerNG', '------> Discovering .worker file'
+
   code = IronWorkerNG::Code::Base.new($*.first)
   code.name(name) if name
 
-  IronCore::Logger.info 'IronWorkerNG', "Worker '#{code.name}' upload started"
-  
-  client.codes.create(code, options)
+  IronCore::Logger.info 'IronWorkerNG', "Code package name has been set to '#{code.name}'"
 
-  IronCore::Logger.info 'IronWorkerNG', "Worker '#{code.name}' uploaded"
+  IronCore::Logger.info 'IronWorkerNG', '------> Creating code package'
+
+  code_id = client.codes.create(code, options).id
+
+  IronCore::Logger.info 'IronWorkerNG', "Code package created with id = #{code_id}"
+
+  code_info = client.codes.get(code_id)
+
+  IronCore::Logger.info 'IronWorkerNG', "------> Code package deployed with revision #{code_info.rev}"
+
+  IronCore::Logger.info 'IronWorkerNG', "https://hud.iron.io/tq/projects/#{client.api.project_id}/code/#{code_id}"
+
 elsif command == 'queue' || command == 'schedule'
   payload = nil
   payload_file = nil
@@ -191,16 +205,24 @@ elsif command == 'queue' || command == 'schedule'
   id = nil
 
   if command == 'queue'
+    IronCore::Logger.info 'IronWorkerNG', '------> Queueing task'
+
     id = client.tasks.create(name, payload, options).id
 
-    IronCore::Logger.info 'IronWorkerNG', "Worker '#{name}' queued"
+    IronCore::Logger.info 'IronWorkerNG', "------> Worker '#{name}' queued with task id #{id}"
+
+    IronCore::Logger.info 'IronWorkerNG', "https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{id}"
   else
+    IronCore::Logger.info 'IronWorkerNG', '------> Scheduling task'
+
     id = client.schedules.create(name, payload, options).id
 
-    IronCore::Logger.info 'IronWorkerNG', "Worker '#{name}' scheduled"
+    IronCore::Logger.info 'IronWorkerNG', "------> Worker '#{name}' scheduled with schedule id #{id}"
+
+    IronCore::Logger.info 'IronWorkerNG', "https://hud.iron.io/tq/projects/#{client.api.project_id}/scheduled_jobs/#{id}"
   end
 
-  puts id if print_id
+  IronCore::Logger.info 'IronWorkerNG', id if print_id
 elsif command == 'log'
   live = false
   wait = false
@@ -231,6 +253,8 @@ elsif command == 'log'
   task_id = $*.first
 
   client = create_client
+
+  IronCore::Logger.info 'IronWorkerNG', "------> Getting log of task #{task_id} (https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{task_id}/log)"
 
   log = ''
 
@@ -300,9 +324,11 @@ elsif command == 'run'
     payload = File.read(payload_file)
   end
 
+  IronCore::Logger.info 'IronWorkerNG', '------> Discovering .worker file'
+
   code = IronWorkerNG::Code::Base.new($*.first)
 
-  IronCore::Logger.info 'IronWorkerNG', "Worker '#{code.name}' run started"
+  IronCore::Logger.info 'IronWorkerNG', "------> Running Worker '#{code.name}'"
   
   code.run(payload)
 end

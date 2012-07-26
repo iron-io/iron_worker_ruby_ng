@@ -35,7 +35,7 @@ module IronWorkerNG
 
             @exec = IronWorkerNG::Feature::Node::MergeExec::Feature.new(self, path)
 
-            IronCore::Logger.info 'IronWorkerNG', "Merging node exec with path='#{path}'"
+            IronCore::Logger.info 'IronWorkerNG', "Node executable detected with path = '#{path}'"
 
             @features << @exec
           end

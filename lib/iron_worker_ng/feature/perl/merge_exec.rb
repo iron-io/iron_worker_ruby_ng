@@ -35,7 +35,7 @@ module IronWorkerNG
 
             @exec = IronWorkerNG::Feature::Perl::MergeExec::Feature.new(self, path)
 
-            IronCore::Logger.info 'IronWorkerNG', "Merging perl exec with path='#{path}'"
+            IronCore::Logger.info 'IronWorkerNG', "Perl executable detected with path = '#{path}'"
 
             @features << @exec
           end

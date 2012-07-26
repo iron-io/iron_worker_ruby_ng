@@ -73,7 +73,7 @@ module IronWorkerNG
           src, clean = IronWorkerNG::Fetcher.fetch(wfile)
 
           unless src.nil?
-            IronCore::Logger.info 'IronWorkerNG', "Using workerfile '#{wfile}'"
+            IronCore::Logger.info 'IronWorkerNG', "Found .worker file '#{wfile}'"
 
             eval(src)
 
