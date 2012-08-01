@@ -54,6 +54,25 @@ module IronWorkerNG
       @api.codes_list(options)['codes'].map { |c| OpenStruct.new(c) }
     end
 
+    # TODO: get rid of this when we have working filters
+    def codes_whole_list(options = {})
+      prev_level = IronCore::Logger.logger.level
+      IronCore::Logger.logger.level = ::Logger::INFO
+
+      result = []
+      page = -1
+      begin
+        codes = codes_list({ :per_page => 100,
+                             :page => page += 1
+                           }.merge(options))
+        result += codes
+      end while codes.size == 100
+
+      IronCore::Logger.logger.level = prev_level
+
+      result
+    end
+
     def codes_get(code_id)
       IronCore::Logger.debug 'IronWorkerNG', "Calling codes.get with code_id='#{code_id}'"
 

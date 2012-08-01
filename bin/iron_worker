@@ -36,7 +36,7 @@ if $*.size == 1 && ($*[0] == '-v' || $*[0] == '--version')
   exit 0
 end
 
-if $*.size == 0 || (not ['upload', 'queue', 'schedule', 'log', 'run', 'webhook'].include?($*[0]))
+if $*.size == 0 || (not ['upload', 'queue', 'schedule', 'log', 'run', 'webhook', 'info'].include?($*[0]))
   puts 'usage: iron_worker COMMAND [OPTIONS]'
   puts '    COMMAND: upload, queue, schedule, log, run, webhook'
   puts '    run iron_worker COMMAND --help to get more information about each command'
@@ -101,7 +101,7 @@ if command == 'upload'
 
   code_info = client.codes.get(code_id)
 
-  IronCore::Logger.info 'IronWorkerNG', "------> Code package deployed with revision #{code_info.rev}"
+  IronCore::Logger.info 'IronWorkerNG', "------> Code package '#{code_info.name}' was deployed with revision #{code_info.rev}"
 
   IronCore::Logger.info 'IronWorkerNG', "https://hud.iron.io/tq/projects/#{client.api.project_id}/code/#{code_id}"
 
@@ -336,4 +336,21 @@ elsif command == 'webhook'
   client = create_client
   IronCore::Logger.info 'IronWorkerNG', "------> Webhook for code '#{name}':"
   IronCore::Logger.info 'IronWorkerNG', "https://worker-aws-us-east-1.iron.io/2/projects/#{client.api.token}/tasks/webhook?code_name=#{name}&oauth=#{client.api.token}"
+elsif command == 'info'
+  name = $*.first
+  client = create_client
+  code = client.codes.whole_list.find{ |c| c.name == name }
+  unless code
+    IronCore::Logger.error 'IronWorkerNG', "Code package named '#{name}' not found"
+    exit(1)
+  end
+  latest_change = Time.parse(code.latest_change).strftime('%a %b %-d %T')
+  created_at = Time.parse(code.created_at).strftime('%a %b %-d %T')
+  (<<EOL
+Code package '#{code.name}' with id #{code.id}, created at #{created_at}
+Latest change was at #{latest_change} revision #{code.rev}
+Revisions: https://hud.iron.io/tq/projects/#{client.api.project_id}/code/#{code.id}
+Tasks: https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{code.id}/activity
+EOL
+   ).lines.each{ |msg| IronCore::Logger.info 'IronWorkerNG', msg.chomp }
 end
