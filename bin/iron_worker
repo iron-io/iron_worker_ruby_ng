@@ -347,7 +347,7 @@ elsif command == 'info'
   latest_change = Time.parse(code.latest_change).strftime('%a %b %-d %T')
   created_at = Time.parse(code.created_at).strftime('%a %b %-d %T')
   (<<EOL
-Code package '#{code.name}' with id #{code.id}, created at #{created_at}
+------> Code package '#{code.name}' with id #{code.id}, created at #{created_at}
 Latest change was at #{latest_change} revision #{code.rev}
 Revisions: https://hud.iron.io/tq/projects/#{client.api.project_id}/code/#{code.id}
 Tasks: https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{code.id}/activity
