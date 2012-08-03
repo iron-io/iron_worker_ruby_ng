@@ -82,6 +82,8 @@ module IronWorkerNG
     def codes_create(code, options = {})
       IronCore::Logger.debug 'IronWorkerNG', "Calling codes.create with code='#{code.to_s}' and options='#{options.to_s}'"
 
+      async = options.delete(:async) || options.delete('async')
+
       container_file = code.create_container
 
       if code.remote_build_command.nil?
@@ -92,6 +94,13 @@ module IronWorkerNG
         @api.codes_create(builder_code_name, container_file, 'sh', '__runner__.sh', options)
 
         builder_task = tasks.create(builder_code_name, :code_name => code.name, :client_options => @api.options.to_json, :codes_create_options => options.to_json)
+
+        if async
+          IronCore::Logger.info 'IronWorkerNG', 'Running builder asynchronously'
+          File.unlink(container_file)
+          return builder_task.id
+        end
+
         builder_task = tasks.wait_for(builder_task.id)
 
         unless builder_task.status == 'complete'

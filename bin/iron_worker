@@ -93,18 +93,25 @@ if command == 'upload'
 
   IronCore::Logger.info 'IronWorkerNG', "Code package name has been set to '#{code.name}'"
 
-  IronCore::Logger.info 'IronWorkerNG', '------> Uploading code package'
+  if code.remote_build_command
+    IronCore::Logger.info 'IronWorkerNG', "------> Remote building '#{code.name}'"
 
-  code_id = client.codes.create(code, options).id
+    builder_task_id = client.codes.create(code, options.merge(:async => true))
 
-  IronCore::Logger.info 'IronWorkerNG', "Code package uploaded with id = #{code_id}"
+    IronCore::Logger.info 'IronWorkerNG', "Bulder task: https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{builder_task_id}"
+  else
+    IronCore::Logger.info 'IronWorkerNG', '------> Uploading code package'
 
-  code_info = client.codes.get(code_id)
+    code_id = client.codes.create(code, options).id
 
-  IronCore::Logger.info 'IronWorkerNG', "------> Code package '#{code_info.name}' was deployed with revision #{code_info.rev}"
+    IronCore::Logger.info 'IronWorkerNG', "Code package uploaded with id = #{code_id}"
 
-  IronCore::Logger.info 'IronWorkerNG', "https://hud.iron.io/tq/projects/#{client.api.project_id}/code/#{code_id}"
+    code_info = client.codes.get(code_id)
 
+    IronCore::Logger.info 'IronWorkerNG', "------> Code package '#{code_info.name}' was deployed with revision #{code_info.rev}"
+
+    IronCore::Logger.info 'IronWorkerNG', "https://hud.iron.io/tq/projects/#{client.api.project_id}/code/#{code_id}"
+  end
 elsif command == 'queue' || command == 'schedule'
   payload = nil
   payload_file = nil
