@@ -35,7 +35,7 @@ module IronWorkerNG
 
             @exec = IronWorkerNG::Feature::Mono::MergeExec::Feature.new(self, path)
 
-            IronCore::Logger.info 'IronWorkerNG', "Mono executable detected with path = '#{path}'"
+            IronCore::Logger.info 'IronWorkerNG', "Detected mono exec with path='#{path}'"
 
             @features << @exec
           end

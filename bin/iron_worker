@@ -4,9 +4,12 @@ require 'optparse'
 require 'time'
 require 'iron_worker_ng'
 
+LOG_GROUP = '------> '
+LOG_ENTRY = '        '
+
 class IronWorkerCLILoggerFormatter < ::Logger::Formatter
   def call(severity, time, proname, msg)
-    msg = ' ' * 8 + msg unless msg.start_with? '------> '
+    msg = LOG_ENTRY + msg unless msg.start_with?(LOG_GROUP)
     msg + "\n"
   end
 end
@@ -14,13 +17,13 @@ end
 @env = nil
 
 def create_client
-  IronCore::Logger.info 'IronWorkerNG', '------> Detecting Configuration'
+  IronCore::Logger.info 'IronWorkerNG', "#{LOG_GROUP}Detecting Configuration"
 
   client = IronWorkerNG::Client.new(:env => @env)
 
   project = client.projects.get
-  
-  IronCore::Logger.info 'IronWorkerNG', "Working with project '#{project.name}' with id #{project.id}"
+
+  IronCore::Logger.info 'IronWorkerNG', "Project '#{project.name}' with id='#{project.id}'"
 
   client
 end
@@ -54,18 +57,17 @@ if $*.include?('--debug')
 end
 
 if command == 'upload'
-  name = nil
   options = {}
 
   opts = OptionParser.new do |opts|
-    opts.banner = "usage: iron_worker upload <name or path to workerfile> [OPTIONS]"
-
-    opts.on('-n', '--name NAME', 'override for code name') do |v|
-      name = v
-    end
+    opts.banner = "usage: iron_worker upload NAME_OR_PATH_TO_WORKERFILE [OPTIONS]"
 
     opts.on('-c', '--max-concurrency CONCURRENCY', Integer, 'max number of concurrent workers for this code package') do |v|
       options[:max_concurrency] = v
+    end
+
+    opts.on('-a', '--async', 'don\'t wait for package build') do |v|
+      options[:async] = true
     end
 
     env_opt(opts)
@@ -79,38 +81,35 @@ if command == 'upload'
   end
 
   unless $*.size == 1
-    puts 'Single argument expected!'
+    puts 'Please specify name or path to workerfile'
     puts opts
     exit 1
   end
 
   client = create_client
 
-  IronCore::Logger.info 'IronWorkerNG', '------> Discovering .worker file'
+  IronCore::Logger.info 'IronWorkerNG', "#{LOG_GROUP}Discovering workerfile"
 
   code = IronWorkerNG::Code::Base.new($*.first)
-  code.name(name) if name
 
   IronCore::Logger.info 'IronWorkerNG', "Code package name has been set to '#{code.name}'"
 
   if code.remote_build_command
-    IronCore::Logger.info 'IronWorkerNG', "------> Remote building '#{code.name}'"
+    IronCore::Logger.info 'IronWorkerNG', "#{LOG_GROUP}Remote building '#{code.name}'"
 
-    builder_task_id = client.codes.create(code, options.merge(:async => true))
+    builder_task_id = client.codes.create(code, options)
 
-    IronCore::Logger.info 'IronWorkerNG', "Bulder task: https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{builder_task_id}"
+    if options[:async]
+      IronCore::Logger.info 'IronWorkerNG', "Check https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{builder_task_id} for builder status"
+    end
   else
-    IronCore::Logger.info 'IronWorkerNG', '------> Uploading code package'
+    IronCore::Logger.info 'IronWorkerNG', "#{LOG_GROUP}Uploading code package"
 
     code_id = client.codes.create(code, options).id
-
-    IronCore::Logger.info 'IronWorkerNG', "Code package uploaded with id = #{code_id}"
-
     code_info = client.codes.get(code_id)
 
-    IronCore::Logger.info 'IronWorkerNG', "------> Code package '#{code_info.name}' was deployed with revision #{code_info.rev}"
-
-    IronCore::Logger.info 'IronWorkerNG', "https://hud.iron.io/tq/projects/#{client.api.project_id}/code/#{code_id}"
+    IronCore::Logger.info 'IronWorkerNG', "Code package uploaded with id='#{code_id}' and revision='#{code_info.rev}'"
+    IronCore::Logger.info 'IronWorkerNG', "Check https://hud.iron.io/tq/projects/#{client.api.project_id}/code/#{code_id} for more info"
   end
 elsif command == 'queue' || command == 'schedule'
   payload = nil
@@ -128,7 +127,7 @@ elsif command == 'queue' || command == 'schedule'
   print_id = false
 
   opts = OptionParser.new do |opts|
-    opts.banner = "usage: iron_worker #{command} <code name> [OPTIONS]"
+    opts.banner = "usage: iron_worker #{command} CODE_PACKAGE_NAME [OPTIONS]"
 
     opts.on('-p', '--payload PAYLOAD', String, 'payload to pass') do |v|
       payload = v
@@ -183,7 +182,7 @@ elsif command == 'queue' || command == 'schedule'
   end
 
   unless $*.size == 1
-    puts 'Single argument expected!'
+    puts 'Please specify code package name'
     puts opts
     exit 1
   end
@@ -331,12 +330,12 @@ elsif command == 'run'
     payload = File.read(payload_file)
   end
 
-  IronCore::Logger.info 'IronWorkerNG', '------> Discovering .worker file'
+  IronCore::Logger.info 'IronWorkerNG', '------> Discovering workerfile'
 
   code = IronWorkerNG::Code::Base.new($*.first)
 
   IronCore::Logger.info 'IronWorkerNG', "------> Running Worker '#{code.name}'"
-  
+
   code.run(payload)
 elsif command == 'webhook'
   name = $*.first

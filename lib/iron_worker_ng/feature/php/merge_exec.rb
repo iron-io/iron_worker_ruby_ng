@@ -35,7 +35,7 @@ module IronWorkerNG
 
             @exec = IronWorkerNG::Feature::PHP::MergeExec::Feature.new(self, path)
 
-            IronCore::Logger.info 'IronWorkerNG', "PHP executable detected with path = '#{path}'"
+            IronCore::Logger.info 'IronWorkerNG', "Detected php exec with path='#{path}'"
 
             @features << @exec
           end

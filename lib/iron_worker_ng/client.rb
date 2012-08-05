@@ -91,20 +91,27 @@ module IronWorkerNG
       else
         builder_code_name = code.name + (code.name.capitalize == code.name ? '::Builder' : '::builder')
 
+        IronCore::Logger.info 'IronWorkerNG', 'Uploading builder'
+
         @api.codes_create(builder_code_name, container_file, 'sh', '__runner__.sh', options)
 
         builder_task = tasks.create(builder_code_name, :code_name => code.name, :client_options => @api.options.to_json, :codes_create_options => options.to_json)
 
         if async
           IronCore::Logger.info 'IronWorkerNG', 'Running builder asynchronously'
+
           File.unlink(container_file)
+
           return builder_task.id
         end
+
+        IronCore::Logger.info 'IronWorkerNG', 'Waiting for builder to complete'
 
         builder_task = tasks.wait_for(builder_task.id)
 
         unless builder_task.status == 'complete'
           log = tasks.log(builder_task.id)
+
           IronCore::Logger.error 'IronWorkerNG', 'Error while remote building worker: ' + log, IronCore::Error
         end
 

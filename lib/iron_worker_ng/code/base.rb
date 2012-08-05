@@ -73,7 +73,7 @@ module IronWorkerNG
           src, clean = IronWorkerNG::Fetcher.fetch(wfile)
 
           unless src.nil?
-            IronCore::Logger.info 'IronWorkerNG', "Found .worker file '#{wfile}'"
+            IronCore::Logger.info 'IronWorkerNG', "Found workerfile with path='#{wfile}'"
 
             eval(src)
 
@@ -136,7 +136,7 @@ module IronWorkerNG
         return @runtime unless runtime
 
         unless @runtime.nil?
-          IronCore::Logger.error 'IronWorkerNG', "Runtime is already set to #{@runtime}", IronCore::Error
+          IronCore::Logger.error 'IronWorkerNG', "Runtime is already set to '#{@runtime}'", IronCore::Error
         end
 
         runtime_module = nil

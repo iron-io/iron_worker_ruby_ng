@@ -35,7 +35,7 @@ module IronWorkerNG
 
             @exec = IronWorkerNG::Feature::Python::MergeExec::Feature.new(self, path)
 
-            IronCore::Logger.info 'IronWorkerNG', "Python executable detected with path = '#{path}'"
+            IronCore::Logger.info 'IronWorkerNG', "Detected python exec with path='#{path}'"
 
             @features << @exec
           end

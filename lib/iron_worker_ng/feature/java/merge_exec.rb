@@ -41,7 +41,7 @@ module IronWorkerNG
 
             @exec = IronWorkerNG::Feature::Java::MergeExec::Feature.new(self, path, klass)
 
-            IronCore::Logger.info 'IronWorkerNG', "Java executable detected with path = '#{path}' and class = '#{klass}'"
+            IronCore::Logger.info 'IronWorkerNG', "Detected java exec with path='#{path}'#{klass.nil? ? '' : " and class='#{klass}'"}"
 
             @features << @exec
           end

@@ -35,7 +35,7 @@ module IronWorkerNG
 
             @exec = IronWorkerNG::Feature::Binary::MergeExec::Feature.new(self, path)
 
-            IronCore::Logger.info 'IronWorkerNG', "Binary executable detected with path = '#{path}'"
+            IronCore::Logger.info 'IronWorkerNG', "Detected binary exec with path='#{path}'"
 
             @features << @exec
           end

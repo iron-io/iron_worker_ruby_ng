@@ -35,7 +35,7 @@ module IronWorkerNG
 
             @exec = IronWorkerNG::Feature::Go::MergeExec::Feature.new(self, path)
 
-            IronCore::Logger.info 'IronWorkerNG', "Go executable detected with path = '#{path}'"
+            IronCore::Logger.info 'IronWorkerNG', "Detected go exec with path='#{path}'"
 
             @features << @exec
           end
