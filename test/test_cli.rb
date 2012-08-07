@@ -56,4 +56,9 @@ class CLITest < IWNGTest
     File.unlink tmp
   end
 
+  def test_forced_name
+    assert cli('upload', 'test/hello.worker', name: 'Frobnicator') =~
+      /Upload successful.*Frobnicator/
+  end
+
 end
