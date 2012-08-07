@@ -14,16 +14,22 @@ class IronWorkerCLILoggerFormatter < ::Logger::Formatter
   end
 end
 
+IronCore::Logger.logger.formatter = IronWorkerCLILoggerFormatter.new
+
+def log(msg)
+  IronCore::Logger.info 'IronWorkerNG', msg
+end
+
 @env = nil
 
 def create_client
-  IronCore::Logger.info 'IronWorkerNG', "#{LOG_GROUP}Detecting Configuration"
+  log "#{LOG_GROUP}Detecting Configuration"
 
   client = IronWorkerNG::Client.new(:env => @env)
 
   project = client.projects.get
 
-  IronCore::Logger.info 'IronWorkerNG', "Project '#{project.name}' with id='#{project.id}'"
+  log "Project '#{project.name}' with id='#{project.id}'"
 
   client
 end
@@ -41,19 +47,29 @@ end
 
 if $*.size == 0 || (not ['upload', 'queue', 'schedule', 'log', 'run', 'webhook', 'info'].include?($*[0]))
   puts 'usage: iron_worker COMMAND [OPTIONS]'
-  puts '    COMMAND: upload, queue, schedule, log, run, webhook'
+  puts '    COMMAND: upload, queue, schedule, log, run, webhook, info'
   puts '    run iron_worker COMMAND --help to get more information about each command'
   exit 1
 end
 
 command = $*.shift
 
-IronCore::Logger.logger.formatter = IronWorkerCLILoggerFormatter.new
-
 if $*.include?('--debug')
   IronCore::Logger.logger.level = ::Logger::DEBUG
 
   $*.reject! { |p| p == '--debug' }
+end
+
+def parse_time(str)
+  t = Time.parse(str)
+
+  return nil if t == Time.utc(1)
+
+  def t.to_s
+    strftime('%a %b %-d %T')
+  end
+
+  return t
 end
 
 if command == 'upload'
@@ -88,28 +104,28 @@ if command == 'upload'
 
   client = create_client
 
-  IronCore::Logger.info 'IronWorkerNG', "#{LOG_GROUP}Discovering workerfile"
+  log "#{LOG_GROUP}Discovering workerfile"
 
   code = IronWorkerNG::Code::Base.new($*.first)
 
-  IronCore::Logger.info 'IronWorkerNG', "Code package name has been set to '#{code.name}'"
+  log "Code package name has been set to '#{code.name}'"
 
   if code.remote_build_command
-    IronCore::Logger.info 'IronWorkerNG', "#{LOG_GROUP}Remote building '#{code.name}'"
+    log "#{LOG_GROUP}Remote building '#{code.name}'"
 
     builder_task_id = client.codes.create(code, options)
 
     if options[:async]
-      IronCore::Logger.info 'IronWorkerNG', "Check https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{builder_task_id} for builder status"
+      log "Check https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{builder_task_id} for builder status"
     end
   else
-    IronCore::Logger.info 'IronWorkerNG', "#{LOG_GROUP}Uploading code package"
+    log "#{LOG_GROUP}Uploading code package"
 
     code_id = client.codes.create(code, options).id
     code_info = client.codes.get(code_id)
 
-    IronCore::Logger.info 'IronWorkerNG', "Code package uploaded with id='#{code_id}' and revision='#{code_info.rev}'"
-    IronCore::Logger.info 'IronWorkerNG', "Check https://hud.iron.io/tq/projects/#{client.api.project_id}/code/#{code_id} for more info"
+    log "Code package uploaded with id='#{code_id}' and revision='#{code_info.rev}'"
+    log "Check https://hud.iron.io/tq/projects/#{client.api.project_id}/code/#{code_id} for more info"
   end
 elsif command == 'queue' || command == 'schedule'
   payload = nil
@@ -211,24 +227,24 @@ elsif command == 'queue' || command == 'schedule'
   id = nil
 
   if command == 'queue'
-    IronCore::Logger.info 'IronWorkerNG', '------> Queueing task'
+    log "#{LOG_GROUP}Queueing task"
 
     id = client.tasks.create(name, payload, options).id
 
-    IronCore::Logger.info 'IronWorkerNG', "------> Worker '#{name}' queued with task id #{id}"
+    log "#{LOG_GROUP}Worker '#{name}' queued with task id #{id}"
 
-    IronCore::Logger.info 'IronWorkerNG', "https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{id}"
+    log "https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{id}"
   else
-    IronCore::Logger.info 'IronWorkerNG', '------> Scheduling task'
+    log "#{LOG_GROUP}Scheduling task"
 
     id = client.schedules.create(name, payload, options).id
 
-    IronCore::Logger.info 'IronWorkerNG', "------> Worker '#{name}' scheduled with schedule id #{id}"
+    log "#{LOG_GROUP}Worker '#{name}' scheduled with schedule id #{id}"
 
-    IronCore::Logger.info 'IronWorkerNG', "https://hud.iron.io/tq/projects/#{client.api.project_id}/scheduled_jobs/#{id}"
+    log "https://hud.iron.io/tq/projects/#{client.api.project_id}/scheduled_jobs/#{id}"
   end
 
-  IronCore::Logger.info 'IronWorkerNG', id if print_id
+  log id if print_id
 elsif command == 'log'
   live = false
   wait = false
@@ -260,7 +276,7 @@ elsif command == 'log'
 
   client = create_client
 
-  IronCore::Logger.info 'IronWorkerNG', "------> Getting log of task #{task_id} (https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{task_id}/log)"
+  log "#{LOG_GROUP}Getting log of task #{task_id} (https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{task_id}/log)"
 
   log = ''
 
@@ -330,33 +346,81 @@ elsif command == 'run'
     payload = File.read(payload_file)
   end
 
-  IronCore::Logger.info 'IronWorkerNG', '------> Discovering workerfile'
+  log "#{LOG_GROUP}Discovering workerfile"
 
   code = IronWorkerNG::Code::Base.new($*.first)
 
-  IronCore::Logger.info 'IronWorkerNG', "------> Running Worker '#{code.name}'"
+  log "#{LOG_GROUP}Running Worker '#{code.name}'"
 
   code.run(payload)
 elsif command == 'webhook'
   name = $*.first
   client = create_client
-  IronCore::Logger.info 'IronWorkerNG', "------> Webhook for code '#{name}':"
-  IronCore::Logger.info 'IronWorkerNG', "https://worker-aws-us-east-1.iron.io/2/projects/#{client.api.token}/tasks/webhook?code_name=#{name}&oauth=#{client.api.token}"
+  log "#{LOG_GROUP}Webhook for code '#{name}':"
+  log "https://worker-aws-us-east-1.iron.io/2/projects/#{client.api.token}/tasks/webhook?code_name=#{name}&oauth=#{client.api.token}"
 elsif command == 'info'
-  name = $*.first
+  arg = $*.first
   client = create_client
-  code = client.codes.whole_list.find{ |c| c.name == name }
-  unless code
-    IronCore::Logger.error 'IronWorkerNG', "Code package named '#{name}' not found"
+
+  found = false
+
+  code = client.codes.whole_list.find{ |c| c.name == arg }
+  if code
+    found = true
+    latest_change = parse_time(code.latest_change)
+    created_at = parse_time(code.created_at)
+    (<<EOL
+#{LOG_GROUP}Code package '#{code.name}'
+           ID: #{code.id}
+      Created: #{created_at}
+Last Modified: #{latest_change}
+     Revision: #{code.rev}
+All Revisions: https://hud.iron.io/tq/projects/#{client.api.project_id}/code/#{code.id}
+        Tasks: https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{code.id}/activity
+EOL
+     ).lines.each{ |msg| log msg.chomp }
+  end
+
+  begin
+    prev_level = IronCore::Logger.logger.level
+    IronCore::Logger.logger.level = ::Logger::FATAL
+    task = client.tasks.get(arg)
+  rescue IronCore::Error
+    # iron_core throws exception if id not found, ignoring that
+  ensure
+    IronCore::Logger.logger.level = prev_level
+  end
+  if task
+    found = true
+
+    queued = parse_time(task.created_at)
+    started = parse_time(task.start_time)
+    finished = parse_time(task.end_time)
+
+    if finished
+      total = finished - started
+
+      seconds = total % 60
+      minutes = (total / 60) % 60
+      hours = total / (60 * 60)
+
+      duration = format("%02d:%02d:%02d", hours, minutes, seconds)
+    end
+
+    log "#{LOG_GROUP}Task id #{arg} found"
+    log "Code Package: '#{task.code_name}', rev #{task.code_rev}, download: https://hud.iron.io/tq/projects/#{client.api.project_id}/code/#{task.code_id}/download?hid=#{task.code_history_id}"
+    log "      Status: #{task.status}"
+    log "    Priority: #{task.priority}" if task.priority
+    log "      Queued: #{queued}"
+    log "     Started: #{started}" if started
+    log "    Finished: #{finished}" if finished
+    log "    Duration: #{duration}" if finished
+    log "     Payload: #{task.payload}" unless task.payload == 'null'
+    log "Task Details: https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{task.id}"
+  end
+
+  unless found
+    log "Nothing found identified by '#{arg}'"
     exit(1)
   end
-  latest_change = Time.parse(code.latest_change).strftime('%a %b %-d %T')
-  created_at = Time.parse(code.created_at).strftime('%a %b %-d %T')
-  (<<EOL
-------> Code package '#{code.name}' with id #{code.id}, created at #{created_at}
-Latest change was at #{latest_change} revision #{code.rev}
-Revisions: https://hud.iron.io/tq/projects/#{client.api.project_id}/code/#{code.id}
-Tasks: https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{code.id}/activity
-EOL
-   ).lines.each{ |msg| IronCore::Logger.info 'IronWorkerNG', msg.chomp }
 end
