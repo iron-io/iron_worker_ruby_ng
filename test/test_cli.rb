@@ -58,7 +58,7 @@ class CLITest < IWNGTest
 
   def test_forced_name
     assert cli('upload', 'test/hello.worker', name: 'Frobnicator') =~
-      /Upload successful.*Frobnicator/
+      /Upload successful.*Frobnicator/m
   end
 
 end
