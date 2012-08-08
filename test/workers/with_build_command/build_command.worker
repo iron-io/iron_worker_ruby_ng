@@ -1,0 +1,3 @@
+name 'BuildCommand'
+remote_build_command 'sleep 10 && echo "puts \'hello\'" > hello.rb'
+exec 'hello.rb'
