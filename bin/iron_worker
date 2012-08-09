@@ -115,7 +115,10 @@ if command == 'upload'
   code = IronWorkerNG::Code::Base.new($*.first)
   code.name(name) if name
 
-  log "Code package name has been set to '#{code.name}'"
+  log "Code package name is '#{code.name}'"
+
+  log "Max concurrency set to #{options[:max_concurrency]}" if
+    options[:max_concurrency]
 
   if code.remote_build_command
     log "#{LOG_GROUP}Remote building '#{code.name}'"
