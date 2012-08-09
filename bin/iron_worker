@@ -274,7 +274,7 @@ elsif command == 'log'
   end
 
   unless $*.size == 1
-    puts 'Single argument expected!'
+    puts 'Please specify task id'
     puts opts
     exit 1
   end
@@ -344,7 +344,7 @@ elsif command == 'run'
   end
 
   unless $*.size == 1
-    puts 'Single argument expected!'
+    puts 'Please specify code package name or workerfile'
     puts opts
     exit 1
   end
