@@ -366,14 +366,22 @@ elsif command == 'webhook'
   log "#{LOG_GROUP}Webhook for code '#{name}':"
   log "https://worker-aws-us-east-1.iron.io/2/projects/#{client.api.token}/tasks/webhook?code_name=#{name}&oauth=#{client.api.token}"
 elsif command == 'info'
-  arg = $*.first
+  unless $*.size == 2 or %w(info task ).include? $*.first
+    puts 'Usage: iron_worker info <code|task|schedule> NAME_OR_ID'
+    exit(1)
+  end
+
+  entity, id = $*
   client = create_client
 
-  found = false
+  if entity == 'code'
+    code = client.codes.whole_list.find{ |c| c.name == id }
 
-  code = client.codes.whole_list.find{ |c| c.name == arg }
-  if code
-    found = true
+    unless code
+      log "#{LOG_GROUP}Code named '#{id}' not found"
+      exit(1)
+    end
+
     latest_change = parse_time(code.latest_change)
     created_at = parse_time(code.created_at)
     (<<EOL
@@ -388,17 +396,19 @@ EOL
      ).lines.each{ |msg| log msg.chomp }
   end
 
-  begin
-    prev_level = IronCore::Logger.logger.level
-    IronCore::Logger.logger.level = ::Logger::FATAL
-    task = client.tasks.get(arg)
-  rescue IronCore::Error
-    # iron_core throws exception if id not found, ignoring that
-  ensure
-    IronCore::Logger.logger.level = prev_level
-  end
-  if task
-    found = true
+  if entity == 'task'
+    begin
+      prev_level = IronCore::Logger.logger.level
+      IronCore::Logger.logger.level = ::Logger::FATAL
+      task = client.tasks.get(id)
+    rescue IronCore::Error, Rest::RestError
+      # iron_core throws exception if id not found
+      IronCore::Logger.logger.level = prev_level
+      log "#{LOG_GROUP}Task with id #{id} not found"
+      exit(1)
+    ensure
+      IronCore::Logger.logger.level = prev_level
+    end
 
     queued = parse_time(task.created_at)
     started = parse_time(task.start_time)
@@ -414,7 +424,7 @@ EOL
       duration = format("%02d:%02d:%02d", hours, minutes, seconds)
     end
 
-    log "#{LOG_GROUP}Task id #{arg} found"
+    log "#{LOG_GROUP}Task id #{id} found"
     log "Code Package: '#{task.code_name}', rev #{task.code_rev}, download: https://hud.iron.io/tq/projects/#{client.api.project_id}/code/#{task.code_id}/download?hid=#{task.code_history_id}"
     log "      Status: #{task.status}"
     log "    Priority: #{task.priority}" if task.priority
@@ -424,10 +434,5 @@ EOL
     log "    Duration: #{duration}" if finished
     log "     Payload: #{task.payload}" unless task.payload == 'null'
     log "Task Details: https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{task.id}"
-  end
-
-  unless found
-    log "Nothing found identified by '#{arg}'"
-    exit(1)
   end
 end
