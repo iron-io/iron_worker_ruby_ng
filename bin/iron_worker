@@ -45,9 +45,10 @@ if $*.size == 1 && ($*[0] == '-v' || $*[0] == '--version')
   exit 0
 end
 
-if $*.size == 0 || (not ['upload', 'queue', 'schedule', 'log', 'run', 'webhook', 'info'].include?($*[0]))
+if $*.size == 0 || (not ['upload', 'queue', 'schedule', 'log', 'run',
+                         'webhook', 'info', 'install'].include?($*[0]))
   puts 'usage: iron_worker COMMAND [OPTIONS]'
-  puts '    COMMAND: upload, queue, schedule, log, run, webhook, info'
+  puts '    COMMAND: upload, queue, schedule, log, run, webhook, info, install'
   puts '    run iron_worker COMMAND --help to get more information about each command'
   exit 1
 end
@@ -469,5 +470,29 @@ EOL
     log " Run Count: #{schedule.run_count}" if schedule.run_count
     log "   Payload: #{schedule.payload}" unless schedule.payload == 'null'    
     log "   Details: https://hud.iron.io/tq/projects/#{client.api.project_id}/scheduled_jobs/#{id}"
+  end
+elsif command == 'install'
+  unless $*.size == 1
+    puts 'Usage: iron_worker install NAME_OR_PATH_TO_WORKERFILE'
+    exit(1)
+  end
+
+  log "#{LOG_GROUP}Detecting worker dependencies"
+  code = IronWorkerNG::Code::Base.new($*.first)
+  code.fixate
+
+  log "#{LOG_GROUP}Installing gems"
+  code.features.each do |f|
+    next unless f.is_a? IronWorkerNG::Feature::Ruby::MergeGem::Feature
+    spec = f.spec
+
+    out = `gem install #{spec.name} --version #{spec.version.to_s}`
+    if out =~ /Successfully installed/
+      log "#{spec.to_s} installed"
+    else
+      log "Failed to install #{spec.to_s}, log:"
+      puts out
+      exit(1)
+    end
   end
 end
