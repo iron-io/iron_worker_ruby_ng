@@ -435,4 +435,36 @@ EOL
     log "     Payload: #{task.payload}" unless task.payload == 'null'
     log "Task Details: https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{task.id}"
   end
+
+  if entity == 'schedule'
+    begin
+      prev_level = IronCore::Logger.logger.level
+      IronCore::Logger.logger.level = ::Logger::FATAL
+      schedule = client.schedules.get(id)
+    rescue IronCore::Error, Rest::RestError
+      # iron_core throws exception if id not found
+      IronCore::Logger.logger.level = prev_level
+      log "#{LOG_GROUP}Schedule with id #{id} not found"
+      exit(1)
+    ensure
+      IronCore::Logger.logger.level = prev_level
+    end
+
+    start_at = parse_time(schedule.start_at)
+    end_at = parse_time(schedule.end_at)
+    next_start = parse_time(schedule.next_start)
+    last_run_time = parse_time(schedule.last_run_time)
+
+    log "#{LOG_GROUP}Schedule id #{id} found"
+    log " Code Name: #{schedule.code_name}"
+    log "   Created: #{parse_time(schedule.created_at)}"
+    log "   Message: #{schedule.msg}" if schedule.msg
+    log "    Status: #{schedule.status}"
+    log "     Start: #{start_at}" if start_at
+    log "       End: #{end_at}" if end_at
+    log "Next Start: #{next_start}" if next_start
+    log " Run Count: #{schedule.run_count}" if schedule.run_count
+    log "   Payload: #{schedule.payload}" unless schedule.payload == 'null'    
+    log "   Details: https://hud.iron.io/tq/projects/#{client.api.project_id}/scheduled_jobs/#{id}"
+  end
 end
