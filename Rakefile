@@ -22,7 +22,8 @@ Jeweler::Tasks.new do |gem|
   gem.summary = %Q{New generation ruby client for IronWorker}
   gem.email = "info@iron.io"
   gem.authors = ["Andrew Kirilenko", "Iron.io, Inc"]
-  gem.files.exclude('.document', 'Gemfile', 'Gemfile.lock', 'Rakefile', 'iron_worker_ng.gemspec', 'test/**/**', 'examples/**/**')
+  gem.files.exclude('.document', 'Gemfile', 'Gemfile.lock', 'Rakefile', 'iron_worker_ng.gemspec',
+                    /^test/, /^examples/, /^iron_worker_examples/)
 end
 
 Jeweler::RubygemsDotOrgTasks.new
