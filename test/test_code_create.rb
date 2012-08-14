@@ -41,4 +41,10 @@ class CodeCreateTest < IWNGTest
                  "block should be executed once"
   end
 
+  def test_invalid
+    assert_raise do
+      code_bundle(asdf: 1)
+    end
+  end
+
 end
