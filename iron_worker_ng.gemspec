@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Andrew Kirilenko", "Iron.io, Inc"]
-  s.date = "2012-07-22"
+  s.date = "2012-08-14"
   s.description = "New generation ruby client for IronWorker"
   s.email = "info@iron.io"
   s.executables = ["iron_worker"]
@@ -51,6 +51,7 @@ Gem::Specification.new do |s|
     "lib/iron_worker_ng/feature/base.rb",
     "lib/iron_worker_ng/feature/binary/merge_exec.rb",
     "lib/iron_worker_ng/feature/common/merge_dir.rb",
+    "lib/iron_worker_ng/feature/common/merge_exec.rb",
     "lib/iron_worker_ng/feature/common/merge_file.rb",
     "lib/iron_worker_ng/feature/go/merge_exec.rb",
     "lib/iron_worker_ng/feature/java/merge_exec.rb",
