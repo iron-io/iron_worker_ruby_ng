@@ -2,26 +2,8 @@ module IronWorkerNG
   module Feature
     module Java
       module MergeExec
-        class Feature < IronWorkerNG::Feature::Base
-          attr_reader :path
-          attr_reader :klass
-
-          def initialize(code, path, klass)
-            super(code)
-
-            @path = path
-            @klass = klass
-          end
-
-          def hash_string
-            Digest::MD5.hexdigest(@path + @klass + File.mtime(rebase(@path)).to_i.to_s)
-          end
-
-          def bundle(container)
-            IronCore::Logger.debug 'IronWorkerNG', "Bundling java exec with path='#{@path}' and class='#{@klass}'"
-
-            container_add(container, File.basename(@path), rebase(@path))
-          end
+        class Feature < IronWorkerNG::Feature::Common::MergeExec::Feature
+          attr_accessor :klass
 
           def code_for_classpath
             File.basename(@path)
@@ -30,25 +12,8 @@ module IronWorkerNG
 
         module InstanceMethods
           def merge_exec(path = nil, klass = nil)
-            @exec ||= nil
-
-            return @exec unless path
-
-            unless @exec.nil?
-              IronCore::Logger.warn 'IronWorkerNG', "Ignoring attempt to merge java exec with path='#{path}' and class='#{klass}'"
-              return
-            end
-
-            IronCore::Logger.error('IronWorkerNG',
-                                   "File not found: '#{@base_dir + path}'",
-                                   IronCore::Error) unless
-              File.file?(@base_dir + path)
-
-            @exec = IronWorkerNG::Feature::Java::MergeExec::Feature.new(self, path, klass)
-
-            IronCore::Logger.info 'IronWorkerNG', "Detected java exec with path='#{path}'#{klass.nil? ? '' : " and class='#{klass}'"}"
-
-            @features << @exec
+            super(path, klass)
+            IronCore::Logger.info 'IronWorkerNG', "Executable class is '#{klass}'"
           end
 
           alias :exec :merge_exec

@@ -6,6 +6,7 @@ require_relative 'dir_container'
 require_relative '../feature/base'
 require_relative '../feature/common/merge_file'
 require_relative '../feature/common/merge_dir'
+require_relative '../feature/common/merge_exec'
 
 module IronWorkerNG
   module Code
@@ -18,11 +19,11 @@ module IronWorkerNG
 
       attr_accessor :inside_builder
 
-      undef exec
       undef gem
 
       include IronWorkerNG::Feature::Common::MergeFile::InstanceMethods
       include IronWorkerNG::Feature::Common::MergeDir::InstanceMethods
+      include IronWorkerNG::Feature::Common::MergeExec::InstanceMethods
 
       def initialize(*args, &block)
         @features = []
@@ -142,11 +143,11 @@ module IronWorkerNG
         runtime_module = nil
         runtime = runtime.to_s
 
-        begin
-          runtime_module = IronWorkerNG::Code::Runtime.const_get(runtime.capitalize)
-        rescue
+        [runtime.capitalize, runtime.upcase].each do |r|
           begin
-            runtime_module = IronWorkerNG::Code::Runtime.const_get(runtime.upcase)
+            runtime_module = IronWorkerNG::Code::Runtime.const_get(r)
+            @runtime = r
+            break
           rescue
           end
         end
@@ -156,8 +157,6 @@ module IronWorkerNG
         end
 
         self.extend(runtime_module)
-
-        @runtime = runtime
       end
 
       def runtime=(runtime)

@@ -4,8 +4,6 @@ module IronWorkerNG
   module Code
     module Runtime
       module Python
-        include IronWorkerNG::Feature::Python::MergeExec::InstanceMethods
-
         def runtime_run_code(local = false)
           <<RUN_CODE
 python #{File.basename(@exec.path)} "$@"
