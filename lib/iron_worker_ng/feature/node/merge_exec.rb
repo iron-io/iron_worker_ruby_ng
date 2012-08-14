@@ -33,6 +33,11 @@ module IronWorkerNG
               return
             end
 
+            IronCore::Logger.error('IronWorkerNG',
+                                   "File not found: '#{@base_dir + path}'",
+                                   IronCore::Error) unless
+              File.file?(@base_dir + path)
+
             @exec = IronWorkerNG::Feature::Node::MergeExec::Feature.new(self, path)
 
             IronCore::Logger.info 'IronWorkerNG', "Detected node exec with path='#{path}'"
