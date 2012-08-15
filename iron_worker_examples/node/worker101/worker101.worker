@@ -1,0 +1,5 @@
+runtime 'node'
+exec 'worker101.js'
+dir 'lib'
+name 'NodeWorker101'
+

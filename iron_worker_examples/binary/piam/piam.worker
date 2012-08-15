@@ -1,0 +1,9 @@
+runtime "binary"
+exec "run.sh"
+
+# Include Data Files
+file 'PIAM'
+file 'PIAM_single'
+file 'param_single.txt'
+dir 'data'
+dir 'gsl'

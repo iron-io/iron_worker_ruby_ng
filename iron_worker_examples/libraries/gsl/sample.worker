@@ -1,0 +1,4 @@
+runtime "binary"
+exec "run.sh"
+
+dir 'gsl'

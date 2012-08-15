@@ -1,0 +1,6 @@
+runtime 'java'
+file 'json-java.jar'
+file 'gson-1.7.jar'
+exec 'worker101.jar'
+name 'JavaWorker101'
+
