@@ -23,6 +23,8 @@ class QuickRunTest < IWNGTest
     end
   end
 
+  MISTIMING_E = 10
+
   def test_scheduler_quick
     client.codes.create( code_bundle(:name => 'test_schedule') do
                            worker_code 'sleep 10 and puts "hello"'
@@ -40,12 +42,12 @@ class QuickRunTest < IWNGTest
 
     task = client.tasks.wait_for task.id
 
-    puts "planned start: ", start
-    puts "actual start: ", Time.parse(task.start_time)
+    actual_start = Time.parse(task.start_time)
 
     # if fails, ensure local time is correct, try ntpdate
-    assert Time.parse(task.start_time) >= start,
-           "actual start is earlier than expected"
+    assert actual_start + MISTIMING_E >= start,
+           ("actual start(#{actual_start}) " +
+            "is earlier than expected(#{start})")
 
     assert Time.parse(task.start_time) + 10 <= Time.parse(task.end_time),
            ("worker complete in less than 10 seconds, "+
