@@ -48,7 +48,7 @@ runtime "ruby"
 exec "hello_worker.rb"
 ```
 
-You can read more about `.worker` files here: http://dev.iron.io/worker/reference/worker-files/
+You can read more about `.worker` files here: http://dev.iron.io/worker/reference/dotworker/
 
 ## Uploading the Code Package
 
