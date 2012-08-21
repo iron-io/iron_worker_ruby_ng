@@ -75,9 +75,9 @@ module IronWorkerNG
           unless src.nil?
             IronCore::Logger.info 'IronWorkerNG', "Found workerfile with path='#{wfile}'"
 
-            @base_dir = File.dirname(wfile) == '.' ? '' : File.dirname(wfile) + '/'
-
             eval(src)
+
+            @base_dir = File.dirname(wfile) == '.' ? '' : File.dirname(wfile) + '/'
 
             break
           end

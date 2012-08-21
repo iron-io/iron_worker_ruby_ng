@@ -39,11 +39,6 @@ module IronWorkerNG
               return
             end
 
-            IronCore::Logger.error('IronWorkerNG',
-                                   "File not found: '#{@base_dir + path}'",
-                                   IronCore::Error) unless
-              File.file?(@base_dir + path)
-
             @exec = IronWorkerNG::Feature::Java::MergeExec::Feature.new(self, path, klass)
 
             IronCore::Logger.info 'IronWorkerNG', "Detected java exec with path='#{path}'#{klass.nil? ? '' : " and class='#{klass}'"}"

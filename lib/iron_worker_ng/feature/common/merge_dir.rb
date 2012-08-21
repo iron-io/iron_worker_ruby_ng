@@ -35,11 +35,6 @@ module IronWorkerNG
 
         module InstanceMethods
           def merge_dir(path, dest = '')
-            IronCore::Logger.error('IronWorkerNG',
-                                   "Directory not found: '#{@base_dir + path}'",
-                                   IronCore::Error) unless
-              File.directory?(@base_dir + path)
-
             IronCore::Logger.info 'IronWorkerNG', "Merging dir with path='#{path}' and dest='#{dest}'"
 
             @features << IronWorkerNG::Feature::Common::MergeDir::Feature.new(self, path, dest)
