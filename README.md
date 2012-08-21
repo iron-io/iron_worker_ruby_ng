@@ -86,7 +86,7 @@ You can retry task by id using same payload and options:
 
 or
 ```ruby
-   client.tasks.retry('5032f7360a4681382838e082', :delay => 10)
+client.tasks.retry('5032f7360a4681382838e082', :delay => 10)
 ```
 
 
