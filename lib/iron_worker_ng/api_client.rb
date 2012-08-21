@@ -91,6 +91,11 @@ module IronWorkerNG
       parse_response(post("projects/#{@project_id}/tasks/#{id}/progress", options))
     end
 
+    def tasks_retry(id, options = {})
+      check_id(id)
+      parse_response(post("projects/#{@project_id}/tasks/#{id}/retry", options))
+    end
+
     def schedules_list(options = {})
       parse_response(get("projects/#{@project_id}/schedules", options))
     end

@@ -77,6 +77,19 @@ client = IronWorkerNG::Client.new
    client.tasks.create("hello", "foo"=>"bar")
 end
 ```
+
+## Retry a Task
+
+You can retry task by id using same payload and options:
+
+    iron_worker retry 5032f7360a4681382838e082
+
+or
+```ruby
+   client.tasks.retry('5032f7360a4681382838e082', :delay => 10)
+```
+
+
 ### Debugging
 
 To get a bunch of extra output to debug things, turn it on using:

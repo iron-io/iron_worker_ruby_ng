@@ -217,6 +217,14 @@ module IronWorkerNG
       task
     end
 
+    def tasks_retry(task_id, options = {})
+      IronCore::Logger.debug 'IronWorkerNG', "Calling tasks.retry with task_id='#{task_id}' and options='#{options.to_s}'"
+
+      res = @api.tasks_retry(task_id, options)
+
+      OpenStruct.new(res['tasks'][0])
+    end
+
     def schedules_list(options = {})
       IronCore::Logger.debug 'IronWorkerNG', "Calling schedules.list with options='#{options.to_s}'"
 
