@@ -21,11 +21,12 @@ def log(msg)
 end
 
 @env = nil
+@project_id = nil
 
 def create_client
   log "#{LOG_GROUP}Detecting Configuration"
 
-  client = IronWorkerNG::Client.new(:env => @env)
+  client = IronWorkerNG::Client.new(:env => @env, :project_id => @project_id)
 
   project = client.projects.get
 
@@ -34,9 +35,13 @@ def create_client
   client
 end
 
-def env_opt(opts)
+def common_opts(opts)
   opts.on('-e', '--env ENV', 'environment') do |v|
     @env = v
+  end
+
+  opts.on('--project-id PROJECT_ID', 'project_id') do |v|
+    @project_id = v
   end
 end
 
@@ -75,8 +80,14 @@ end
 if command == 'upload'
   options = {}
 
+  name = nil
+
   opts = OptionParser.new do |opts|
     opts.banner = "usage: iron_worker upload NAME_OR_PATH_TO_WORKERFILE [OPTIONS]"
+
+    opts.on('-n', '--name NAME', 'override for code name') do |v|
+      name = v
+    end
 
     opts.on('-c', '--max-concurrency CONCURRENCY', Integer, 'max number of concurrent workers for this code package') do |v|
       options[:max_concurrency] = v
@@ -86,7 +97,7 @@ if command == 'upload'
       options[:async] = true
     end
 
-    env_opt(opts)
+    common_opts(opts)
   end
 
   begin
@@ -107,6 +118,8 @@ if command == 'upload'
   log "#{LOG_GROUP}Discovering workerfile"
 
   code = IronWorkerNG::Code::Base.new($*[0])
+
+  code.name(name) if name
 
   log "Code package name is '#{code.name}'"
 
@@ -193,7 +206,7 @@ elsif command == 'queue' || command == 'schedule'
       print_id = true
     end
 
-    env_opt(opts)
+    common_opts(opts)
   end
 
   begin
@@ -261,7 +274,7 @@ elsif command == 'retry'
       options[:delay] = v
     end
 
-    env_opt(opts)
+    common_opts(opts)
   end
 
   begin
@@ -299,7 +312,7 @@ elsif command == 'log'
       wait = true
     end
 
-    env_opt(opts)
+    common_opts(opts)
   end
 
   begin
@@ -371,7 +384,7 @@ elsif command == 'run'
       payload_file = v
     end
 
-    env_opt(opts)
+    common_opts(opts)
   end
 
   begin
@@ -404,7 +417,7 @@ elsif command == 'webhook'
   opts = OptionParser.new do |opts|
     opts.banner = 'usage: iron_worker webhook CODE_PACKAGE_NAME [OPTIONS]'
 
-    env_opt(opts)
+    common_opts(opts)
   end
 
   begin
