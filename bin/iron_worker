@@ -120,7 +120,7 @@ if command == 'upload'
     builder_task_id = client.codes.create(code, options)
 
     if async
-      log "Check 'https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{builder_task_id}' for builder status"
+      log "Check 'https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{builder_task_id}' for more info"
     else
       # TODO: output the same info as for builderless upload
     end
@@ -209,7 +209,7 @@ elsif command == 'queue' || command == 'schedule'
     exit 1
   end
 
-  name = $*.first
+  name = $*[0]
 
   if payload.nil? and (not payload_file.nil?)
     payload = File.read(payload_file)
@@ -237,20 +237,20 @@ elsif command == 'queue' || command == 'schedule'
 
     id = client.tasks.create(name, payload, options).id
 
-    log "#{LOG_GROUP}Worker '#{name}' queued with task id #{id}"
+    log "#{LOG_GROUP}Worker '#{name}' queued with id='#{id}'"
 
-    log "https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{id}"
+    log "Check 'https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{id}' for more info"
   else
     log "#{LOG_GROUP}Scheduling task"
 
     id = client.schedules.create(name, payload, options).id
 
-    log "#{LOG_GROUP}Worker '#{name}' scheduled with schedule id #{id}"
+    log "#{LOG_GROUP}Worker '#{name}' scheduled with id='#{id}'"
 
-    log "https://hud.iron.io/tq/projects/#{client.api.project_id}/scheduled_jobs/#{id}"
+    log "Check 'https://hud.iron.io/tq/projects/#{client.api.project_id}/scheduled_jobs/#{id}' for more info"
   end
 
-  log id if print_id
+  puts id if print_id
 elsif command == 'retry'
   options = {}
 
@@ -281,11 +281,13 @@ elsif command == 'retry'
 
   client = create_client
 
-  log "#{LOG_GROUP}Retrying task with id #{task_id}"
+  log "#{LOG_GROUP}Retrying task with id='#{task_id}'"
+
   retry_task_id = client.tasks.retry(task_id, options).id
 
-  log "Retry task id: #{retry_task_id}"
-  log "https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{retry_task_id}"
+  log "Retry task id='#{retry_task_id}'"
+
+  log "Check 'https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{retry_task_id}' for more info"
 elsif command == 'log'
   live = false
   wait = false
@@ -317,7 +319,7 @@ elsif command == 'log'
 
   client = create_client
 
-  log "#{LOG_GROUP}Getting log of task #{task_id} (https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{task_id}/log)"
+  log "#{LOG_GROUP}Getting log for task with id='#{task_id}'"
 
   log = ''
 
@@ -393,7 +395,9 @@ elsif command == 'run'
 
   code = IronWorkerNG::Code::Base.new($*.first)
 
-  log "#{LOG_GROUP}Running Worker '#{code.name}'"
+  log "Code package name is '#{code.name}'"
+
+  log "#{LOG_GROUP}Running '#{code.name}'"
 
   code.run(payload)
 elsif command == 'webhook'
