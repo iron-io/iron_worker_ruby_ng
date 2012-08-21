@@ -420,11 +420,12 @@ elsif command == 'webhook'
     exit 1
   end
 
-  name = $*.first
+  name = $*[0]
 
   client = create_client
 
-  log "#{LOG_GROUP}Webhook for code '#{name}' is 'https://worker-aws-us-east-1.iron.io/2/projects/#{client.api.project_id}/tasks/webhook?code_name=#{name}&oauth=#{client.api.token}'"
+  log "#{LOG_GROUP}Detecting webhook for code package with name='#{name}'"
+  log "Use POST call to 'https://worker-aws-us-east-1.iron.io/2/projects/#{client.api.project_id}/tasks/webhook?code_name=#{name}&oauth=#{client.api.token}'"
 elsif command == 'info'
   unless $*.size == 2 or %w(info task ).include? $*.first
     puts 'Usage: iron_worker info <code|task|schedule> NAME_OR_ID'
