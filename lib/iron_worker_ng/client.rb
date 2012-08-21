@@ -54,7 +54,6 @@ module IronWorkerNG
       @api.codes_list(options)['codes'].map { |c| OpenStruct.new(c) }
     end
 
-    # TODO: get rid of this when we have working filters
     def codes_whole_list(options = {})
       prev_level = IronCore::Logger.logger.level
       IronCore::Logger.logger.level = ::Logger::INFO

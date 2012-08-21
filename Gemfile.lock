@@ -4,7 +4,7 @@ GEM
     git (1.2.5)
     iron_core (0.3.3)
       rest (>= 2.0.0)
-    iron_worker_ng (0.9.6)
+    iron_worker_ng (0.10.0)
       bundler (> 1.0.0)
       iron_core (>= 0.3.0)
       zip

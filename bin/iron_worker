@@ -40,13 +40,24 @@ def env_opt(opts)
   end
 end
 
+def parse_time(str)
+  t = Time.parse(str)
+
+  return nil if t == Time.utc(1)
+
+  def t.to_s
+    strftime('%a %b %-d %T')
+  end
+
+  return t
+end
+
 if $*.size == 1 && ($*[0] == '-v' || $*[0] == '--version')
   puts IronWorkerNG.full_version
   exit 0
 end
 
-if $*.size == 0 || (not ['upload', 'queue', 'retry', 'schedule', 'log', 'run',
-                         'webhook', 'info', 'install'].include?($*[0]))
+if $*.size == 0 || (not ['upload', 'queue', 'retry', 'schedule', 'log', 'run', 'webhook', 'info', 'install'].include?($*[0]))
   puts 'usage: iron_worker COMMAND [OPTIONS]'
   puts '    COMMAND: upload, queue, retry, schedule, log, run, webhook, info, install'
   puts '    run iron_worker COMMAND --help to get more information about each command'
@@ -61,29 +72,11 @@ if $*.include?('--debug')
   $*.reject! { |p| p == '--debug' }
 end
 
-def parse_time(str)
-  t = Time.parse(str)
-
-  return nil if t == Time.utc(1)
-
-  def t.to_s
-    strftime('%a %b %-d %T')
-  end
-
-  return t
-end
-
 if command == 'upload'
   options = {}
 
-  name = nil
-
   opts = OptionParser.new do |opts|
     opts.banner = "usage: iron_worker upload NAME_OR_PATH_TO_WORKERFILE [OPTIONS]"
-
-    opts.on('-n', '--name NAME', 'override for code name') do |v|
-      name = v
-    end
 
     opts.on('-c', '--max-concurrency CONCURRENCY', Integer, 'max number of concurrent workers for this code package') do |v|
       options[:max_concurrency] = v
@@ -113,21 +106,23 @@ if command == 'upload'
 
   log "#{LOG_GROUP}Discovering workerfile"
 
-  code = IronWorkerNG::Code::Base.new($*.first)
-  code.name(name) if name
+  code = IronWorkerNG::Code::Base.new($*[0])
 
   log "Code package name is '#{code.name}'"
 
-  log "Max concurrency set to #{options[:max_concurrency]}" if
-    options[:max_concurrency]
+  log "Max concurrency set to '#{options[:max_concurrency]}'" if options[:max_concurrency]
 
   if code.remote_build_command
     log "#{LOG_GROUP}Remote building '#{code.name}'"
 
+    async = options[:async]
+
     builder_task_id = client.codes.create(code, options)
 
-    if options[:async]
-      log "Check https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{builder_task_id} for builder status"
+    if async
+      log "Check 'https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{builder_task_id}' for builder status"
+    else
+      # TODO: output the same info as for builderless upload
     end
   else
     log "#{LOG_GROUP}Uploading code package"
@@ -136,7 +131,7 @@ if command == 'upload'
     code_info = client.codes.get(code_id)
 
     log "Code package uploaded with id='#{code_id}' and revision='#{code_info.rev}'"
-    log "Check https://hud.iron.io/tq/projects/#{client.api.project_id}/code/#{code_id} for more info"
+    log "Check 'https://hud.iron.io/tq/projects/#{client.api.project_id}/code/#{code_id}' for more info"
   end
 elsif command == 'queue' || command == 'schedule'
   payload = nil
@@ -260,7 +255,7 @@ elsif command == 'retry'
   options = {}
 
   opts = OptionParser.new do |opts|
-    opts.banner = "usage: iron_worker retry <task id> [OPTIONS]"
+    opts.banner = "usage: iron_worker retry TASK_ID [OPTIONS]"
 
     opts.on('--delay DELAY', Integer, 'delay before start in seconds') do |v|
       options[:delay] = v
@@ -296,7 +291,7 @@ elsif command == 'log'
   wait = false
 
   opts = OptionParser.new do |opts|
-    opts.banner = "usage: iron_worker log <task id> [OPTIONS]"
+    opts.banner = "usage: iron_worker log TASK_ID [OPTIONS]"
 
     opts.on('-w', '--wait', 'wait for task') do |v|
       wait = true
@@ -364,7 +359,7 @@ elsif command == 'run'
   payload_file = nil
 
   opts = OptionParser.new do |opts|
-    opts.banner = "usage: iron_worker run <name or path to workerfile> [OPTIONS]"
+    opts.banner = "usage: iron_worker run NAME_OR_PATH_TO_WORKERFILE [OPTIONS]"
 
     opts.on('-p', '--payload PAYLOAD', String, 'payload to pass') do |v|
       payload = v
@@ -373,6 +368,8 @@ elsif command == 'run'
     opts.on('-f', '--payload-file PAYLOAD_FILE', String, 'payload file to pass') do |v|
       payload_file = v
     end
+
+    env_opt(opts)
   end
 
   begin
@@ -400,14 +397,34 @@ elsif command == 'run'
 
   code.run(payload)
 elsif command == 'webhook'
+  opts = OptionParser.new do |opts|
+    opts.banner = 'usage: iron_worker webhook CODE_PACKAGE_NAME [OPTIONS]'
+
+    env_opt(opts)
+  end
+
+  begin
+    opts.parse!
+  rescue OptionParser::ParseError
+    puts $!.to_s
+    exit 1
+  end
+
+  unless $*.size == 1
+    puts 'Please specify code package name'
+    puts opts
+    exit 1
+  end
+
   name = $*.first
+
   client = create_client
-  log "#{LOG_GROUP}Webhook for code '#{name}':"
-  log "https://worker-aws-us-east-1.iron.io/2/projects/#{client.api.token}/tasks/webhook?code_name=#{name}&oauth=#{client.api.token}"
+
+  log "#{LOG_GROUP}Webhook for code '#{name}' is 'https://worker-aws-us-east-1.iron.io/2/projects/#{client.api.project_id}/tasks/webhook?code_name=#{name}&oauth=#{client.api.token}'"
 elsif command == 'info'
   unless $*.size == 2 or %w(info task ).include? $*.first
     puts 'Usage: iron_worker info <code|task|schedule> NAME_OR_ID'
-    exit(1)
+    exit 1
   end
 
   entity, id = $*
@@ -418,7 +435,7 @@ elsif command == 'info'
 
     unless code
       log "#{LOG_GROUP}Code named '#{id}' not found"
-      exit(1)
+      exit 1
     end
 
     latest_change = parse_time(code.latest_change)
@@ -509,7 +526,7 @@ EOL
 elsif command == 'install'
   unless $*.size == 1
     puts 'Usage: iron_worker install NAME_OR_PATH_TO_WORKERFILE'
-    exit(1)
+    exit 1
   end
 
   log "#{LOG_GROUP}Detecting worker dependencies"
@@ -527,7 +544,7 @@ elsif command == 'install'
     else
       log "Failed to install #{spec.to_s}, log:"
       puts out
-      exit(1)
+      exit 1
     end
   end
 end
