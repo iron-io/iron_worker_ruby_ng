@@ -51,25 +51,27 @@ module IronWorkerNG
     def codes_list(options = {})
       IronCore::Logger.debug 'IronWorkerNG', "Calling codes.list with options='#{options.to_s}'"
 
-      @api.codes_list(options)['codes'].map { |c| OpenStruct.new(c) }
-    end
+      all = options.delete(:all) || options.delete('all')
 
-    def codes_whole_list(options = {})
-      prev_level = IronCore::Logger.logger.level
-      IronCore::Logger.logger.level = ::Logger::INFO
+      if all
+        result = []
 
-      result = []
-      page = -1
-      begin
-        codes = codes_list({ :per_page => 100,
-                             :page => page += 1
-                           }.merge(options))
-        result += codes
-      end while codes.size == 100
+        page = options[:page] || options['page'] || 0
+        per_page = options[:per_page] || options['per_page'] || 100
 
-      IronCore::Logger.logger.level = prev_level
+        while true
+          next_codes = codes_list(options.merge({:page => page}))
 
-      result
+          result += next_codes 
+
+          break if next_codes.length != per_page
+          page += 1
+        end
+
+        result
+      else
+        @api.codes_list(options)['codes'].map { |c| OpenStruct.new(c) }
+      end
     end
 
     def codes_get(code_id)

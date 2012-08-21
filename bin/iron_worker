@@ -436,7 +436,7 @@ elsif command == 'info'
   client = create_client
 
   if entity == 'code'
-    code = client.codes.whole_list.find{ |c| c.name == id }
+    code = client.codes.list(:all => true).find { |c| c.name == id }
 
     unless code
       log "#{LOG_GROUP}Code named '#{id}' not found"
