@@ -83,7 +83,7 @@ if command == 'upload'
   name = nil
 
   opts = OptionParser.new do |opts|
-    opts.banner = "usage: iron_worker upload NAME_OR_PATH_TO_WORKERFILE [OPTIONS]"
+    opts.banner = "usage: iron_worker upload CODE_PACKAGE_NAME_OR_PATH_TO_WORKERFILE [OPTIONS]"
 
     opts.on('-n', '--name NAME', 'override for code name') do |v|
       name = v
@@ -374,7 +374,7 @@ elsif command == 'run'
   payload_file = nil
 
   opts = OptionParser.new do |opts|
-    opts.banner = "usage: iron_worker run NAME_OR_PATH_TO_WORKERFILE [OPTIONS]"
+    opts.banner = "usage: iron_worker run CODE_PACKAGE_NAME_OR_PATH_TO_WORKERFILE [OPTIONS]"
 
     opts.on('-p', '--payload PAYLOAD', String, 'payload to pass') do |v|
       payload = v
@@ -438,7 +438,7 @@ elsif command == 'webhook'
   client = create_client
 
   log "#{LOG_GROUP}Detecting webhook for code package with name='#{name}'"
-  log "Use POST call to 'https://worker-aws-us-east-1.iron.io/2/projects/#{client.api.project_id}/tasks/webhook?code_name=#{name}&oauth=#{client.api.token}'"
+  log "Use POST to 'https://worker-aws-us-east-1.iron.io/2/projects/#{client.api.project_id}/tasks/webhook?code_name=#{name}&oauth=#{client.api.token}' to invoke worker via webhook"
 elsif command == 'info'
   unless $*.size == 2 or %w(info task ).include? $*.first
     puts 'Usage: iron_worker info <code|task|schedule> NAME_OR_ID'
@@ -542,27 +542,30 @@ EOL
     log "   Details: https://hud.iron.io/tq/projects/#{client.api.project_id}/scheduled_jobs/#{id}"
   end
 elsif command == 'install'
-  unless $*.size == 1
-    puts 'Usage: iron_worker install NAME_OR_PATH_TO_WORKERFILE'
+  opts = OptionParser.new do |opts|
+    opts.banner = 'usage: iron_worker install CODE_PACKAGE_NAME_OR_PATH_TO_WORKERFILE [OPTIONS]'
+
+    common_opts(opts)
+  end
+
+  begin
+    opts.parse!
+  rescue OptionParser::ParseError
+    puts $!.to_s
     exit 1
   end
 
-  log "#{LOG_GROUP}Detecting worker dependencies"
-  code = IronWorkerNG::Code::Base.new($*.first)
-  code.fixate
-
-  log "#{LOG_GROUP}Installing gems"
-  code.features.each do |f|
-    next unless f.is_a? IronWorkerNG::Feature::Ruby::MergeGem::Feature
-    spec = f.spec
-
-    out = `gem install #{spec.name} --version #{spec.version.to_s}`
-    if out =~ /Successfully installed/
-      log "#{spec.to_s} installed"
-    else
-      log "Failed to install #{spec.to_s}, log:"
-      puts out
-      exit 1
-    end
+  unless $*.size == 1
+    puts 'Please specify code package name or path to workerfile'
+    puts opts
+    exit 1
   end
+
+  name = $*[0]
+
+  log "#{LOG_GROUP}Installing worker dependencies for code package with name='#{name}'"
+
+  code = IronWorkerNG::Code::Base.new(name)
+
+  code.install
 end

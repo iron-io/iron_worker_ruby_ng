@@ -1,3 +1,6 @@
+require 'tmpdir'
+require 'fileutils'
+
 require_relative '../../feature/ruby/merge_gem'
 require_relative '../../feature/ruby/merge_gemfile'
 require_relative '../../feature/ruby/merge_exec'
@@ -89,6 +92,26 @@ RUBY_RUNNER
           <<RUN_CODE
 #{local ? 'GEM_PATH="" ' : ''}ruby __runner__.rb "$@"
 RUN_CODE
+        end
+
+        def install
+          gemfile_dir = Dir.tmpdir + '/' + Dir::Tmpname.make_tmpname('iron-worker-ng-', 'gemfile')
+
+          FileUtils.mkdir(gemfile_dir)
+
+          gemfile = File.open(gemfile_dir + '/Gemfile', 'w')
+
+          gemfile.puts('source :rubygems')
+
+          @merge_gem_reqs.each do |req|
+            gemfile.puts("gem '#{req.name}', '#{req.requirement.to_s}'")
+          end
+
+          gemfile.close
+
+          puts `cd #{gemfile_dir} && bundle install`
+
+          FileUtils.rm_r(gemfile_dir)
         end
       end
     end
