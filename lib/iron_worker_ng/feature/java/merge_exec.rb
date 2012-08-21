@@ -12,8 +12,8 @@ module IronWorkerNG
 
         module InstanceMethods
           def merge_exec(path = nil, klass = nil)
-            IronCore::Logger.info 'IronWorkerNG', "Executable class is '#{klass}'" if klass
             super(path, klass)
+            IronCore::Logger.info 'IronWorkerNG', "Executable class is '#{klass}'"
           end
 
           alias :exec :merge_exec
