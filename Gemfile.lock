@@ -1,15 +1,14 @@
-GEM
-  remote: http://rubygems.org/
+PATH
+  remote: .
   specs:
-    git (1.2.5)
-    iron_core (0.3.3)
-      rest (>= 2.0.0)
-    iron_worker_ng (0.10.0)
-      bundler (> 1.0.0)
-      iron_core (>= 0.3.0)
-      zip
-    jeweler2 (2.0.9)
-      git (>= 1.2.5)
+    iron_worker_ng (0.10.1)
+      iron_core (>= 0.4.2)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    iron_core (0.4.2)
+      rest (>= 2.0.2)
     mime-types (1.19)
     net-http-persistent (2.7)
     rake (0.9.2.2)
@@ -18,15 +17,14 @@ GEM
       rest-client (>= 0.3.0)
     rest-client (1.6.7)
       mime-types (>= 1.16)
-    zip (2.0.2)
+    test-unit (2.5.1)
+    uber_config (0.0.6)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  bundler (> 1.0.0)
-  iron_core (>= 0.3.0)
-  iron_worker_ng
-  jeweler2
+  iron_worker_ng!
   rake
-  zip
+  test-unit
+  uber_config

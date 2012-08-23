@@ -1,8 +1,9 @@
 module IronWorkerNG
-  @@version = nil
+
+  VERSION = "0.10.1"
 
   def self.version
-    @@version ||= File.read(File.dirname(__FILE__) + '/../../VERSION').strip
+    VERSION
   end
 
   def self.full_version
