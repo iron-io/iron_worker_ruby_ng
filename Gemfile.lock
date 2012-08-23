@@ -3,6 +3,7 @@ PATH
   specs:
     iron_worker_ng (0.10.1)
       iron_core (>= 0.4.2)
+      zip
 
 GEM
   remote: https://rubygems.org/
@@ -10,6 +11,7 @@ GEM
     iron_core (0.4.2)
       rest (>= 2.0.2)
     mime-types (1.19)
+    minitest (3.3.0)
     net-http-persistent (2.7)
     rake (0.9.2.2)
     rest (2.0.2)
@@ -19,12 +21,14 @@ GEM
       mime-types (>= 1.16)
     test-unit (2.5.1)
     uber_config (0.0.6)
+    zip (2.0.2)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   iron_worker_ng!
+  minitest
   rake
   test-unit
   uber_config

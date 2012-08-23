@@ -1,4 +1,5 @@
-.idea
+.idea/
 .bundle
 .rvmrc
 pkg
+iron.json
