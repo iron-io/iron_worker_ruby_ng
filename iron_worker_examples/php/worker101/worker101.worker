@@ -1,5 +1,0 @@
-runtime 'php'
-dir 'lib'
-exec 'worker101.php'
-name 'PHPWorker101'
-

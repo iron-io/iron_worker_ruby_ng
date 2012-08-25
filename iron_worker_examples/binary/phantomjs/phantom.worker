@@ -1,8 +1,0 @@
-runtime "binary"
-exec "run.sh"
-
-# Include the Javascript file that Phantom will execute
-file "nearme.js"
-
-# This line will grab Phantom JS 1.6.0 (the proper version), compile it, and include it with your code package
-remote_build_command 'curl http://phantomjs.googlecode.com/files/phantomjs-1.6.0-linux-x86_64-dynamic.tar.bz2 -o p.tar.bz2 && tar xf p.tar.bz2 && rm p.tar.bz2'

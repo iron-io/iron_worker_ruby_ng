@@ -1,2 +1,0 @@
-Threshold_single_sig	0.05
-Threshold_stage1	0.1

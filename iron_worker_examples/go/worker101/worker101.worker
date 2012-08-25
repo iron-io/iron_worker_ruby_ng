@@ -1,3 +1,0 @@
-runtime 'go'
-name 'Goworker101'
-exec 'worker101.go'

@@ -1,5 +1,0 @@
-runtime 'python'
-exec 'worker101.py'
-dir 'lib'
-name 'PythonWorker101'
-

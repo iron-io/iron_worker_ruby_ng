@@ -1,8 +1,0 @@
-.idea
-
-/config.ini
-*.log
-/php/code/*.zip
-/IronCore.class.php
-/IronWorker.class.php
-/iron_worker.phar

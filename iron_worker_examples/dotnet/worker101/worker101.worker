@@ -1,3 +1,0 @@
-runtime 'mono'
-name 'MonoWorker101'
-exec 'worker101.exe'
