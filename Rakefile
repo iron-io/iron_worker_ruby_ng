@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'rake'
+require File.expand_path('../lib/iron_worker_ng/version', __FILE__)
 
 require 'rake/testtask'
 Rake::TestTask.new(:test) do |test|
@@ -12,7 +13,7 @@ task :default => :test
 
 require 'rdoc/task'
 Rake::RDocTask.new do |rdoc|
-  version = File.exist?('VERSION') ? File.read('VERSION') : ""
+  version = IronWorkerNG::VERSION
 
   rdoc.rdoc_dir = 'doc'
   rdoc.title = "iron_cache #{version}"

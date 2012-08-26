@@ -37,7 +37,7 @@ class IWNGTest < Test::Unit::TestCase
   attr_accessor :client
 
   def setup
-    @client = IronWorkerNG::Client.new(:env => 'test')
+    @client = IronWorkerNG::Client.new(:env => 'staging')
   end
 
   def get_all_tasks(options = { :from_time => (Time.now - 60 * 60).to_i })
