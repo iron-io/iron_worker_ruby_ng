@@ -93,8 +93,10 @@ if command == 'upload'
       options[:max_concurrency] = v
     end
 
-    opts.on('-r', '--num-retries NUM_RETRIES', Integer, 'max number of automatic retries on task fail') do |v|
-      options[:num_retries] = v
+    if ENV['IRON_BETA'] == '1'
+      opts.on('-r', '--num-retries NUM_RETRIES', Integer, 'max number of automatic retries on task fail') do |v|
+        options[:num_retries] = v
+      end
     end
 
     opts.on('-a', '--async', 'don\'t wait for package build') do |v|
