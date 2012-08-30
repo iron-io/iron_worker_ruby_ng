@@ -4,6 +4,7 @@ require 'fileutils'
 
 require_relative 'dir_container'
 require_relative '../feature/base'
+require_relative '../feature/common/merge_exec'
 require_relative '../feature/common/merge_file'
 require_relative '../feature/common/merge_dir'
 

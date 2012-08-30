@@ -1,10 +1,8 @@
-require_relative '../../feature/python/merge_exec'
-
 module IronWorkerNG
   module Code
     module Runtime
       module Python
-        include IronWorkerNG::Feature::Python::MergeExec::InstanceMethods
+        include IronWorkerNG::Feature::Common::MergeExec::InstanceMethods
 
         def runtime_run_code(local = false)
           <<RUN_CODE

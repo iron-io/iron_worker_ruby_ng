@@ -14,7 +14,7 @@ module IronWorkerNG
       end
 
       def bundle(container)
-        @exec = IronWorkerNG::Feature::Ruby::MergeExec::Feature.new(self, '__builder__.rb', nil)
+        @exec = IronWorkerNG::Feature::Common::MergeExec::Feature.new(self, '__builder__.rb', {})
 
         super(container)
 

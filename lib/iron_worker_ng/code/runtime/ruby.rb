@@ -3,15 +3,14 @@ require 'fileutils'
 
 require_relative '../../feature/ruby/merge_gem'
 require_relative '../../feature/ruby/merge_gemfile'
-require_relative '../../feature/ruby/merge_exec'
 
 module IronWorkerNG
   module Code
     module Runtime
       module Ruby
+        include IronWorkerNG::Feature::Common::MergeExec::InstanceMethods
         include IronWorkerNG::Feature::Ruby::MergeGem::InstanceMethods
         include IronWorkerNG::Feature::Ruby::MergeGemfile::InstanceMethods
-        include IronWorkerNG::Feature::Ruby::MergeExec::InstanceMethods
 
         def runtime_bundle(container)
           container.get_output_stream(@dest_dir + '__runner__.rb') do |runner|
@@ -70,8 +69,8 @@ end
 
 require '#{File.basename(@exec.path)}'
 
-unless #{@exec.klass == nil}
-  exec_class = Kernel.const_get('#{@exec.klass}')
+unless #{@exec.arg(:class, 0) == nil}
+  exec_class = Kernel.const_get('#{@exec.arg(:class, 0)}')
   exec_inst = exec_class.new
 
   params.keys.each do |param|

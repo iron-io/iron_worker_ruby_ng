@@ -1,10 +1,8 @@
-require_relative '../../feature/php/merge_exec'
-
 module IronWorkerNG
   module Code
     module Runtime
       module PHP
-        include IronWorkerNG::Feature::PHP::MergeExec::InstanceMethods
+        include IronWorkerNG::Feature::Common::MergeExec::InstanceMethods
 
         def runtime_bundle(container)
           container.get_output_stream(@dest_dir + '__runner__.php') do |runner|
