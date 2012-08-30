@@ -278,7 +278,7 @@ RUNNER
 
         system("sh #{container_name}/__runner__.sh -d #{container_name} -payload #{container_name}/__payload__ -id 0")
 
-        FileUtils.rm_f(container_name)
+        FileUtils.rm_rf(container_name)
       end
 
       def install

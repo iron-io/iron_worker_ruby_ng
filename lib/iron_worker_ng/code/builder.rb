@@ -29,8 +29,9 @@ BUILDER_SH
           builder.write <<BUILDER_RUBY
 # #{IronWorkerNG.full_version}
 
-require 'iron_worker_ng'
 require 'json'
+
+require 'iron_worker_ng'
 
 exit 1 unless system('cd __build__ && sh ../__builder__.sh && cd ..')
 
