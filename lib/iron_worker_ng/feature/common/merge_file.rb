@@ -10,7 +10,7 @@ module IronWorkerNG
             super(code)
 
             @path = path
-            @dest = dest + (dest.empty? ? '' : '/')
+            @dest = dest + (dest.empty? || dest.end_with?('/') ? '' : '/')
           end
 
           def hash_string
@@ -21,6 +21,18 @@ module IronWorkerNG
             IronCore::Logger.debug 'IronWorkerNG', "Bundling file with path='#{@path}' and dest='#{@dest}'"
 
             container_add(container, @dest + File.basename(@path), rebase(@path))
+          end
+
+          def command(remote = false)
+            if remote
+              if IronWorkerNG::Fetcher.remote?(rebase(@path))
+                "file '#{rebase(@path)}', '#{@dest}'"
+              else
+                "file '#{@dest}#{File.basename(@path)}', '#{@dest}'"
+              end
+            else
+              "file '#{@path}', '#{@dest}'"
+            end
           end
         end
 

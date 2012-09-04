@@ -283,6 +283,18 @@ RUNNER
       def install
       end
 
+      def workerfile(remote = false)
+        commands = []
+
+        commands << "runtime '#{runtime}'"
+        commands << "name '#{name}'"
+        commands << "build '#{remote_build_command}'"
+
+        commands << @features.map { |f| f.command(remote) }
+
+        commands.compact.join("\n")
+      end
+
       def to_s
         "runtime='#{@runtime}', name='#{@name}', exec='#{@inside_builder || @exec.nil? ? '' : @exec.path}'"
       end

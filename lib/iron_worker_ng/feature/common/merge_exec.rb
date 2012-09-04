@@ -32,6 +32,18 @@ module IronWorkerNG
 
             container_add(container, File.basename(@path), rebase(@path))
           end
+
+          def command(remote = false)
+            if remote
+              if IronWorkerNG::Fetcher.remote?(rebase(@path))
+                "exec '#{rebase(@path)}', #{@args.inspect}"
+              else
+                "exec '#{File.basename(@path)}', #{@args.inspect}"
+              end
+            else
+              "exec '#{@path}', #{@args.inspect}"
+            end
+          end
         end
 
         module InstanceMethods

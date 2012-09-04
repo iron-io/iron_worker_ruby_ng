@@ -31,6 +31,10 @@ module IronWorkerNG
 
       def bundle(container)
       end
+
+      def command(remote = false)
+        nil
+      end
     end
   end
 end

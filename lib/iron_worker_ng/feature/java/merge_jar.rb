@@ -21,6 +21,18 @@ module IronWorkerNG
             container_add(container, File.basename(@path), rebase(@path))
           end
 
+          def command(remote = false)
+            if remote
+              if IronWorkerNG::Fetcher.remote?(rebase(@path))
+                "jar '#{rebase(@path)}'"
+              else
+                "jar '#{File.basename(@path)}'"
+              end
+            else
+              "jar '#{@path}'"
+            end
+          end
+
           def code_for_classpath
             File.basename(@path)
           end
