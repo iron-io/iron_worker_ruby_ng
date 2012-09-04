@@ -94,7 +94,7 @@ RUN_CODE
         end
 
         def install
-          gemfile_dir = Dir.tmpdir + '/' + Dir::Tmpname.make_tmpname('iron-worker-ng-', 'gemfile')
+          gemfile_dir = ::Dir.tmpdir + '/' + ::Dir::Tmpname.make_tmpname('iron-worker-ng-', 'gemfile')
 
           FileUtils.mkdir(gemfile_dir)
 

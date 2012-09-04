@@ -35,7 +35,7 @@ require 'iron_worker_ng'
 
 exit 1 unless system('cd __build__ && sh ../__builder__.sh && cd ..')
 
-Dir.chdir('__build__')
+::Dir.chdir('__build__')
 
 code = IronWorkerNG::Code::Base.new
 code.inside_builder = true

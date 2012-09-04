@@ -214,7 +214,7 @@ module IronWorkerNG
       true
     end
 
-    def tasks_wait_for(task_id, options = {})
+    def tasks_wait_for(task_id, options = {}, &block)
       IronCore::Logger.debug 'IronWorkerNG', "Calling tasks.wait_for with task_id='#{task_id}' and options='#{options.to_s}'"
 
       options[:sleep] ||= options['sleep'] || 5
@@ -222,7 +222,7 @@ module IronWorkerNG
       task = tasks_get(task_id)
 
       while task.status == 'queued' || task.status == 'running'
-        yield task if block_given?
+        block.call(task) unless block.nil?
         sleep options[:sleep]
         task = tasks_get(task_id)
       end

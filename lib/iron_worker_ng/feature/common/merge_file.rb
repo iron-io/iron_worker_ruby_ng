@@ -1,5 +1,3 @@
-require 'pathname'
-
 module IronWorkerNG
   module Feature
     module Common
@@ -12,8 +10,7 @@ module IronWorkerNG
             super(code)
 
             @path = path
-            @dest = dest
-            @dest = Pathname.new(dest).cleanpath.to_s + '/' unless @dest.empty?
+            @dest = dest + (dest.empty? ? '' : '/')
           end
 
           def hash_string

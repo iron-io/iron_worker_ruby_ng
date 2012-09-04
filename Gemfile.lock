@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    iron_worker_ng (0.10.2)
+    iron_worker_ng (0.10.3)
       iron_core (>= 0.4.2)
       zip
 
@@ -18,7 +18,7 @@ GEM
       rest-client (>= 0.3.0)
     rest-client (1.6.7)
       mime-types (>= 1.16)
-    test-unit (2.5.1)
+    test-unit (2.5.2)
     zip (2.0.2)
 
 PLATFORMS

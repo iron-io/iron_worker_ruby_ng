@@ -1,11 +1,16 @@
 require 'net/http'
 require 'net/https'
 require 'tmpdir'
+require 'fileutils'
 
 module IronWorkerNG
   class Fetcher
-    def self.fetch(url, to_file = false)
-      if url.start_with?('http://') || url.start_with?('https://')
+    def self.remote?(url)
+      url.start_with?('http://') || url.start_with?('https://')
+    end
+
+    def self.fetch(url, &block)
+      if IronWorkerNG::Fetcher.remote?(url)
         uri = URI.parse(url)
 
         http = Net::HTTP.new(uri.host, uri.port)
@@ -18,32 +23,48 @@ module IronWorkerNG
         response = http.request(Net::HTTP::Get.new(uri.request_uri))
 
         if response.kind_of?(Net::HTTPRedirection)
-          return IronWorkerNG::Fetcher.fetch(response['location'], to_file)
+          IronWorkerNG::Fetcher.fetch(response['location'], &block)
+
+          return
         end
 
-        if to_file
-          tmp_dir_name = Dir.tmpdir + '/' + Dir::Tmpname.make_tmpname("iron-worker-ng-", "http")
+        block.call(response.body) unless block.nil?
+      else
+        unless File.exists?(url)
+          block.call(nil) unless block.nil?
 
-          Dir.mkdir(tmp_dir_name)
+          return
+        end
 
-          File.open(tmp_dir_name + '/' + File.basename(url), 'wb') do |f|
-            f.write(response.body)
+        block.call(File.read(url)) unless block.nil?
+      end
+    end
+
+    def self.fetch_to_file(url, &block)
+      if IronWorkerNG::Fetcher.remote?(url)
+        IronWorkerNG::Fetcher.fetch(url) do |data|
+          unless data.nil?
+            tmp_dir_name = ::Dir.tmpdir + '/' + ::Dir::Tmpname.make_tmpname("iron-worker-ng-", "http")
+
+            ::Dir.mkdir(tmp_dir_name)
+
+            File.open(tmp_dir_name + '/' + File.basename(url), 'wb') do |f|
+              f.write(data)
+            end
+
+            block.call(tmp_dir_name + '/' + File.basename(url)) unless block.nil?
+
+            FileUtils.rm_rf(tmp_dir_name)
           end
-
-          [tmp_dir_name + '/' + File.basename(url), tmp_dir_name]
-        else
-          [response.body, nil]
         end
       else
         unless File.exists?(url)
-          return [nil, nil]
+          block.call(nil) unless block.nil?
+
+          return
         end
 
-        if to_file
-          [url, nil]
-        else
-          [File.read(url), nil]
-        end
+        block.call(url) unless block.nil?
       end
     end
   end

@@ -1,5 +1,3 @@
-require 'pathname'
-
 module IronWorkerNG
   module Feature
     module Common
@@ -12,14 +10,13 @@ module IronWorkerNG
             super(code)
 
             @path = path
-            @dest = dest
-            @dest = Pathname.new(dest).cleanpath.to_s + '/' unless @dest.empty?
+            @dest = dest + (dest.empty? ? '' : '/')
           end
 
           def hash_string
             s = @path + @dest + File.mtime(rebase(@path)).to_i.to_s
 
-            Dir.glob(rebase(@path) + '/**/**') do |path|
+            ::Dir.glob(rebase(@path) + '/**/**') do |path|
               s += path + File.mtime(path).to_i.to_s
             end
 
