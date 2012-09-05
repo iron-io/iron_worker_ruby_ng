@@ -206,6 +206,7 @@ module IronWorkerNG
       data << ['name', code.name]
       data << ['revision', code.rev]
       data << ['uploaded', parse_time(code.latest_change) || '-']
+      data << ['max concurrency', code.max_concurrency || '-']
       data << ['retries', code.retries || '-']
       data << ['retries delay', code.retries_delay || '-']
       data << ['info', "https://hud.iron.io/tq/projects/#{client.api.project_id}/code/#{code.id}"]
