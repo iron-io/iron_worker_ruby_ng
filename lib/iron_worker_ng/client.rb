@@ -51,7 +51,7 @@ module IronWorkerNG
     def codes_list(options = {})
       IronCore::Logger.debug 'IronWorkerNG', "Calling codes.list with options='#{options.to_s}'"
 
-      all = options.delete(:all) || options.delete('all')
+      all = options[:all] || options['all']
 
       if all
         result = []
@@ -60,9 +60,9 @@ module IronWorkerNG
         per_page = options[:per_page] || options['per_page'] || 100
 
         while true
-          next_codes = codes_list(options.merge({:page => page}))
+          next_codes = codes_list(options.merge({:page => page}).delete_if { |name| name == :all || name == 'all' })
 
-          result += next_codes 
+          result += next_codes
 
           break if next_codes.length != per_page
           page += 1
@@ -83,7 +83,37 @@ module IronWorkerNG
     def codes_create(code, options = {})
       IronCore::Logger.debug 'IronWorkerNG', "Calling codes.create with code='#{code.to_s}' and options='#{options.to_s}'"
 
-      async = options.delete(:async) || options.delete('async')
+      container_file = code.create_container
+
+      if code.remote_build_command.nil?
+        res = @api.codes_create(code.name, container_file, 'sh', '__runner__.sh', options)
+      else
+        builder_code_name = code.name + (code.name.capitalize == code.name ? '::Builder' : '::builder')
+
+        @api.codes_create(builder_code_name, container_file, 'sh', '__runner__.sh', options)
+
+        builder_task = tasks.create(builder_code_name, :code_name => code.name, :client_options => @api.options.to_json, :codes_create_options => options.to_json)
+
+        builder_task = tasks.wait_for(builder_task.id)
+
+        unless builder_task.status == 'complete'
+          log = tasks.log(builder_task.id)
+
+          File.unlink(container_file)
+
+          IronCore::Logger.error 'IronWorkerNG', "Error while remote building worker\n" + log, IronCore::Error
+        end
+
+        res = JSON.parse(builder_task.msg)
+      end
+
+      File.unlink(container_file)
+
+      OpenStruct.new(res)
+    end
+
+    def codes_create_async(code, options = {})
+      IronCore::Logger.debug 'IronWorkerNG', "Calling codes.create_async with code='#{code.to_s}' and options='#{options.to_s}'"
 
       container_file = code.create_container
 
@@ -92,31 +122,13 @@ module IronWorkerNG
       else
         builder_code_name = code.name + (code.name.capitalize == code.name ? '::Builder' : '::builder')
 
-        IronCore::Logger.info 'IronWorkerNG', 'Uploading builder'
-
         @api.codes_create(builder_code_name, container_file, 'sh', '__runner__.sh', options)
 
         builder_task = tasks.create(builder_code_name, :code_name => code.name, :client_options => @api.options.to_json, :codes_create_options => options.to_json)
 
-        if async
-          IronCore::Logger.info 'IronWorkerNG', 'Running builder asynchronously'
+        File.unlink(container_file)
 
-          File.unlink(container_file)
-
-          return builder_task.id
-        end
-
-        IronCore::Logger.info 'IronWorkerNG', 'Waiting for builder to complete'
-
-        builder_task = tasks.wait_for(builder_task.id)
-
-        unless builder_task.status == 'complete'
-          log = tasks.log(builder_task.id)
-
-          IronCore::Logger.error 'IronWorkerNG', 'Error while remote building worker: ' + log, IronCore::Error
-        end
-
-        res = JSON.parse(builder_task.msg)
+        return builder_task.id
       end
 
       File.unlink(container_file)
@@ -202,7 +214,7 @@ module IronWorkerNG
       true
     end
 
-    def tasks_wait_for(task_id, options = {})
+    def tasks_wait_for(task_id, options = {}, &block)
       IronCore::Logger.debug 'IronWorkerNG', "Calling tasks.wait_for with task_id='#{task_id}' and options='#{options.to_s}'"
 
       options[:sleep] ||= options['sleep'] || 5
@@ -210,7 +222,7 @@ module IronWorkerNG
       task = tasks_get(task_id)
 
       while task.status == 'queued' || task.status == 'running'
-        yield task if block_given?
+        block.call(task) unless block.nil?
         sleep options[:sleep]
         task = tasks_get(task_id)
       end

@@ -1,10 +1,8 @@
-require_relative '../../feature/go/merge_exec'
-
 module IronWorkerNG
   module Code
     module Runtime
       module Go
-        include IronWorkerNG::Feature::Go::MergeExec::InstanceMethods
+        include IronWorkerNG::Feature::Common::MergeExec::InstanceMethods
 
         def runtime_run_code(local = false)
           <<RUN_CODE

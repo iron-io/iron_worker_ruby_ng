@@ -1,17 +1,17 @@
 require 'tmpdir'
 require 'fileutils'
 
-require_relative '../../feature/ruby/merge_gem'
+require_relative '../../feature/ruby/merge_gem_dependency'
 require_relative '../../feature/ruby/merge_gemfile'
-require_relative '../../feature/ruby/merge_exec'
+require_relative '../../feature/ruby/merge_gem'
 
 module IronWorkerNG
   module Code
     module Runtime
       module Ruby
-        include IronWorkerNG::Feature::Ruby::MergeGem::InstanceMethods
+        include IronWorkerNG::Feature::Common::MergeExec::InstanceMethods
+        include IronWorkerNG::Feature::Ruby::MergeGemDependency::InstanceMethods
         include IronWorkerNG::Feature::Ruby::MergeGemfile::InstanceMethods
-        include IronWorkerNG::Feature::Ruby::MergeExec::InstanceMethods
 
         def runtime_bundle(container)
           container.get_output_stream(@dest_dir + '__runner__.rb') do |runner|
@@ -70,8 +70,8 @@ end
 
 require '#{File.basename(@exec.path)}'
 
-unless #{@exec.klass == nil}
-  exec_class = Kernel.const_get('#{@exec.klass}')
+unless #{@exec.arg(:class, 0) == nil}
+  exec_class = Kernel.const_get('#{@exec.arg(:class, 0)}')
   exec_inst = exec_class.new
 
   params.keys.each do |param|
@@ -95,7 +95,7 @@ RUN_CODE
         end
 
         def install
-          gemfile_dir = Dir.tmpdir + '/' + Dir::Tmpname.make_tmpname('iron-worker-ng-', 'gemfile')
+          gemfile_dir = ::Dir.tmpdir + '/' + ::Dir::Tmpname.make_tmpname('iron-worker-ng-', 'gemfile')
 
           FileUtils.mkdir(gemfile_dir)
 
@@ -103,8 +103,10 @@ RUN_CODE
 
           gemfile.puts('source :rubygems')
 
-          @merge_gem_reqs.each do |req|
-            gemfile.puts("gem '#{req.name}', '#{req.requirement.to_s}'")
+          deps = @features.reject { |f| f.class != IronWorkerNG::Feature::Ruby::MergeGemDependency::Feature }
+
+          deps.each do |dep|
+            gemfile.puts("gem '#{dep.name}', '#{dep.version}'")
           end
 
           gemfile.close

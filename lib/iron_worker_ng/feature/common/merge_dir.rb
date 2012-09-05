@@ -1,5 +1,3 @@
-require 'pathname'
-
 module IronWorkerNG
   module Feature
     module Common
@@ -12,14 +10,13 @@ module IronWorkerNG
             super(code)
 
             @path = path
-            @dest = dest
-            @dest = Pathname.new(dest).cleanpath.to_s + '/' unless @dest.empty?
+            @dest = dest + (dest.empty? || dest.end_with?('/') ? '' : '/')
           end
 
           def hash_string
             s = @path + @dest + File.mtime(rebase(@path)).to_i.to_s
 
-            Dir.glob(rebase(@path) + '/**/**') do |path|
+            ::Dir.glob(rebase(@path) + '/**/**') do |path|
               s += path + File.mtime(path).to_i.to_s
             end
 
@@ -30,6 +27,18 @@ module IronWorkerNG
             IronCore::Logger.debug 'IronWorkerNG', "Bundling dir with path='#{@path}' and dest='#{@dest}'"
 
             container_add(container, @dest + File.basename(@path), rebase(@path))
+          end
+
+          def command(remote = false)
+            if remote
+              if IronWorkerNG::Fetcher.remote?(rebase(@path))
+                "dir '#{rebase(@path)}', '#{@dest}'"
+              else
+                "dir '#{@dest}#{File.basename(@path)}', '#{@dest}'"
+              end
+            else
+              "dir '#{@path}', '#{@dest}'"
+            end
           end
         end
 

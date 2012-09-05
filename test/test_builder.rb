@@ -24,7 +24,7 @@ class BuilderTest < IWNGTest
   def test_async
     code = code_bundle 'test/workers/with_build_command/build_command.worker'
 
-    builder_task_id = client.codes.create(code, async: true)
+    builder_task_id = client.codes.create_async(code)
     puts builder_task_id
 
     builder_task = client.tasks.wait_for(builder_task_id)

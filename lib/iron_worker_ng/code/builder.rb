@@ -14,7 +14,7 @@ module IronWorkerNG
       end
 
       def bundle(container)
-        @exec = IronWorkerNG::Feature::Ruby::MergeExec::Feature.new(self, '__builder__.rb', nil)
+        @exec = IronWorkerNG::Feature::Common::MergeExec::Feature.new(self, '__builder__.rb', {})
 
         super(container)
 
@@ -29,12 +29,13 @@ BUILDER_SH
           builder.write <<BUILDER_RUBY
 # #{IronWorkerNG.full_version}
 
-require 'iron_worker_ng'
 require 'json'
+
+require 'iron_worker_ng'
 
 exit 1 unless system('cd __build__ && sh ../__builder__.sh && cd ..')
 
-Dir.chdir('__build__')
+::Dir.chdir('__build__')
 
 code = IronWorkerNG::Code::Base.new
 code.inside_builder = true

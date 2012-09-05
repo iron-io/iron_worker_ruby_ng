@@ -62,12 +62,8 @@ class IWNGTest < Test::Unit::TestCase
 
 end
 
-module IronWorkerNG
-  module Code
-    class Base
-      def exec_path
-        exec = @features.find{|f| f.is_a? IronWorkerNG::Feature::Ruby::MergeExec::Feature } and exec.path
-      end
-    end
+class Test::Unit::UI::Console::TestRunner
+  def guess_color_availability
+    false
   end
 end

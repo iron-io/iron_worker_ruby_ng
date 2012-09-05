@@ -2,59 +2,30 @@
 
 require 'optparse'
 require 'time'
-require 'iron_worker_ng'
 
-LOG_GROUP = '------> '
-LOG_ENTRY = '        '
+require 'iron_worker_ng'
+require 'iron_worker_ng/cli'
 
 class IronWorkerCLILoggerFormatter < ::Logger::Formatter
   def call(severity, time, proname, msg)
-    msg = LOG_ENTRY + msg unless msg.start_with?(LOG_GROUP)
+    msg = IronWorkerNG::CLI::LOG_ENTRY + msg unless msg.start_with?(IronWorkerNG::CLI::LOG_GROUP)
+
     msg + "\n"
   end
 end
 
 IronCore::Logger.logger.formatter = IronWorkerCLILoggerFormatter.new
 
-def log(msg)
-  IronCore::Logger.info 'IronWorkerNG', msg
-end
-
-@env = nil
-@project_id = nil
-
-def create_client
-  log "#{LOG_GROUP}Detecting Configuration"
-
-  client = IronWorkerNG::Client.new(:env => @env, :project_id => @project_id)
-
-  project = client.projects.get
-
-  log "Project '#{project.name}' with id='#{project.id}'"
-
-  client
-end
+@cli = IronWorkerNG::CLI.new
 
 def common_opts(opts)
   opts.on('-e', '--env ENV', 'environment') do |v|
-    @env = v
+    @cli.env = v
   end
 
   opts.on('--project-id PROJECT_ID', 'project_id') do |v|
-    @project_id = v
+    @cli.project_id = v
   end
-end
-
-def parse_time(str)
-  t = Time.parse(str)
-
-  return nil if t == Time.utc(1)
-
-  def t.to_s
-    strftime('%a %b %-d %T')
-  end
-
-  return t
 end
 
 if $*.size == 1 && ($*[0] == '-v' || $*[0] == '--version')
@@ -62,9 +33,11 @@ if $*.size == 1 && ($*[0] == '-v' || $*[0] == '--version')
   exit 0
 end
 
-if $*.size == 0 || (not ['upload', 'queue', 'retry', 'schedule', 'log', 'run', 'webhook', 'info', 'install'].include?($*[0]))
+commands = ['upload', 'queue', 'retry', 'schedule', 'log', 'run', 'install', 'info']
+
+if $*.size == 0 || (not commands.include?($*[0]))
   puts 'usage: iron_worker COMMAND [OPTIONS]'
-  puts '    COMMAND: upload, queue, retry, schedule, log, run, webhook, info, install'
+  puts "    COMMAND: #{commands.join(', ')}"
   puts '    run iron_worker COMMAND --help to get more information about each command'
   exit 1
 end
@@ -78,29 +51,28 @@ if $*.include?('--debug')
 end
 
 if command == 'upload'
+  params = {}
   options = {}
-
-  name = nil
 
   opts = OptionParser.new do |opts|
     opts.banner = "usage: iron_worker upload CODE_PACKAGE_NAME_OR_PATH_TO_WORKERFILE [OPTIONS]"
 
-    opts.on('-n', '--name NAME', 'override for code name') do |v|
-      name = v
+    opts.on('-n', '--name NAME', 'override code name') do |v|
+      params[:name] = v
     end
 
     opts.on('-c', '--max-concurrency CONCURRENCY', Integer, 'max number of concurrent workers for this code package') do |v|
       options[:max_concurrency] = v
     end
 
-    if ENV['IRON_BETA'] == '1'
+    if @cli.beta?
       opts.on('-r', '--num-retries NUM_RETRIES', Integer, 'max number of automatic retries on task fail') do |v|
         options[:num_retries] = v
       end
     end
 
-    opts.on('-a', '--async', 'don\'t wait for package build') do |v|
-      options[:async] = true
+    opts.on('-a', '--async', 'don\'t wait for package build if remote build command specified') do |v|
+      params[:async] = true
     end
 
     common_opts(opts)
@@ -114,102 +86,55 @@ if command == 'upload'
   end
 
   unless $*.size == 1
-    puts 'Please specify name or path to workerfile'
+    puts 'Please specify code package name or path to workerfile'
     puts opts
     exit 1
   end
 
-  client = create_client
-
-  log "#{LOG_GROUP}Discovering workerfile"
-
-  code = IronWorkerNG::Code::Base.new($*[0])
-
-  code.name(name) if name
-
-  log "Code package name is '#{code.name}'"
-
-  log "Max concurrency set to '#{options[:max_concurrency]}'" if options[:max_concurrency]
-
-  if code.remote_build_command
-    log "#{LOG_GROUP}Remote building '#{code.name}'"
-
-    async = options[:async]
-
-    builder_task_id = client.codes.create(code, options)
-
-    if async
-      log "Check 'https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{builder_task_id}' for more info"
-    else
-      # TODO: output the same info as for builderless upload
-    end
-  else
-    log "#{LOG_GROUP}Uploading code package"
-
-    code_id = client.codes.create(code, options).id
-    code_info = client.codes.get(code_id)
-
-    log "Code package uploaded with id='#{code_id}' and revision='#{code_info.rev}'"
-    log "Check 'https://hud.iron.io/tq/projects/#{client.api.project_id}/code/#{code_id}' for more info"
-  end
+  @cli.upload($*[0], params, options)
 elsif command == 'queue' || command == 'schedule'
-  payload = nil
-  payload_file = nil
-
-  priority = nil
-  timeout = nil
-  delay = nil
-
-  start_at = nil
-  end_at = nil
-  run_times = nil
-  run_every = nil
-
-  print_id = false
+  params = {}
+  options = {}
 
   opts = OptionParser.new do |opts|
     opts.banner = "usage: iron_worker #{command} CODE_PACKAGE_NAME [OPTIONS]"
 
     opts.on('-p', '--payload PAYLOAD', String, 'payload to pass') do |v|
-      payload = v
+      params[:payload] = v
     end
 
     opts.on('-f', '--payload-file PAYLOAD_FILE', String, 'payload file to pass') do |v|
-      payload_file = v
+      params[:payload] = File.read(v)
     end
 
     opts.on('--priority PRIORITY', Integer, '0 (default), 1, 2') do |v|
-      priority = v
+      options[:priority] = v
     end
 
     opts.on('--timeout TIMEOUT', Integer, 'maximum run time in seconds from 0 to 3600 (default)') do |v|
-      timeout = v
+      options[:timeout] = v
     end
 
     opts.on('--delay DELAY', Integer, 'delay before start in seconds') do |v|
-      delay = v
+      options[:delay] = v
     end
 
     if command == 'schedule'
       opts.on('--start-at TIME', 'start task at specified time') do |v|
-        start_at = Time.parse(v)
+        options[:start_at] = Time.parse(v)
       end
 
       opts.on('--end-at TIME', 'stop running task at specified time') do |v|
-        end_at = Time.parse(v)
+        options[:end_at] = Time.parse(v)
       end
 
       opts.on('--run-times RUN_TIMES', Integer, 'run task no more times than specified') do |v|
-        run_times = v
+        options[:run_times] = v
       end
 
       opts.on('--run-every RUN_EVERY', Integer, 'run task every RUN_EVERY seconds') do |v|
-        run_every = v
+        options[:run_every] = v
       end
-    end
-
-    opts.on('--print-id', 'prints result id') do |v|
-      print_id = true
     end
 
     common_opts(opts)
@@ -228,49 +153,13 @@ elsif command == 'queue' || command == 'schedule'
     exit 1
   end
 
-  name = $*[0]
-
-  if payload.nil? and (not payload_file.nil?)
-    payload = File.read(payload_file)
-  end
-
-  options = {}
-
-  options[:priority] = priority unless priority.nil?
-  options[:timeout] = timeout unless timeout.nil?
-  options[:delay] = delay unless delay.nil?
-
-  if command == 'schedule'
-    options[:start_at] = start_at unless start_at.nil?
-    options[:end_at] = end_at unless end_at.nil?
-    options[:run_times] = run_times unless run_times.nil?
-    options[:run_every] = run_every unless run_every.nil?
-  end
-
-  client = create_client
-
-  id = nil
-
   if command == 'queue'
-    log "#{LOG_GROUP}Queueing task"
-
-    id = client.tasks.create(name, payload, options).id
-
-    log "#{LOG_GROUP}Worker '#{name}' queued with id='#{id}'"
-
-    log "Check 'https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{id}' for more info"
+    @cli.queue($*[0], params, options)
   else
-    log "#{LOG_GROUP}Scheduling task"
-
-    id = client.schedules.create(name, payload, options).id
-
-    log "#{LOG_GROUP}Worker '#{name}' scheduled with id='#{id}'"
-
-    log "Check 'https://hud.iron.io/tq/projects/#{client.api.project_id}/scheduled_jobs/#{id}' for more info"
+    @cli.schedule($*[0], params, options)
   end
-
-  puts id if print_id
 elsif command == 'retry'
+  params = {}
   options = {}
 
   opts = OptionParser.new do |opts|
@@ -296,26 +185,16 @@ elsif command == 'retry'
     exit 1
   end
 
-  task_id = $*.first
-
-  client = create_client
-
-  log "#{LOG_GROUP}Retrying task with id='#{task_id}'"
-
-  retry_task_id = client.tasks.retry(task_id, options).id
-
-  log "Retry task id='#{retry_task_id}'"
-
-  log "Check 'https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{retry_task_id}' for more info"
+  @cli.retry($*[0], params, options)
 elsif command == 'log'
-  live = false
-  wait = false
+  params = {}
+  options = {}
 
   opts = OptionParser.new do |opts|
     opts.banner = "usage: iron_worker log TASK_ID [OPTIONS]"
 
     opts.on('-w', '--wait', 'wait for task') do |v|
-      wait = true
+      params[:wait] = true
     end
 
     common_opts(opts)
@@ -334,60 +213,20 @@ elsif command == 'log'
     exit 1
   end
 
-  task_id = $*.first
-
-  client = create_client
-
-  log "#{LOG_GROUP}Getting log for task with id='#{task_id}'"
-
-  log = ''
-
-  if live
-    begin
-      log = client.tasks.log(task_id)
-    rescue IronCore::Error
-    end
-  else
-    if wait
-      client.tasks.wait_for(task_id)
-    end
-
-    log = client.tasks.log(task_id)
-  end
-
-  print log
-
-  if live
-    client.tasks.wait_for(task_id) do |task|
-      if task.status == 'running'
-        begin
-          next_log = client.tasks.log(task_id)
-          print next_log[log.length .. - 1]
-          log = next_log
-        rescue IronCore::Error
-        end
-      end
-    end
-
-    begin
-      next_log = client.tasks.log(task_id)
-      print next_log[log.length .. - 1]
-    rescue IronCore::Error
-    end
-  end
+  @cli.getlog($*[0], params, options)
 elsif command == 'run'
-  payload = nil
-  payload_file = nil
+  params = {}
+  options = {}
 
   opts = OptionParser.new do |opts|
     opts.banner = "usage: iron_worker run CODE_PACKAGE_NAME_OR_PATH_TO_WORKERFILE [OPTIONS]"
 
     opts.on('-p', '--payload PAYLOAD', String, 'payload to pass') do |v|
-      payload = v
+      params[:payload] = v
     end
 
     opts.on('-f', '--payload-file PAYLOAD_FILE', String, 'payload file to pass') do |v|
-      payload_file = v
+      params[:payload] = File.read(v)
     end
 
     common_opts(opts)
@@ -406,148 +245,11 @@ elsif command == 'run'
     exit 1
   end
 
-  if payload.nil? and (not payload_file.nil?)
-    payload = File.read(payload_file)
-  end
-
-  log "#{LOG_GROUP}Discovering workerfile"
-
-  code = IronWorkerNG::Code::Base.new($*.first)
-
-  log "Code package name is '#{code.name}'"
-
-  log "#{LOG_GROUP}Running '#{code.name}'"
-
-  code.run(payload)
-elsif command == 'webhook'
-  opts = OptionParser.new do |opts|
-    opts.banner = 'usage: iron_worker webhook CODE_PACKAGE_NAME [OPTIONS]'
-
-    common_opts(opts)
-  end
-
-  begin
-    opts.parse!
-  rescue OptionParser::ParseError
-    puts $!.to_s
-    exit 1
-  end
-
-  unless $*.size == 1
-    puts 'Please specify code package name'
-    puts opts
-    exit 1
-  end
-
-  name = $*[0]
-
-  client = create_client
-
-  log "#{LOG_GROUP}Detecting webhook for code package with name='#{name}'"
-  log "Use POST to 'https://worker-aws-us-east-1.iron.io/2/projects/#{client.api.project_id}/tasks/webhook?code_name=#{name}&oauth=#{client.api.token}' to invoke worker via webhook"
-elsif command == 'info'
-  unless $*.size == 2 or %w(info task ).include? $*.first
-    puts 'Usage: iron_worker info <code|task|schedule> NAME_OR_ID'
-    exit 1
-  end
-
-  entity, id = $*
-  client = create_client
-
-  if entity == 'code'
-    code = client.codes.list(:all => true).find { |c| c.name == id }
-
-    unless code
-      log "#{LOG_GROUP}Code named '#{id}' not found"
-      exit 1
-    end
-
-    latest_change = parse_time(code.latest_change)
-    created_at = parse_time(code.created_at)
-    (<<EOL
-#{LOG_GROUP}Code package '#{code.name}'
-           ID: #{code.id}
-      Created: #{created_at}
-Last Modified: #{latest_change}
-     Revision: #{code.rev}
-All Revisions: https://hud.iron.io/tq/projects/#{client.api.project_id}/code/#{code.id}
-        Tasks: https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{code.id}/activity
-EOL
-     ).lines.each{ |msg| log msg.chomp }
-  end
-
-  if entity == 'task'
-    begin
-      prev_level = IronCore::Logger.logger.level
-      IronCore::Logger.logger.level = ::Logger::FATAL
-      task = client.tasks.get(id)
-    rescue IronCore::Error, Rest::RestError
-      # iron_core throws exception if id not found
-      IronCore::Logger.logger.level = prev_level
-      log "#{LOG_GROUP}Task with id #{id} not found"
-      exit(1)
-    ensure
-      IronCore::Logger.logger.level = prev_level
-    end
-
-    queued = parse_time(task.created_at)
-    started = parse_time(task.start_time)
-    finished = parse_time(task.end_time)
-
-    if finished
-      total = finished - started
-
-      seconds = total % 60
-      minutes = (total / 60) % 60
-      hours = total / (60 * 60)
-
-      duration = format("%02d:%02d:%02d", hours, minutes, seconds)
-    end
-
-    log "#{LOG_GROUP}Task id #{id} found"
-    log "Code Package: '#{task.code_name}', rev #{task.code_rev}, download: https://hud.iron.io/tq/projects/#{client.api.project_id}/code/#{task.code_id}/download?hid=#{task.code_history_id}"
-    log "      Status: #{task.status}"
-    log "    Priority: #{task.priority}" if task.priority
-    log "      Queued: #{queued}"
-    log "     Started: #{started}" if started
-    log "    Finished: #{finished}" if finished
-    log "    Duration: #{duration}" if finished
-    log "     Payload: #{task.payload}" unless task.payload == 'null'
-    log "Task Details: https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{task.id}"
-  end
-
-  if entity == 'schedule'
-    begin
-      prev_level = IronCore::Logger.logger.level
-      IronCore::Logger.logger.level = ::Logger::FATAL
-      schedule = client.schedules.get(id)
-    rescue IronCore::Error, Rest::RestError
-      # iron_core throws exception if id not found
-      IronCore::Logger.logger.level = prev_level
-      log "#{LOG_GROUP}Schedule with id #{id} not found"
-      exit(1)
-    ensure
-      IronCore::Logger.logger.level = prev_level
-    end
-
-    start_at = parse_time(schedule.start_at)
-    end_at = parse_time(schedule.end_at)
-    next_start = parse_time(schedule.next_start)
-    last_run_time = parse_time(schedule.last_run_time)
-
-    log "#{LOG_GROUP}Schedule id #{id} found"
-    log " Code Name: #{schedule.code_name}"
-    log "   Created: #{parse_time(schedule.created_at)}"
-    log "   Message: #{schedule.msg}" if schedule.msg
-    log "    Status: #{schedule.status}"
-    log "     Start: #{start_at}" if start_at
-    log "       End: #{end_at}" if end_at
-    log "Next Start: #{next_start}" if next_start
-    log " Run Count: #{schedule.run_count}" if schedule.run_count
-    log "   Payload: #{schedule.payload}" unless schedule.payload == 'null'    
-    log "   Details: https://hud.iron.io/tq/projects/#{client.api.project_id}/scheduled_jobs/#{id}"
-  end
+  @cli.run($*[0], params, options)
 elsif command == 'install'
+  params = {}
+  options = {}
+
   opts = OptionParser.new do |opts|
     opts.banner = 'usage: iron_worker install CODE_PACKAGE_NAME_OR_PATH_TO_WORKERFILE [OPTIONS]'
 
@@ -567,11 +269,90 @@ elsif command == 'install'
     exit 1
   end
 
-  name = $*[0]
+  @cli.install($*[0], params, options)
+elsif command == 'info'
+  entities = ['code', 'task', 'schedule']
 
-  log "#{LOG_GROUP}Installing worker dependencies for code package with name='#{name}'"
+  if $*.size == 0 || (not entities.include?($*[0]))
+    puts 'usage: iron_worker info ENTITY [OPTIONS]'
+    puts "    ENTITY: #{entities.join(', ')}"
+    puts '    run iron_worker info ENTITY --help to get more information about each entity'
+    exit 1
+  end
 
-  code = IronWorkerNG::Code::Base.new(name)
+  entity = $*.shift
 
-  code.install
+  if entity == 'code'
+    params = {}
+    options = {}
+
+    opts = OptionParser.new do |opts|
+      opts.banner = "usage: iron_worker info code CODE_PACAKGE_NAME [OPTIONS]"
+
+      common_opts(opts)
+    end
+
+    begin
+      opts.parse!
+    rescue OptionParser::ParseError
+      puts $!.to_s
+      exit 1
+    end
+
+    unless $*.size == 1
+      puts 'Please specify code package name'
+      puts opts
+      exit 1
+    end
+
+    @cli.info_code($*[0], params, options)
+  elsif entity == 'task'
+    params = {}
+    options = {}
+
+    opts = OptionParser.new do |opts|
+      opts.banner = "usage: iron_worker info task TASK_ID [OPTIONS]"
+
+      common_opts(opts)
+    end
+
+    begin
+      opts.parse!
+    rescue OptionParser::ParseError
+      puts $!.to_s
+      exit 1
+    end
+
+    unless $*.size == 1
+      puts 'Please specify task id'
+      puts opts
+      exit 1
+    end
+
+    @cli.info_task($*[0], params, options)
+  elsif entity == 'schedule'
+    params = {}
+    options = {}
+
+    opts = OptionParser.new do |opts|
+      opts.banner = "usage: iron_worker info schedule SCHEDULE_ID [OPTIONS]"
+
+      common_opts(opts)
+    end
+
+    begin
+      opts.parse!
+    rescue OptionParser::ParseError
+      puts $!.to_s
+      exit 1
+    end
+
+    unless $*.size == 1
+      puts 'Please specify schedule id'
+      puts opts
+      exit 1
+    end
+
+    @cli.info_schedule($*[0], params, options)
+  end
 end

@@ -1,12 +1,11 @@
 require_relative '../../feature/java/merge_jar'
-require_relative '../../feature/java/merge_exec'
 
 module IronWorkerNG
   module Code
     module Runtime
       module Java
+        include IronWorkerNG::Feature::Common::MergeExec::InstanceMethods
         include IronWorkerNG::Feature::Java::MergeJar::InstanceMethods
-        include IronWorkerNG::Feature::Java::MergeExec::InstanceMethods
 
         def runtime_run_code(local = false)
           classpath_array = []
@@ -22,7 +21,7 @@ module IronWorkerNG
           IronCore::Logger.info 'IronWorkerNG', "Collected '#{classpath}' classpath"
 
           <<RUN_CODE
-java -cp #{classpath} #{@exec.klass.nil? ? "-jar #{File.basename(@exec.path)}" : @exec.klass} "$@"
+java -cp #{classpath} #{@exec.arg(:class, 0).nil? ? "-jar #{File.basename(@exec.path)}" : @exec.arg(:class, 0)} "$@"
 RUN_CODE
         end
       end

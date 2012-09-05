@@ -1,9 +1,10 @@
-require 'tmpdir'
-require 'zip/zip'
 require 'fileutils'
 
-require_relative 'dir_container'
+require_relative 'container/base'
+require_relative 'container/zip'
+require_relative 'container/dir'
 require_relative '../feature/base'
+require_relative '../feature/common/merge_exec'
 require_relative '../feature/common/merge_file'
 require_relative '../feature/common/merge_dir'
 
@@ -38,7 +39,7 @@ module IronWorkerNG
 
         @inside_builder = false
 
-        wfiles = []
+        worker_files = []
 
         if args.length == 1 && args[0].is_a?(String)
           if args[0].end_with?('.worker') || args[0].end_with?('.workerfile')
@@ -49,8 +50,8 @@ module IronWorkerNG
         elsif args.length == 1 && args[0].is_a?(Hash)
           @name = args[0][:name] || args[0]['name']
 
-          wfile = args[0][:workerfile] || args[0]['workerfile']
-          wfiles << wfile unless wfile.nil?
+          worker_file = args[0][:workerfile] || args[0]['workerfile']
+          worker_files << worker_file unless worker_file.nil?
 
           exec = args[0][:exec] || args[0]['exec'] || args[0][:worker] || args[0]['worker']
           unless exec.nil?
@@ -63,23 +64,23 @@ module IronWorkerNG
         end
 
         unless @name.nil?
-          wfiles << @name + '.worker'
-          wfiles << @name + '.workerfile'
+          worker_files << @name + '.worker'
+          worker_files << @name + '.workerfile'
         end
 
-        wfiles << 'Workerfile'
+        worker_files << 'Workerfile'
 
-        wfiles.each do |wfile|
-          src, clean = IronWorkerNG::Fetcher.fetch(wfile)
+        worker_files.each do |worker_file|
+          IronWorkerNG::Fetcher.fetch(worker_file) do |content|
+            unless content.nil?
+              IronCore::Logger.info 'IronWorkerNG', "Found workerfile with path='#{worker_file}'"
 
-          unless src.nil?
-            IronCore::Logger.info 'IronWorkerNG', "Found workerfile with path='#{wfile}'"
+              eval(content)
 
-            eval(src)
+              @base_dir = File.dirname(worker_file) == '.' ? '' : File.dirname(worker_file) + '/'
 
-            @base_dir = File.dirname(wfile) == '.' ? '' : File.dirname(wfile) + '/'
-
-            break
+              break
+            end
           end
         end
 
@@ -228,33 +229,29 @@ RUNNER
 
         fixate
 
-        container_name = Dir.tmpdir + '/' + Dir::Tmpname.make_tmpname('iron-worker-ng-', "container#{local ? '' : '.zip'}")
+        container = local ? IronWorkerNG::Code::Container::Dir.new : IronWorkerNG::Code::Container::Zip.new
 
-        IronCore::Logger.debug 'IronWorkerNG', "Creating #{local ? 'local ' : ''}code container '#{container_name}'"
+        IronCore::Logger.debug 'IronWorkerNG', "Creating #{local ? 'local ' : ''}code container '#{container.name}'"
 
         if local
-          container = IronWorkerNG::Code::DirContainer.new(container_name)
-
           bundle(container)
         else
           if @remote_build_command
             @dest_dir = '__build__/'
           end
 
-          Zip::ZipFile.open(container_name, Zip::ZipFile::CREATE) do |container|
-            bundle(container)
+          bundle(container)
 
-            if @remote_build_command
-              IronCore::Logger.info 'IronWorkerNG', 'Creating builder'
+          if @remote_build_command
+            IronCore::Logger.info 'IronWorkerNG', 'Creating builder'
               
-              builder = IronWorkerNG::Code::Builder.new
-              builder.remote_build_command = @remote_build_command
+            builder = IronWorkerNG::Code::Builder.new
+            builder.remote_build_command = @remote_build_command
 
-              builder.gem('iron_worker_ng')
-              
-              builder.fixate
-              builder.bundle(container)
-            end
+            builder.gem('iron_worker_ng')
+            builder.fixate
+
+            builder.bundle(container)
           end
           
           if @remote_build_command
@@ -262,7 +259,9 @@ RUNNER
           end
         end
 
-        container_name
+        container.close
+
+        container.name
       end
 
       def run(params = {})
@@ -278,10 +277,22 @@ RUNNER
 
         system("sh #{container_name}/__runner__.sh -d #{container_name} -payload #{container_name}/__payload__ -id 0")
 
-        FileUtils.rm_f(container_name)
+        FileUtils.rm_rf(container_name)
       end
 
       def install
+      end
+
+      def workerfile(remote = false)
+        commands = []
+
+        commands << "runtime '#{runtime}'"
+        commands << "name '#{name}'"
+        commands << "build '#{remote_build_command}'"
+
+        commands << @features.map { |f| f.command(remote) }
+
+        commands.compact.join("\n")
       end
 
       def to_s

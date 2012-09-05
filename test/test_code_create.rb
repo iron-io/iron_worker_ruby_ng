@@ -4,15 +4,15 @@ class CodeCreateTest < IWNGTest
 
   def test_create
     code = code_bundle(:name => 'asdfasdf')
-    assert_equal nil, code.exec_path
+    assert_equal nil, code.exec
     assert_equal 'asdfasdf', code.name
 
     code = code_bundle(:exec => 'test/hello.rb', :name => 'dfdfd')
-    assert_equal 'test/hello.rb', code.exec_path
+    assert_equal 'test/hello.rb', code.exec.path
     assert_equal 'dfdfd', code.name
 
     code = code_bundle
-    assert_equal nil, code.exec_path
+    assert_equal nil, code.exec
     assert_equal nil, code.name
   end
 
@@ -21,7 +21,7 @@ class CodeCreateTest < IWNGTest
       File.open('hello.rb', 'w') { |f| f << "puts 'hello'" }
       File.open('Workerfile', 'w') { |f| f << "exec 'hello.rb'" }
 
-      assert code_bundle.exec_path.end_with? 'hello.rb'
+      assert code_bundle.exec.path.end_with? 'hello.rb'
     end
   end
 
