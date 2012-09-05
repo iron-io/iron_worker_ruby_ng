@@ -42,8 +42,8 @@ module IronWorkerNG
         worker_files = []
 
         if args.length == 1 && args[0].is_a?(String)
-          if args[0].end_with?('.worker') || args[0].end_with?('.workerfile')
-            @name = args[0].gsub(/\.worker$/, '').gsub(/\.workerfile$/, '')
+          if args[0].end_with?('.worker')
+            @name = args[0].gsub(/\.worker$/, '')
           else
             @name = args[0]
           end
@@ -65,10 +65,7 @@ module IronWorkerNG
 
         unless @name.nil?
           worker_files << @name + '.worker'
-          worker_files << @name + '.workerfile'
         end
-
-        worker_files << 'Workerfile'
 
         worker_files.each do |worker_file|
           IronWorkerNG::Fetcher.fetch(worker_file) do |content|
