@@ -3,7 +3,7 @@ require 'thread'
 
 class BatchTest < IWNGTest
 
-  N_TASKS = 100
+  N_TASKS = 10
 
   def test_batch
     client.codes.create code_bundle(:name => 'test',
