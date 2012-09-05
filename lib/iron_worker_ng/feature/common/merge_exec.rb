@@ -47,8 +47,10 @@ module IronWorkerNG
         end
 
         module InstanceMethods
-          def merge_exec(path, args = {})
+          def merge_exec(path = nil, args = {})
             @exec ||= nil
+
+            return @exec unless path
 
             if (not args.is_a?(Hash)) && (not args.is_a?(Array))
               args = [args]
