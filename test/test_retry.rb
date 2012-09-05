@@ -52,6 +52,9 @@ class RetryTest < IWNGTest
         assert log.include?("Fail Whale")
         assert task.retry_task_id if j < retries
         tid = task.retry_task_id
+        if j > 0
+          assert_equal retries_delay, task.delay
+        end
         j += 1
       end
       assert_equal retries+1, j
