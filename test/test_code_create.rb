@@ -16,15 +16,6 @@ class CodeCreateTest < IWNGTest
     assert_equal nil, code.name
   end
 
-  def test_workerfile
-    Dir.chdir( Dir.mktmpdir ) do
-      File.open('hello.rb', 'w') { |f| f << "puts 'hello'" }
-      File.open('Workerfile', 'w') { |f| f << "exec 'hello.rb'" }
-
-      assert code_bundle.exec.path.end_with? 'hello.rb'
-    end
-  end
-
   def test_name
     resp = client.codes_create code_bundle('test/hello.worker')
     assert_equal "Upload successful.", resp.msg
