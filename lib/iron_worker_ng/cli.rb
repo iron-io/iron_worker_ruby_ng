@@ -179,6 +179,15 @@ module IronWorkerNG
       code.install
     end
 
+    def webhook(name, params, options)
+      client
+
+      log_group 'Generating code package webhook'
+
+      log 'You can invoke your worker by POSTing to the following URL'
+      log "#{client.api.url(client.api.project_id)}/tasks/webhook?code_name=#{name}&oauth=#{client.api.token}"
+    end
+
     def info_code(name, params, options)
       client
 
@@ -199,7 +208,6 @@ module IronWorkerNG
       data << ['uploaded', parse_time(code.latest_change) || '-']
       data << ['info', "https://hud.iron.io/tq/projects/#{client.api.project_id}/code/#{code.id}"]
       data << ['tasks info', "https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{code.id}/activity"]
-      data << ['webhook url', "#{client.api.url(client.api.project_id)}/tasks/webhook?code_name=#{name}&oauth=#{client.api.token}"]
 
       display_table(data)
     end

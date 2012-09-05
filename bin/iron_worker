@@ -33,7 +33,7 @@ if $*.size == 1 && ($*[0] == '-v' || $*[0] == '--version')
   exit 0
 end
 
-commands = ['upload', 'queue', 'retry', 'schedule', 'log', 'run', 'install', 'info']
+commands = ['upload', 'queue', 'retry', 'schedule', 'log', 'run', 'install', 'webhook', 'info']
 
 if $*.size == 0 || (not commands.include?($*[0]))
   puts 'usage: iron_worker COMMAND [OPTIONS]'
@@ -268,6 +268,30 @@ elsif command == 'install'
   end
 
   @cli.install($*[0], params, options)
+elsif command == 'webhook'
+  params = {}
+  options = {}
+
+  opts = OptionParser.new do |opts|
+    opts.banner = 'usage: iron_worker webhook CODE_PACKAGE_NAME [OPTIONS]'
+
+    common_opts(opts)
+  end
+
+  begin
+    opts.parse!
+  rescue OptionParser::ParseError
+    puts $!.to_s
+    exit 1
+  end
+
+  unless $*.size == 1
+    puts 'Please specify code package name'
+    puts opts
+    exit 1
+  end
+
+  @cli.webhook($*[0], params, options)
 elsif command == 'info'
   entities = ['code', 'task', 'schedule']
 
