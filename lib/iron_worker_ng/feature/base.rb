@@ -20,7 +20,7 @@ module IronWorkerNG
               container.add(@code.dest_dir + dest + path[local_src.length .. -1], path)
             end
           else
-            container.add(@code.dest_dir + dest, local_src)
+            container.add(@code.dest_dir + dest, local_src, IronWorkerNG::Fetcher.remote?(src))
           end
         end
       end

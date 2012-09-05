@@ -8,7 +8,7 @@ module IronWorkerNG
           @name + '/' + clear_dest(dest)
         end
 
-        def add(dest, src)
+        def add(dest, src, commit = false)
           FileUtils.mkdir_p(File.dirname(full_dest(dest)))
 
           if File.directory?(src)

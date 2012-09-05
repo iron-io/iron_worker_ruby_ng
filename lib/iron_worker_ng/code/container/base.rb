@@ -17,7 +17,7 @@ module IronWorkerNG
           dest
         end
 
-        def add(dest, src)
+        def add(dest, src, commit = false)
         end
 
         def get_output_stream(dest, &block)

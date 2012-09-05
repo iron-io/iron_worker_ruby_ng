@@ -11,8 +11,10 @@ module IronWorkerNG
           @zip = ::Zip::ZipFile.open(@name, ::Zip::ZipFile::CREATE)
         end
 
-        def add(dest, src)
+        def add(dest, src, commit = false)
           @zip.add(clear_dest(dest), src)
+
+          @zip.commit if commit
         end
 
         def get_output_stream(dest, &block)
