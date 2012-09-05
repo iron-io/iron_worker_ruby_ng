@@ -20,5 +20,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'zip'
 
   gem.add_development_dependency 'test-unit'
+  gem.add_development_dependency 'minitest'
+  gem.add_development_dependency 'minitest-reporters', '>= 0.5.0'
   gem.add_development_dependency 'rake'
 end

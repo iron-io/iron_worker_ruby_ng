@@ -1,4 +1,6 @@
 require 'test/unit'
+require 'minitest/unit'
+require 'minitest/reporters'
 require 'tempfile'
 
 require_relative '../lib/iron_worker_ng.rb'
@@ -37,7 +39,7 @@ class IWNGTest < Test::Unit::TestCase
   attr_accessor :client
 
   def setup
-    @client = IronWorkerNG::Client.new(:env => 'staging')
+    @client = IronWorkerNG::Client.new(:env => 'test')
   end
 
   def get_all_tasks(options = { :from_time => (Time.now - 60 * 60).to_i })

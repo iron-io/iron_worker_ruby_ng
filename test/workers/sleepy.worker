@@ -1,0 +1,3 @@
+runtime 'ruby'
+exec 'sleepy_worker.rb'
+gem 'stathat'
