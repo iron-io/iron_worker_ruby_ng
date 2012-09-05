@@ -69,6 +69,10 @@ if command == 'upload'
       options[:retries] = v
     end
 
+    opts.on('-d', '--retries-delay RETRIES_DELAY', Integer, 'delay between each automatic retry') do |v|
+      options[:retries_delay] = v
+    end
+
     opts.on('-a', '--async', 'don\'t wait for package build if remote build command specified') do |v|
       params[:async] = true
     end
