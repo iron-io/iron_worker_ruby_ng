@@ -49,6 +49,8 @@ if File.exists?('__builder__.sh')
   end
 end
 
+code.install(true)
+
 client = IronWorkerNG::Client.new(JSON.parse(params[:client_options]))
 
 res = client.codes.create(code, JSON.parse(params[:codes_create_options]))

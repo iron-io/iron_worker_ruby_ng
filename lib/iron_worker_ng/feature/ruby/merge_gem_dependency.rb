@@ -38,34 +38,36 @@ module IronWorkerNG
           alias :gem :merge_gem
 
           def merge_gem_dependency_fixate
-            IronCore::Logger.info 'IronWorkerNG', 'Fixating gems dependencies'
+            if not full_remote_build
+              IronCore::Logger.info 'IronWorkerNG', 'Fixating gems dependencies'
 
-            @features.reject! { |f| f.class == IronWorkerNG::Feature::Ruby::MergeGem::Feature }
+              @features.reject! { |f| f.class == IronWorkerNG::Feature::Ruby::MergeGem::Feature }
 
-            deps = @features.reject { |f| f.class != IronWorkerNG::Feature::Ruby::MergeGemDependency::Feature }
+              deps = @features.reject { |f| f.class != IronWorkerNG::Feature::Ruby::MergeGemDependency::Feature }
 
-            if deps.length > 0
-              deps = deps.map { |dep| Bundler::DepProxy.new(Bundler::Dependency.new(dep.name, dep.version.split(', ')), Gem::Platform::RUBY) }
+              if deps.length > 0
+                deps = deps.map { |dep| Bundler::DepProxy.new(Bundler::Dependency.new(dep.name, dep.version.split(', ')), Gem::Platform::RUBY) }
 
-              source = nil
+                source = nil
 
-              begin
-                source = Bundler::Source::Rubygems.new
-              rescue Bundler::GemfileNotFound
-                ENV['BUNDLE_GEMFILE'] = 'Gemfile'
-                source = Bundler::Source::Rubygems.new
-              end
+                begin
+                  source = Bundler::Source::Rubygems.new
+                rescue Bundler::GemfileNotFound
+                  ENV['BUNDLE_GEMFILE'] = 'Gemfile'
+                  source = Bundler::Source::Rubygems.new
+                end
 
-              index = Bundler::Index.build { |index| index.use source.specs }
+                index = Bundler::Index.build { |index| index.use source.specs }
 
-              spec_set = Bundler::Resolver.resolve(deps, index)
+                spec_set = Bundler::Resolver.resolve(deps, index)
 
-              spec_set.to_a.each do |spec|
-                spec.__materialize__
+                spec_set.to_a.each do |spec|
+                  spec.__materialize__
 
-                IronCore::Logger.info 'IronWorkerNG', "Merging ruby gem with name='#{spec.name}' and version='#{spec.version}'"
+                  IronCore::Logger.info 'IronWorkerNG', "Merging ruby gem with name='#{spec.name}' and version='#{spec.version}'"
 
-                @features << IronWorkerNG::Feature::Ruby::MergeGem::Feature.new(self, spec)
+                  @features << IronWorkerNG::Feature::Ruby::MergeGem::Feature.new(self, spec)
+                end
               end
             end
           end

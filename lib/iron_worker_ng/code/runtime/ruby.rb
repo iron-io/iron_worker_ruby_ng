@@ -94,12 +94,19 @@ RUBY_RUNNER
 RUN_CODE
         end
 
-        def install
-          gemfile_dir = ::Dir.tmpdir + '/' + ::Dir::Tmpname.make_tmpname('iron-worker-ng-', 'gemfile')
+        def install(standalone = false)
+          gemfile_dir = nil
+          gemfile = nil
 
-          FileUtils.mkdir(gemfile_dir)
+          if standalone
+            gemfile = File.open('Gemfile', 'w')
+          else
+            gemfile_dir = ::Dir.tmpdir + '/' + ::Dir::Tmpname.make_tmpname('iron-worker-ng-', 'gemfile')
 
-          gemfile = File.open(gemfile_dir + '/Gemfile', 'w')
+            FileUtils.mkdir(gemfile_dir)
+
+            gemfile = File.open(gemfile_dir + '/Gemfile', 'w')
+          end
 
           gemfile.puts('source :rubygems')
 
@@ -111,9 +118,11 @@ RUN_CODE
 
           gemfile.close
 
-          puts `cd #{gemfile_dir} && bundle install`
+          puts `cd #{gemfile_dir} && bundle install#{standalone ? ' --standalone' : ''}`
 
-          FileUtils.rm_r(gemfile_dir)
+          unless gemfile_dir.nil?
+            FileUtils.rm_r(gemfile_dir)
+          end
         end
       end
     end

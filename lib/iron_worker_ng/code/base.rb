@@ -277,7 +277,7 @@ RUNNER
         FileUtils.rm_rf(container_name)
       end
 
-      def install
+      def install(standalone = false)
       end
 
       def workerfile
