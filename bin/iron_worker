@@ -77,6 +77,10 @@ if command == 'upload'
       params[:async] = true
     end
 
+    opts.on('--full-remote-build', 'full remote build') do |v|
+      params[:full_remote_build] = true
+    end
+
     common_opts(opts)
   end
 

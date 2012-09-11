@@ -57,12 +57,14 @@ module IronWorkerNG
 
       code.name(params[:name]) unless params[:name].nil?
 
+      code.full_remote_build = params[:full_remote_build] unless params[:full_remote_build].nil?
+
       log "Code package name is '#{code.name}'"
       log "Max concurrency set to '#{options[:max_concurrency]}'" unless options[:max_concurrency].nil?
       log "Retries set to '#{options[:retries]}'" unless options[:retries].nil?
       log "Retries delay set to '#{options[:retries_delay]}'" unless options[:retries_delay].nil?
 
-      if code.remote_build_command
+      if code.remote_build_command || code.full_remote_build
         log_group "Uploading and building code package '#{code.name}'"
       else
         log_group "Uploading code package '#{code.name}'"
