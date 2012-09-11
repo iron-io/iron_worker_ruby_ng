@@ -10,6 +10,8 @@ module IronWorkerNG
         @base_dir = ''
         @dest_dir = ''
 
+        @full_remote_build = false
+
         runtime(:ruby)
       end
 

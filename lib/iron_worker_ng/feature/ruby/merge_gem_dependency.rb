@@ -20,7 +20,11 @@ module IronWorkerNG
           end
 
           def command
-            "gem '#{@name}', '#{@version}'"
+            if @code.full_remote_build
+              "gem '#{@name}', '#{@version}'"
+            else
+              nil
+            end
           end
         end
 

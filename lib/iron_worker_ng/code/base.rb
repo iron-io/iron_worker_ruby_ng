@@ -186,8 +186,9 @@ module IronWorkerNG
           feature.bundle(container)
         end
 
-        container.get_output_stream(@dest_dir + '__runner__.sh') do |runner|
-          runner.write <<RUNNER
+        if (not remote_build_command) && (not full_remote_build)
+          container.get_output_stream(@dest_dir + '__runner__.sh') do |runner|
+            runner.write <<RUNNER
 #!/bin/sh
 # #{IronWorkerNG.full_version}
 
@@ -206,9 +207,10 @@ cd "$(root "$@")"
 
 #{runtime_run_code(local)}
 RUNNER
-        end
+          end
 
-        runtime_bundle(container)
+          runtime_bundle(container)
+        end
       end
 
       def create_container(local = false)
