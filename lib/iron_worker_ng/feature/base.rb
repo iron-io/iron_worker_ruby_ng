@@ -6,6 +6,10 @@ module IronWorkerNG
       end
 
       def rebase(path)
+        if IronWorkerNG::Fetcher.remote?(path) || path.start_with?('/')
+          return path
+        end
+
         @code.base_dir + path
       end
 
@@ -32,7 +36,7 @@ module IronWorkerNG
       def bundle(container)
       end
 
-      def command(remote = false)
+      def command
         nil
       end
     end

@@ -20,15 +20,17 @@ module IronWorkerNG
           def bundle(container)
             IronCore::Logger.debug 'IronWorkerNG', "Bundling file with path='#{@path}' and dest='#{@dest}'"
 
-            container_add(container, @dest + File.basename(@path), rebase(@path))
+            if (not @code.full_remote_build) || (not IronWorkerNG::Fetcher.remote?(rebase(@path)))
+              container_add(container, @dest + File.basename(@path), rebase(@path))
+            end
           end
 
-          def command(remote = false)
-            if remote
-              if IronWorkerNG::Fetcher.remote?(rebase(@path))
+          def command
+            if @code.remote_build_command || @code.full_remote_build
+              if @code.full_remote_build && IronWorkerNG::Fetcher.remote?(rebase(@path))
                 "file '#{rebase(@path)}', '#{@dest}'"
               else
-                "file '#{@dest}#{File.basename(@path)}', '#{@dest}'"
+                "file '#{@code.dest_dir}#{@dest}#{File.basename(@path)}', '#{@dest}'"
               end
             else
               "file '#{@path}', '#{@dest}'"

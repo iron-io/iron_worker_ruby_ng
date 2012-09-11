@@ -17,7 +17,7 @@ module IronWorkerNG
       attr_accessor :base_dir
       attr_accessor :dest_dir
 
-      attr_accessor :inside_builder
+      attr_accessor :full_remote_build
 
       undef exec
       undef gem
@@ -32,12 +32,12 @@ module IronWorkerNG
         @base_dir = ''
         @dest_dir = ''
 
+        @full_remote_build = false
+
         @runtime = nil
 
         @name = nil
         @exec = nil
-
-        @inside_builder = false
 
         worker_files = []
 
@@ -186,9 +186,8 @@ module IronWorkerNG
           feature.bundle(container)
         end
 
-        unless @inside_builder
-          container.get_output_stream(@dest_dir + '__runner__.sh') do |runner|
-            runner.write <<RUNNER
+        container.get_output_stream(@dest_dir + '__runner__.sh') do |runner|
+          runner.write <<RUNNER
 #!/bin/sh
 # #{IronWorkerNG.full_version}
 
@@ -207,21 +206,18 @@ cd "$(root "$@")"
 
 #{runtime_run_code(local)}
 RUNNER
-          end
         end
 
         runtime_bundle(container)
       end
 
       def create_container(local = false)
-        unless @inside_builder
-          if @exec.nil?
-            IronCore::Logger.error 'IronWorkerNG', 'No exec specified', IronCore::Error
-          end
+        if @exec.nil?
+          IronCore::Logger.error 'IronWorkerNG', 'No exec specified', IronCore::Error
+        end
 
-          if @name.nil?
-            @name = guess_name_for_path(@exec.path)
-          end
+        if @name.nil?
+          @name = guess_name_for_path(@exec.path)
         end
 
         fixate
@@ -233,13 +229,13 @@ RUNNER
         if local
           bundle(container)
         else
-          if @remote_build_command
+          if @remote_build_command || @full_remote_build
             @dest_dir = '__build__/'
           end
 
           bundle(container)
 
-          if @remote_build_command
+          if @remote_build_command || @full_remote_build
             IronCore::Logger.info 'IronWorkerNG', 'Creating builder'
               
             builder = IronWorkerNG::Code::Builder.new
@@ -249,9 +245,13 @@ RUNNER
             builder.fixate
 
             builder.bundle(container)
+
+            container.get_output_stream(@name + '.worker') do |wf|
+              wf.write(workerfile)
+            end
           end
           
-          if @remote_build_command
+          if @remote_build_command || @full_remote_build
             @dest_dir = ''
           end
         end
@@ -280,20 +280,19 @@ RUNNER
       def install
       end
 
-      def workerfile(remote = false)
+      def workerfile
         commands = []
 
         commands << "runtime '#{runtime}'"
         commands << "name '#{name}'"
-        commands << "build '#{remote_build_command}'"
 
-        commands << @features.map { |f| f.command(remote) }
+        commands += @features.map { |f| f.command }
 
         commands.compact.join("\n")
       end
 
       def to_s
-        "runtime='#{@runtime}', name='#{@name}', exec='#{@inside_builder || @exec.nil? ? '' : @exec.path}'"
+        "runtime='#{@runtime}', name='#{@name}', exec='#{@exec.path}'"
       end
     end
   end

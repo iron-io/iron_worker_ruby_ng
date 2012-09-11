@@ -30,15 +30,17 @@ module IronWorkerNG
           def bundle(container)
             IronCore::Logger.debug 'IronWorkerNG', "Bundling exec with path='#{@path}' and args='#{@args.inspect}'"
 
-            container_add(container, File.basename(@path), rebase(@path))
+            if (not @code.full_remote_build) || (not IronWorkerNG::Fetcher.remote?(rebase(@path)))
+              container_add(container, File.basename(@path), rebase(@path))
+            end
           end
 
-          def command(remote = false)
-            if remote
-              if IronWorkerNG::Fetcher.remote?(rebase(@path))
+          def command
+            if @code.remote_build_command || @code.full_remote_build
+              if @code.full_remote_build && IronWorkerNG::Fetcher.remote?(rebase(@path))
                 "exec '#{rebase(@path)}', #{@args.inspect}"
               else
-                "exec '#{File.basename(@path)}', #{@args.inspect}"
+                "exec '#{@code.dest_dir}#{File.basename(@path)}', #{@args.inspect}"
               end
             else
               "exec '#{@path}', #{@args.inspect}"

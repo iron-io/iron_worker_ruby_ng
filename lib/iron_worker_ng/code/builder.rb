@@ -18,11 +18,13 @@ module IronWorkerNG
 
         super(container)
 
-        container.get_output_stream(@dest_dir + '__builder__.sh') do |builder|
-          builder.write <<BUILDER_SH
+        if remote_build_command
+          container.get_output_stream(@dest_dir + '__builder__.sh') do |builder|
+            builder.write <<BUILDER_SH
 # #{IronWorkerNG.full_version}
 #{remote_build_command}
 BUILDER_SH
+          end
         end
 
         container.get_output_stream(@dest_dir + '__builder__.rb') do |builder|
@@ -33,15 +35,19 @@ require 'json'
 
 require 'iron_worker_ng'
 
-exit 1 unless system('cd __build__ && sh ../__builder__.sh && cd ..')
+code = IronWorkerNG::Code::Base.new(params[:code_name])
 
-::Dir.chdir('__build__')
+if File.exists?('__builder__.sh')
+  pre_build_list = Dir.glob('__build__/**/**')
 
-code = IronWorkerNG::Code::Base.new
-code.inside_builder = true
+  exit 1 unless system('cd __build__ && sh ../__builder__.sh && cd ..')
 
-code.name params[:code_name]
-code.dir '.'
+  post_build_list = Dir.glob('__build__/**/**')
+
+  (post_build_list.sort - pre_build_list.sort).each do |new_file|
+    code.file(new_file, File.dirname(new_file[10 .. -1]))
+  end
+end
 
 client = IronWorkerNG::Client.new(JSON.parse(params[:client_options]))
 

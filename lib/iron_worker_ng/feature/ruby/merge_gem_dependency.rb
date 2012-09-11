@@ -19,7 +19,7 @@ module IronWorkerNG
             Digest::MD5.hexdigest(@name + @version)
           end
 
-          def command(remote = false)
+          def command
             "gem '#{@name}', '#{@version}'"
           end
         end
