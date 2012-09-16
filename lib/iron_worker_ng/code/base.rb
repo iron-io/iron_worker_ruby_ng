@@ -104,7 +104,7 @@ module IronWorkerNG
       end
 
       def guess_name_for_path(path)
-        File.basename(path).gsub(/#{File.extname(path)}$/, '').capitalize.gsub(/_./) { |x| x[1].upcase }
+        File.basename(path).gsub(/#{File.extname(path)}$/, '')
       end
 
       def name(name = nil)
