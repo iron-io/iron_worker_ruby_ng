@@ -10,6 +10,8 @@ module IronWorkerNG
         def runtime_run_code(local = false)
           classpath_array = []
 
+          classpath_array << @exec.path
+
           @features.each do |f|
             if f.respond_to?(:code_for_classpath)
               classpath_array << f.send(:code_for_classpath)
