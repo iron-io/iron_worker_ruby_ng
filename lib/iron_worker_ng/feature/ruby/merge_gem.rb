@@ -56,16 +56,6 @@ module IronWorkerNG
               end
             end
           end
-
-          def code_for_init
-            if not @code.full_remote_build
-              if @spec.extensions.length == 0 || IronWorkerNG::Feature::Ruby::MergeGem.merge_binary?
-                "gem '#{@spec.name}', '#{@spec.version}'"
-              end
-            end
-
-            nil
-          end
         end
       end
     end

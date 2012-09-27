@@ -14,16 +14,6 @@ module IronWorkerNG
         include IronWorkerNG::Feature::Ruby::MergeGemfile::InstanceMethods
 
         def runtime_bundle(container)
-          init_code = []
-
-          @features.each do |f|
-            if f.respond_to?(:code_for_init)
-              init_code << f.send(:code_for_init)
-            end
-          end
-
-          init_code.compact!
-
           container.get_output_stream(@dest_dir + '__runner__.rb') do |runner|
             runner.write <<RUBY_RUNNER
 # #{IronWorkerNG.full_version}
@@ -51,8 +41,6 @@ end
 ENV['GEM_PATH'] = ([root + '__gems__'] + (ENV['GEM_PATH'] || '').split(':')).join(':')
 
 $:.unshift("\#{root}")
-
-#{init_code.join("\n")}
 
 require 'json'
 
