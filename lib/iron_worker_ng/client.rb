@@ -32,6 +32,10 @@ module IronWorkerNG
       end
     end
 
+    def options
+      @api.options
+    end
+
     def token
       @api.token
     end
