@@ -40,21 +40,31 @@ module IronWorkerNG
               if @spec.extensions.length == 0 || IronWorkerNG::Feature::Ruby::MergeGem.merge_binary?
                 IronCore::Logger.debug 'IronWorkerNG', "Bundling ruby gem with name='#{@spec.name}' and version='#{@spec.version}'"
 
-                if File.exists? @spec.full_gem_path
+                if File.exists?(@spec.full_gem_path)
                   container_add(container, '__gems__/gems/' + @spec.full_name, gem_path)
-                else # local gem
-                  from_dir = File.dirname @spec.loaded_from
+                else
+                  from_dir = File.dirname(@spec.loaded_from)
+
                   @spec.files.each do |fname|
-                    to = '__gems__/gems/' + @spec.full_name + '/' + fname
-                    from = from_dir + '/' + fname
-                    container_add(container, to, from) if File.file? from
+                    container_add(container, '__gems__/gems/' + @spec.full_name + '/' + fname, from_dir + '/' + fname) if File.file?(from_dir + '/' + fname)
                   end
                 end
+
                 container_add(container, "__gems__/specifications/#{@spec.full_name}.gemspec", @spec.loaded_from)
               else
                 IronCore::Logger.warn 'IronWorkerNG', "Skipping ruby gem with name='#{@spec.name}' and version='#{@spec.version}' as it contains native extensions"
               end
             end
+          end
+
+          def code_for_init
+            if not @code.full_remote_build
+              if @spec.extensions.length == 0 || IronWorkerNG::Feature::Ruby::MergeGem.merge_binary?
+                "gem '#{@spec.name}', '#{@spec.version}'"
+              end
+            end
+
+            nil
           end
         end
       end
