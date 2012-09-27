@@ -5,7 +5,7 @@ class RubyRunnerTest < IWNGTest
   def test_script
     code = code_bundle :exec => 'test/workers/ruby_runner_test_script.rb'
     client.codes_create(code)
-    task_id = client.tasks_create('RubyRunnerTestScript',
+    task_id = client.tasks_create('ruby_runner_test_script',
                                   :a => 1, :b => 2).id
     client.tasks_wait_for(task_id)
     resp = JSON.parse client.tasks_log(task_id)
@@ -29,7 +29,7 @@ class RubyRunnerTest < IWNGTest
       exec 'test/workers/ruby_runner_test_class.rb', 'RubyWorker'
     end
     client.codes_create(code)
-    task_id = client.tasks_create('RubyRunnerTestClass',
+    task_id = client.tasks_create('ruby_runner_test_class',
                                   :a => 1, :b => 2).id
     client.tasks_wait_for(task_id)
 

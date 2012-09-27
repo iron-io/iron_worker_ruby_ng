@@ -5,7 +5,7 @@ class RetryTest < IWNGTest
   def test_retry
     code = IronWorkerNG::Code::Base.new do
       name 'hello'
-      exec 'hello.rb'
+      exec 'test/hello.rb'
     end
     client.codes.create(code)
 
@@ -29,7 +29,7 @@ class RetryTest < IWNGTest
     retries_delay = 5
 
     client.codes.create(code_bundle(:name => name,
-                                    :exec => 'workers/fail_worker.rb'),
+                                    :exec => 'test/workers/fail_worker.rb'),
                         :retries => retries,
                         :retries_delay => retries_delay)
 
