@@ -17,10 +17,10 @@ module IronWorkerNG
         runtime(:ruby)
       end
 
-      def bundle(container)
+      def bundle(container, local = false)
         @exec = IronWorkerNG::Feature::Common::MergeExec::Feature.new(self, '__builder__.rb', {})
 
-        super(container)
+        super(container, local)
 
         if builder_remote_build_command
           container.get_output_stream(@dest_dir + '__builder__.sh') do |builder|

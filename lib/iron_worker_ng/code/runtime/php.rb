@@ -4,7 +4,7 @@ module IronWorkerNG
       module PHP
         include IronWorkerNG::Feature::Common::MergeExec::InstanceMethods
 
-        def runtime_bundle(container)
+        def runtime_bundle(container, local = false)
           container.get_output_stream(@dest_dir + '__runner__.php') do |runner|
             runner.write <<PHP_RUNNER
 <?php

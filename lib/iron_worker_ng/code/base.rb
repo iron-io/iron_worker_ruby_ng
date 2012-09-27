@@ -174,7 +174,7 @@ module IronWorkerNG
         Digest::MD5.hexdigest(@features.map { |f| f.hash_string }.join)
       end
 
-      def runtime_bundle(container)
+      def runtime_bundle(container, local = false)
       end
 
       def runtime_run_code(local = false)
@@ -186,7 +186,7 @@ module IronWorkerNG
           feature.bundle(container)
         end
 
-        if (not remote_build_command) && (not full_remote_build)
+        if local || ((not remote_build_command) && (not full_remote_build))
           container.get_output_stream(@dest_dir + '__runner__.sh') do |runner|
             runner.write <<RUNNER
 #!/bin/sh
@@ -209,7 +209,7 @@ cd "$(root "$@")"
 RUNNER
           end
 
-          runtime_bundle(container)
+          runtime_bundle(container, local)
         end
       end
 
@@ -229,13 +229,13 @@ RUNNER
         IronCore::Logger.debug 'IronWorkerNG', "Creating #{local ? 'local ' : ''}code container '#{container.name}'"
 
         if local
-          bundle(container)
+          bundle(container, local)
         else
           if @remote_build_command || @full_remote_build
             @dest_dir = '__build__/'
           end
 
-          bundle(container)
+          bundle(container, local)
 
           if @remote_build_command || @full_remote_build
             IronCore::Logger.info 'IronWorkerNG', 'Creating builder'
@@ -246,7 +246,7 @@ RUNNER
             builder.gem('iron_worker_ng')
             builder.fixate
 
-            builder.bundle(container)
+            builder.bundle(container, local)
 
             container.get_output_stream(@name + '.worker') do |wf|
               wf.write(workerfile)

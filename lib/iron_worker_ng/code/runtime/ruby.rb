@@ -13,7 +13,7 @@ module IronWorkerNG
         include IronWorkerNG::Feature::Ruby::MergeGemDependency::InstanceMethods
         include IronWorkerNG::Feature::Ruby::MergeGemfile::InstanceMethods
 
-        def runtime_bundle(container)
+        def runtime_bundle(container, local = false)
           container.get_output_stream(@dest_dir + '__runner__.rb') do |runner|
             runner.write <<RUBY_RUNNER
 # #{IronWorkerNG.full_version}
