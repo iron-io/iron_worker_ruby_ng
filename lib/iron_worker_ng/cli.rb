@@ -11,7 +11,9 @@ module IronWorkerNG
     end
 
     def beta?
-      ENV['IRON_BETA'] == '1'
+      beta = ENV['IRON_BETA']
+
+      beta == '1' || beta == 1 || beta == 'true' || beta == true || beta == 'beta'
     end
 
     def env=(env)
