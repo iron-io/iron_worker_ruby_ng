@@ -51,7 +51,7 @@ if File.exists?('__builder__.sh')
   post_build_list = Dir.glob('__build__/**/**')
 
   (post_build_list.sort - pre_build_list.sort).each do |new_file|
-    code.file(new_file, File.dirname(new_file[10 .. -1]))
+    code.file(new_file, File.dirname(new_file[10 .. -1])) if File.file?(new_file)
   end
 end
 
