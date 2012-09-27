@@ -3,6 +3,8 @@ require_relative '../feature/ruby/merge_gem'
 module IronWorkerNG
   module Code
     class Builder < IronWorkerNG::Code::Base
+      attr_accessor :builder_remote_build_command
+
       def initialize(*args, &block)
         @features = []
         @fixators = []
@@ -20,11 +22,11 @@ module IronWorkerNG
 
         super(container)
 
-        if remote_build_command
+        if builder_remote_build_command
           container.get_output_stream(@dest_dir + '__builder__.sh') do |builder|
             builder.write <<BUILDER_SH
 # #{IronWorkerNG.full_version}
-#{remote_build_command}
+#{builder_remote_build_command}
 BUILDER_SH
           end
         end

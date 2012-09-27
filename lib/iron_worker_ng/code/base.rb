@@ -241,7 +241,7 @@ RUNNER
             IronCore::Logger.info 'IronWorkerNG', 'Creating builder'
               
             builder = IronWorkerNG::Code::Builder.new
-            builder.remote_build_command = @remote_build_command
+            builder.builder_remote_build_command = @remote_build_command
 
             builder.gem('iron_worker_ng')
             builder.fixate
