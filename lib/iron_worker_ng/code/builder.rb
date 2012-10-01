@@ -58,6 +58,8 @@ end
 
 code.install(true)
 
+require 'bundler/setup'
+
 client = IronWorkerNG::Client.new(JSON.parse(params[:client_options]))
 
 res = client.codes.create(code, JSON.parse(params[:codes_create_options]))

@@ -239,7 +239,7 @@ RUNNER
 
           if @remote_build_command || @full_remote_build
             IronCore::Logger.info 'IronWorkerNG', 'Creating builder'
-              
+
             builder = IronWorkerNG::Code::Builder.new
             builder.builder_remote_build_command = @remote_build_command
 
@@ -249,10 +249,10 @@ RUNNER
             builder.bundle(container, local)
 
             container.get_output_stream(@name + '.worker') do |wf|
-              wf.write(workerfile)
+              wf.write(build_workerfile)
             end
           end
-          
+
           if @remote_build_command || @full_remote_build
             @dest_dir = ''
           end
@@ -265,7 +265,7 @@ RUNNER
 
       def run(params = {})
         container_name = create_container(true)
-        
+
         payload = File.open("#{container_name}/__payload__", 'wb')
         payload.write(params.is_a?(String) ? params : params.to_json)
         payload.close
@@ -282,15 +282,15 @@ RUNNER
       def install(standalone = false)
       end
 
-      def workerfile
+      def build_workerfile
         commands = []
 
         commands << "runtime '#{runtime}'"
         commands << "name '#{name}'"
 
-        commands += @features.map { |f| f.command }
+        commands += @features.map { |f| f.build_command }
 
-        commands.compact.join("\n")
+        commands.compact.uniq.join("\n")
       end
 
       def to_s

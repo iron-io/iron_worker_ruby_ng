@@ -19,9 +19,11 @@ module IronWorkerNG
             Digest::MD5.hexdigest(@name + @version)
           end
 
-          def command
+          def build_command
             if @code.full_remote_build
               "gem '#{@name}', '#{@version}'"
+            elsif @code.remote_build_command
+              "dir '__build__/__gems__'"
             else
               nil
             end

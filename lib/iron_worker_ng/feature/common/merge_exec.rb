@@ -35,7 +35,7 @@ module IronWorkerNG
             end
           end
 
-          def command
+          def build_command
             if @code.remote_build_command || @code.full_remote_build
               if @code.full_remote_build && IronWorkerNG::Fetcher.remote?(rebase(@path))
                 "exec '#{rebase(@path)}', #{@args.inspect}"
@@ -43,7 +43,7 @@ module IronWorkerNG
                 "exec '#{@code.dest_dir}#{File.basename(@path)}', #{@args.inspect}"
               end
             else
-              "exec '#{@path}', #{@args.inspect}"
+              nil
             end
           end
         end

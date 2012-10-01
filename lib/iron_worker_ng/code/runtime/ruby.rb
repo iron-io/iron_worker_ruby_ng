@@ -122,6 +122,7 @@ RUN_CODE
             puts `bundle install --standalone`
           else
             puts `cd #{gemfile_dir} && bundle install`
+
             FileUtils.rm_r(gemfile_dir)
           end
         end

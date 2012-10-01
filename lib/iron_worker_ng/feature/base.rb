@@ -36,7 +36,7 @@ module IronWorkerNG
       def bundle(container)
       end
 
-      def command
+      def build_command
         nil
       end
     end

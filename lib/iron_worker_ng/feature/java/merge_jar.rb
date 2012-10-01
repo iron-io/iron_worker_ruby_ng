@@ -23,7 +23,7 @@ module IronWorkerNG
             end
           end
 
-          def command
+          def build_command
             if @code.remote_build_command || @code.full_remote_build
               if @code.full_remote_build && IronWorkerNG::Fetcher.remote?(rebase(@path))
                 "jar '#{rebase(@path)}'"
@@ -31,7 +31,7 @@ module IronWorkerNG
                 "jar '#{@code.dest_dir}#{File.basename(@path)}'"
               end
             else
-              "jar '#{@path}'"
+              nil
             end
           end
 
