@@ -118,9 +118,10 @@ RUN_CODE
 
           gemfile.close
 
-          puts `cd #{gemfile_dir} && bundle install#{standalone ? ' --standalone' : ''}`
-
-          unless gemfile_dir.nil?
+          if standalone
+            puts `bundle install --standalone`
+          else
+            puts `cd #{gemfile_dir} && bundle install`
             FileUtils.rm_r(gemfile_dir)
           end
         end
