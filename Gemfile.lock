@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    iron_worker_ng (0.11.0)
+    iron_worker_ng (0.11.1)
       bundler (>= 1.0.0)
       iron_core (>= 0.4.2)
       zip
