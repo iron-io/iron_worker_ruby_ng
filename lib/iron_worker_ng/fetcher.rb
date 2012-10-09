@@ -9,8 +9,22 @@ module IronWorkerNG
       url.start_with?('http://') || url.start_with?('https://')
     end
 
+    def self.fix_github_url(url)
+      if url.start_with?('http://github.com/') || url.start_with?('https://github.com/')
+        fixed_url = url.sub('//github.com/', '//raw.github.com/').sub('/blob/', '/')
+
+        IronCore::Logger.info 'IronWorkerNG', "Fixed github link with url='#{url}' to url='#{fixed_url}'"
+
+        return fixed_url
+      end
+
+      url
+    end
+
     def self.fetch(url, &block)
       if IronWorkerNG::Fetcher.remote?(url)
+        url = IronWorkerNG::Fetcher.fix_github_url(url)
+
         uri = URI.parse(url)
 
         http = Net::HTTP.new(uri.host, uri.port)
@@ -44,7 +58,7 @@ module IronWorkerNG
       if IronWorkerNG::Fetcher.remote?(url)
         IronWorkerNG::Fetcher.fetch(url) do |data|
           unless data.nil?
-            tmp_dir_name = ::Dir.tmpdir + '/' + ::Dir::Tmpname.make_tmpname("iron-worker-ng-", "http")
+            tmp_dir_name = ::Dir.tmpdir + '/' + ::Dir::Tmpname.make_tmpname('iron-worker-ng-', 'http')
 
             ::Dir.mkdir(tmp_dir_name)
 
