@@ -1,4 +1,4 @@
-require 'helpers'
+require_relative 'helpers'
 require 'thread'
 
 class BatchTest < IWNGTest

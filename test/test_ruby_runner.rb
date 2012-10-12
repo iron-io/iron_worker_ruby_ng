@@ -1,4 +1,4 @@
-require 'helpers.rb'
+require_relative 'helpers.rb'
 
 class RubyRunnerTest < IWNGTest
 

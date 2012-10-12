@@ -1,4 +1,4 @@
-require 'helpers'
+require_relative 'helpers'
 
 class BasicTest < IWNGTest
   def test_basic

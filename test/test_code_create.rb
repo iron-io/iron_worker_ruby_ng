@@ -1,4 +1,4 @@
-require 'helpers'
+require_relative 'helpers'
 
 class CodeCreateTest < IWNGTest
 
