@@ -36,6 +36,22 @@ Rake::TestTask.new do |t|
     end
   end
 
+  if ENV['NEW_PROJECT']
+    require_relative '../lib/iron_worker_ng.rb'
+
+    client = IronWorkerNG::Client.new
+    name = 'IWtest ' + Time.now.strftime('%b %-d %T')
+    resp = client.api.post('projects', name: name)
+    res = JSON.parse(resp.body)
+    raise "Failed to create new project: #{res}" unless
+      res['msg'].start_with? 'Project Created'
+
+    ENV['IRON_PROJECT_ID'] = res['id']
+  end
+  if ENV['IRON_PROJECT_ID']
+    t.options = "-- --project-id=#{ENV['IRON_PROJECT_ID']}"
+  end
+
   t.libs << "lib" << "test" << examples_tests_dir
   files = FileList['test/**/test_**.rb',
                    examples_tests_dir + '/**/test_*.rb']

@@ -3,6 +3,7 @@ require 'test/unit/ui/console/testrunner'
 require 'minitest/unit'
 require 'minitest/reporters'
 require 'tempfile'
+require 'optparse'
 
 require_relative '../lib/iron_worker_ng.rb'
 require_relative 'iron_io_config.rb'
@@ -40,7 +41,14 @@ class IWNGTest < Test::Unit::TestCase
   attr_accessor :client
 
   def setup
-    @client = IronWorkerNG::Client.new(:env => 'test')
+    options = { env: 'test' }
+    OptionParser.new do |opts|
+      opts.on('--project-id PROJECT_ID', String) do |p|
+        options[:project_id] = p
+      end
+    end.parse!
+
+    @client = IronWorkerNG::Client.new options
   end
 
   def get_all_tasks(options = { :from_time => (Time.now - 60 * 60).to_i })
