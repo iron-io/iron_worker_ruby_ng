@@ -153,6 +153,10 @@ Command which will be executed once (on worker upload). Can be used for heavy ta
 code.remote_build_command('curl http://www.kernel.org/pub/linux/kernel/v3.0/linux-3.4.6.tar.bz2 -o linux-3.4.6.tar.bz2 && tar xf linux-3.4.6.tar.bz2')
 ```
 
+### full_remote_build(activate)
+
+If set to true, activates full remote build mode. In this mode iron_worker will try to resolve as much things as possible at build step. For example, all gems will be installed at build step, which will allow you to use gems with native extensions.
+
 ### run()
 
 Runs code package on your local box. Can be useful for testing.
@@ -205,7 +209,7 @@ code.merge_exec 'my_worker.rb'
 ### merge_gem(name, version = '>= 0')
 ### gem(name, version = '>= 0')
 
-Merge a gem with dependencies. Please note that gems which contains binary extensions will not be merged for now, as binary extensions are not supported at this time; we have [a set](http://dev.iron.io/worker/reference/environment/?lang=ruby#ruby_gems_installed) of the most common gems with binary extensions preinstalled for your use. You can use version constrains if you need a specific gem version. Please note that `git` and `path` gems aren't supported yet.
+Merge a gem with dependencies. Gems with native extensions will not be merged by default, switching to full remote build should fix this. You can use version constrains if you need a specific gem version. Please note that `git` and `path` gems aren't supported yet.
 
 ```ruby
 code.merge_gem 'activerecord'
