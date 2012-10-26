@@ -39,6 +39,7 @@ task_id = nil
 end
 
 ENV['GEM_PATH'] = ([root + '__gems__'] + (ENV['GEM_PATH'] || '').split(':')).join(':')
+ENV['GEM_HOME'] = root + '__gems__'
 
 $:.unshift("\#{root}")
 
