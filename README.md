@@ -165,14 +165,6 @@ Runs code package on your local box. Can be useful for testing.
 code.run
 ```
 
-### hash_string()
-
-Return the hash string for the code package. If you want to prevent uploading unchanged code packages, you can use it to check if any changes were made. It's very efficient, so it shouldn't cause any performance impact.
-
-```
-puts code.hash_string
-```
-
 ### merge_file(path, dest = '')
 ### file(path, dest = '')
 

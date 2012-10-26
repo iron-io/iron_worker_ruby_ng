@@ -13,10 +13,6 @@ module IronWorkerNG
             @dest = dest + (dest.empty? || dest.end_with?('/') ? '' : '/')
           end
 
-          def hash_string
-            Digest::MD5.hexdigest(@path + @dest + File.mtime(rebase(@path)).to_i.to_s)
-          end
-
           def bundle(container)
             IronCore::Logger.debug 'IronWorkerNG', "Bundling file with path='#{@path}' and dest='#{@dest}'"
 

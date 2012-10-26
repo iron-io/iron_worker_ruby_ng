@@ -15,10 +15,6 @@ module IronWorkerNG
             @version = version
           end
 
-          def hash_string
-            Digest::MD5.hexdigest(@name + @version)
-          end
-
           def build_command
             if @code.full_remote_build
               "gem '#{@name}', '#{@version}'"

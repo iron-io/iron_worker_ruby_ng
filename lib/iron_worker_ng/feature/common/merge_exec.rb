@@ -23,10 +23,6 @@ module IronWorkerNG
             nil
           end
 
-          def hash_string
-            Digest::MD5.hexdigest(@path + File.mtime(rebase(@path)).to_i.to_s + args.to_s)
-          end
-
           def bundle(container)
             IronCore::Logger.debug 'IronWorkerNG', "Bundling exec with path='#{@path}' and args='#{@args.inspect}'"
 

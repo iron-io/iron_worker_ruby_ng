@@ -176,12 +176,6 @@ module IronWorkerNG
         end
       end
 
-      def hash_string
-        fixate
-
-        Digest::MD5.hexdigest(@features.map { |f| f.hash_string }.join)
-      end
-
       def runtime_bundle(container, local = false)
       end
 

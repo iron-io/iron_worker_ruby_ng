@@ -13,16 +13,6 @@ module IronWorkerNG
             @dest = dest + (dest.empty? || dest.end_with?('/') ? '' : '/')
           end
 
-          def hash_string
-            s = @path + @dest + File.mtime(rebase(@path)).to_i.to_s
-
-            ::Dir.glob(rebase(@path) + '/**/**') do |path|
-              s += path + File.mtime(path).to_i.to_s
-            end
-
-            Digest::MD5.hexdigest(s)
-          end
-
           def bundle(container)
             IronCore::Logger.debug 'IronWorkerNG', "Bundling dir with path='#{@path}' and dest='#{@dest}'"
 

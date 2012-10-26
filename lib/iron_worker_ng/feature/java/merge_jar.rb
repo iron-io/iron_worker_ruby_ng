@@ -11,10 +11,6 @@ module IronWorkerNG
             @path = path
           end
 
-          def hash_string
-            Digest::MD5.hexdigest(@path + File.mtime(rebase(@path)).to_i.to_s)
-          end
-
           def bundle(container)
             IronCore::Logger.debug 'IronWorkerNG', "Bundling java jar with path='#{@path}'"
 

@@ -31,10 +31,6 @@ module IronWorkerNG
             path
           end
 
-          def hash_string
-            Digest::MD5.hexdigest(@spec.full_name)
-          end
-
           def bundle(container)
             if not @code.full_remote_build
               if @spec.extensions.length == 0 || IronWorkerNG::Feature::Ruby::MergeGem.merge_binary?

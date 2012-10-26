@@ -29,10 +29,6 @@ module IronWorkerNG
         end
       end
 
-      def hash_string
-        ''
-      end
-
       def bundle(container)
       end
 

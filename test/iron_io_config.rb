@@ -17,10 +17,6 @@ module IronWorkerNG
         @dest = Pathname.new(dest).cleanpath.to_s + '/' unless @dest.empty?
       end
 
-      def hash_string
-        Digest::MD5.hexdigest(@path + @dest + File.mtime(@path).to_i.to_s)
-      end
-
       def bundle(zip)
         IronCore::Logger.debug 'IronWorkerNG', 'Bundling iron.io config'
         zip.add(@dest + File.basename(@path), @path)

@@ -14,10 +14,6 @@ module IronWorkerNG
             @path = path
             @groups = groups
           end
-
-          def hash_string
-            Digest::MD5.hexdigest(@path + File.mtime(rebase(@path)).to_i.to_s + (File.exists?(rebase(@path) + '.lock') ? File.mtime(rebase(@path) + '.lock').to_i.to_s : '') + @groups.join)
-          end
         end
 
         module InstanceMethods
