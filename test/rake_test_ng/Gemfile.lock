@@ -21,5 +21,4 @@ PLATFORMS
 
 DEPENDENCIES
   aws-s3
-  bundler
   hipchat
