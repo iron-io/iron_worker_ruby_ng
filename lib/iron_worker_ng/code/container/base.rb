@@ -17,11 +17,14 @@ module IronWorkerNG
           dest
         end
 
-        def add(dest, src, commit = false)
+        def add(dest, src)
         end
 
         def get_output_stream(dest, &block)
         end
+
+	def commit
+	end
 
         def close
         end
