@@ -213,6 +213,12 @@ root() {
 
 cd "$(root "$@")"
 
+LD_LIBRARY_PATH=.
+export LD_LIBRARY_PATH
+
+PATH=.:$PATH
+export PATH
+
 #{runtime_run_code(local)}
 RUNNER
           end
@@ -223,7 +229,7 @@ RUNNER
 
       def create_container(local = false)
         if @exec.nil?
-          IronCore::Logger.error 'IronWorkerNG', 'No exec specified', IronCore::Error
+          IronCore::Logger.error 'IronWorkerNG', 'No exec specified, check if worker file name is correct and/or exec command is present', IronCore::Error
         end
 
         if @name.nil?
@@ -302,7 +308,7 @@ RUNNER
       end
 
       def to_s
-        "runtime='#{@runtime}', name='#{@name}', exec='#{@exec.path}'"
+        "runtime='#{@runtime}', name='#{@name}', exec='#{@exec.nil? ? '' : @exec.path}'"
       end
     end
   end

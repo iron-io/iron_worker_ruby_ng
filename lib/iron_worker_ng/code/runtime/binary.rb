@@ -8,7 +8,7 @@ module IronWorkerNG
           <<RUN_CODE
 chmod +x #{File.basename(@exec.path)}
 
-LD_LIBRARY_PATH=. ./#{File.basename(@exec.path)} "$@"
+#{File.basename(@exec.path)} "$@"
 RUN_CODE
         end
       end
