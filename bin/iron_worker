@@ -73,14 +73,12 @@ if command == 'upload'
       options[:retries_delay] = v
     end
 
-    opts.on('-a', '--async', 'don\'t wait for package build if remote build command specified') do |v|
+    opts.on('-a', '--async', 'don\'t wait for package build') do |v|
       params[:async] = true
     end
 
-    if @cli.beta?
-      opts.on('--full-remote-build', 'full remote build') do |v|
-        params[:full_remote_build] = true
-      end
+    opts.on('--full-remote-build', 'activate full remote build') do |v|
+      params[:full_remote_build] = true
     end
 
     common_opts(opts)

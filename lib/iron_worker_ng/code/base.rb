@@ -17,8 +17,6 @@ module IronWorkerNG
       attr_accessor :base_dir
       attr_accessor :dest_dir
 
-      attr_accessor :full_remote_build
-
       undef exec
       undef gem
 
@@ -118,7 +116,7 @@ module IronWorkerNG
       end
 
       def remote_build_command(remote_build_command = nil)
-        @remote_build_command = remote_build_command if remote_build_command
+        @remote_build_command = remote_build_command unless remote_build_command.nil?
 
         @remote_build_command
       end
@@ -129,6 +127,16 @@ module IronWorkerNG
 
       alias :build :remote_build_command
       alias :build= :remote_build_command=
+
+      def full_remote_build(full_remote_build = nil)
+        @full_remote_build = full_remote_build unless full_remote_build.nil?
+
+        @full_remote_build
+      end
+
+      def full_remote_build=(full_remote_build)
+        @full_remote_build = full_remote_build
+      end
 
       def runtime(runtime = nil)
         return @runtime unless runtime
