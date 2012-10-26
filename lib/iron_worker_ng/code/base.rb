@@ -7,6 +7,7 @@ require_relative '../feature/base'
 require_relative '../feature/common/merge_exec'
 require_relative '../feature/common/merge_file'
 require_relative '../feature/common/merge_dir'
+require_relative '../feature/common/merge_deb'
 
 module IronWorkerNG
   module Code
@@ -22,6 +23,7 @@ module IronWorkerNG
 
       include IronWorkerNG::Feature::Common::MergeFile::InstanceMethods
       include IronWorkerNG::Feature::Common::MergeDir::InstanceMethods
+      include IronWorkerNG::Feature::Common::MergeDeb::InstanceMethods
 
       def initialize(*args, &block)
         @features = []
@@ -207,10 +209,10 @@ root() {
 
 cd "$(root "$@")"
 
-LD_LIBRARY_PATH=.
+LD_LIBRARY_PATH=.:./__debs__/lib:./__debs__/usr/lib
 export LD_LIBRARY_PATH
 
-PATH=.:$PATH
+PATH=.:./__debs__/bin:./__debs__/usr/bin:$PATH
 export PATH
 
 #{runtime_run_code(local)}

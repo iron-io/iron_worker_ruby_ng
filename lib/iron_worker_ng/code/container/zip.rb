@@ -1,5 +1,7 @@
 require 'zip/zip'
 
+Zip.options[:continue_on_exists_proc] = true
+
 module IronWorkerNG
   module Code
     module Container
@@ -11,11 +13,13 @@ module IronWorkerNG
           @zip = ::Zip::ZipFile.open(@name, ::Zip::ZipFile::CREATE)
         end
 
-        def add(dest, src, commit = false)
+        def add(dest, src)
           @zip.add(clear_dest(dest), src)
-
-          @zip.commit if commit
         end
+
+  def commit
+          @zip.commit
+  end
 
         def get_output_stream(dest, &block)
           @zip.get_output_stream(clear_dest(dest), &block)
