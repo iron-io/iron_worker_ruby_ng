@@ -29,9 +29,7 @@ module IronWorkerNG
 
                 `dpkg -x #{deb} #{tmp_dir_name}`
 
-                ::Dir.glob(tmp_dir_name) do |path|
-                  container_add(container, '__debs__', path, true)
-                end
+                container_add(container, '__debs__', tmp_dir_name, true)
 
                 FileUtils.rm_rf(tmp_dir_name)
               end
