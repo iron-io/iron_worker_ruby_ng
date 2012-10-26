@@ -185,6 +185,16 @@ code.merge_dir '../config' # will be in the same directory as worker
 code.merge_dir 'lib', 'utils' # will be in utils subdirectory, accessible as utils/lib
 ```
 
+### merge_deb(path)
+### deb(path)
+
+Merges provided deb package into your worker. Please note that it should be x86-64 deb and we don't do any dependencies resolving. It might not work for some packages which expects to find things it predefined place (e.g. imagemagick looks for codecs in /usr/lib/ImageMagick-X.X.X/codecs). Following example brings power of [pdftk](http://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/) to your worker.
+
+```ruby
+code.merge_deb 'http://mirror.pnl.gov/ubuntu/pool/universe/p/pdftk/pdftk_1.44-3_amd64.deb'
+code.merge_deb 'http://mirror.pnl.gov/ubuntu/pool/main/g/gcj-4.6/libgcj12_4.6.1-4ubuntu2_amd64.deb'
+```
+
 ## IronWorkerNG::Code::Ruby API
 
 Specific methods for ruby runtime.
