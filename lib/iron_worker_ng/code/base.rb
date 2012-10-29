@@ -72,6 +72,10 @@ module IronWorkerNG
             unless content.nil?
               IronCore::Logger.info 'IronWorkerNG', "Found workerfile with path='#{worker_file}'"
 
+              if IronWorkerNG::Fetcher.remote?(worker_file)
+                @full_remote_build = true
+              end
+
               eval(content)
 
               @base_dir = File.dirname(worker_file) == '.' ? '' : File.dirname(worker_file) + '/'
