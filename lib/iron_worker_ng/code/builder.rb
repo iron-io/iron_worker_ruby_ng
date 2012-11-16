@@ -40,6 +40,10 @@ require 'json'
 
 require 'iron_worker_ng'
 
+File.open('.gemrc', 'w') do |gemrc|
+  gemrc.puts('gem: --no-ri --no-rdoc')
+end
+
 IronWorkerNG::Feature::Ruby::MergeGem.merge_binary = true
 
 code = IronWorkerNG::Code::Base.new(params[:code_name])
