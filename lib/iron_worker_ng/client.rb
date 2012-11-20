@@ -96,7 +96,7 @@ module IronWorkerNG
 
         @api.codes_create(builder_code_name, container_file, 'sh', '__runner__.sh', options)
 
-        builder_task = tasks.create(builder_code_name, :code_name => code.name, :client_options => @api.options.to_json, :codes_create_options => options.to_json, :iwng_version => IronWorkerNG::VERSION)
+        builder_task = tasks.create(builder_code_name, :code_name => code.name, :client_options => @api.options.to_json, :codes_create_options => options.to_json)
 
         builder_task = tasks.wait_for(builder_task.id)
 

@@ -42,7 +42,7 @@ File.open('.gemrc', 'w') do |gemrc|
   gemrc.puts('gem: --no-ri --no-rdoc')
 end
 
-puts `gem install iron_worker_ng -v #\{params[:iwng_version]}`
+puts `gem install iron_worker_ng -v #{IronWorkerNG::VERSION}`
 
 require 'iron_worker_ng'
 
