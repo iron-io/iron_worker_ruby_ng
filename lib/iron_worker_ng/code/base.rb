@@ -257,9 +257,6 @@ RUNNER
             builder = IronWorkerNG::Code::Builder.new
             builder.builder_remote_build_command = @remote_build_command
 
-            builder.gem('iron_worker_ng')
-            builder.fixate
-
             builder.bundle(container, local)
 
             container.get_output_stream(@name + '.worker') do |wf|

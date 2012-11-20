@@ -38,11 +38,13 @@ BUILDER_SH
 
 require 'json'
 
-require 'iron_worker_ng'
-
 File.open('.gemrc', 'w') do |gemrc|
   gemrc.puts('gem: --no-ri --no-rdoc')
 end
+
+puts `gem install iron_worker_ng -v #\{params[:iwng_version]}`
+
+require 'iron_worker_ng'
 
 IronWorkerNG::Feature::Ruby::MergeGem.merge_binary = true
 
