@@ -15,6 +15,8 @@ module IronWorkerNG
         @remote_build_command = nil
         @full_remote_build = false
 
+        @use_local_iron_worker_ng = false
+
         runtime(:ruby)
       end
 
@@ -32,6 +34,12 @@ BUILDER_SH
           end
         end
 
+        install_iron_worker_ng = ''
+
+        if not @use_local_iron_worker_ng
+          install_iron_worker_ng = "system(\"gem install iron_worker_ng -v #{IronWorkerNG::VERSION}\")"
+        end
+
         container.get_output_stream(@dest_dir + '__builder__.rb') do |builder|
           builder.write <<BUILDER_RUBY
 # #{IronWorkerNG.full_version}
@@ -42,7 +50,7 @@ File.open('.gemrc', 'w') do |gemrc|
   gemrc.puts('gem: --no-ri --no-rdoc')
 end
 
-puts `gem install iron_worker_ng -v #{IronWorkerNG::VERSION}`
+#{install_iron_worker_ng}
 
 require 'iron_worker_ng'
 
