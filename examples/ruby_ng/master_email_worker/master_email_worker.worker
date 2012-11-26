@@ -1,0 +1,4 @@
+runtime "ruby"
+exec "master_email_worker.rb"
+gem "iron_mq"
+gem "iron_worker_ng"

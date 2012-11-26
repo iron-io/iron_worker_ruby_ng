@@ -1,0 +1,6 @@
+twilio:
+  account_sid: TWILIO_ACCOUNT_SID
+  auth_token: TWILIO_AUTH_TOKEN
+
+app:
+  from: TWILIO_PHONE_NUMBER (eg. +14151112222)

@@ -1,0 +1,5 @@
+runtime "ruby"
+exec "email_worker.rb"
+gem "mail"
+gem "rest"
+gem "iron_cache"
