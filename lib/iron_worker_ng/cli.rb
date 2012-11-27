@@ -190,7 +190,7 @@ module IronWorkerNG
       log_group 'Generating code package webhook'
 
       log 'You can invoke your worker by POSTing to the following URL'
-      log "#{client.api.url(client.api.project_id)}/tasks/webhook?code_name=#{name}&oauth=#{client.api.token}"
+      log client.api.url("projects/#{client.api.project_id}/tasks/webhook?code_name=#{name}&oauth=#{client.api.token}")
     end
 
     def info_code(name, params, options)
