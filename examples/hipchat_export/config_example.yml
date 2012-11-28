@@ -1,0 +1,13 @@
+hipchat_token: "TOKEN"
+# An array of rooms to skip:
+exclude_rooms: ["AlwaysBeTesting", "Test Room", "Performance"]
+
+# Use either google username and password:
+google_password: "YOURPASSWORD"
+google_username: "YOURUSERNAME"
+
+# OR use oauth2. See get_oauth2_token.rb
+#google_client_id: "CLIENT_ID"
+#google_secret: "SECRET"
+# You'll get the refresh token after running get_oauth2_token.rb script
+#google_refresh_token: "TOKEN"

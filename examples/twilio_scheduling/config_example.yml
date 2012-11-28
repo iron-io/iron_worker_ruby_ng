@@ -1,0 +1,8 @@
+
+twilio:
+  sid: TWILIO_SID
+  token: TWILIO_TOKEN
+  from: TWILIO_PHONE_NUMBER
+
+# for testing:
+to: NUMBER TO SEND TO
