@@ -1,0 +1,9 @@
+runtime 'ruby'
+
+# dependencies
+gem 'twilio-ruby'
+gem 'uber_config'
+gem 'iron_worker_ng'
+
+# executable
+exec 'sms_all_users.rb'

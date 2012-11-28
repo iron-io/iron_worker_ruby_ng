@@ -1,0 +1,10 @@
+runtime "ruby"
+exec "twilio_webhook.rb"
+name "TwilioWebhook"
+
+gem "twilio-ruby"
+gem "iron_cache"
+
+file "iron.json"
+file "../config/config.yml"
+file "../lists/shaunisms.txt"

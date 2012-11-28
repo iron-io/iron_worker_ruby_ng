@@ -1,0 +1,2 @@
+gem 'iron_worker_ng'
+exec 'master_worker.rb'
