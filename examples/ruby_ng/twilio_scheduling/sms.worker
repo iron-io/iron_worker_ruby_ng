@@ -1,8 +1,0 @@
-runtime 'ruby'
-
-# dependencies
-gem 'twilio-ruby'
-gem 'uber_config'
-
-# executable
-exec 'sms.rb'
