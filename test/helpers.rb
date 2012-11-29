@@ -69,6 +69,36 @@ class IWNGTest < Test::Unit::TestCase
     result
   end
 
+  def cli(*args)
+    if args.last.is_a? Hash
+      args.pop.each do |k,v|
+        args << "--" + k.to_s.gsub(/_/,'-') + " " + v.to_s
+      end
+    end
+
+    args << '--debug'
+
+    out = Tempfile.new('cli_output').path
+    args << "2>&1 >#{out}"
+
+    test_dir = File.dirname(__FILE__)
+    cmd = "ruby -I#{test_dir}/../lib #{test_dir}/cli_runner.rb " + args.join(' ')
+    puts cmd
+
+    exec(cmd) if fork.nil?
+    Process.wait
+
+    puts "--- cli output begin -------------------------------------"
+
+    puts File.read(out)
+
+    puts "--- cli output end ---------------------------------------"
+
+    puts $?
+    assert $?.success?
+
+    File.read(out)
+  end
 end
 
 class Test::Unit::UI::Console::TestRunner

@@ -1,0 +1,1 @@
+exec 'slave_worker.rb'

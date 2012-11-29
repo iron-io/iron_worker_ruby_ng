@@ -1,0 +1,7 @@
+sendgrid:
+  address: "smtp.sendgrid.net"
+  port: '25'
+  authentication: :plain
+  domain:
+  user_name:
+  password:

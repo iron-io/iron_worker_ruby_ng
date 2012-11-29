@@ -1,0 +1,4 @@
+campfire:
+    account: "account number"
+    token: "token"
+    room: "room name"
