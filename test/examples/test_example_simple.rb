@@ -3,7 +3,7 @@ require_relative '../helpers'
 class ExampleSimpleTest < IWNGTest
 
   def test_example
-    Dir.chdir 'examples/ruby_ng/simple' do
+    Dir.chdir 'examples/simple' do
       log = `ruby -I../../../lib simple.rb`
 
       assert(log =~ /default name is sample_worker/,

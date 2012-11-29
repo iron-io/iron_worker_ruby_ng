@@ -2,7 +2,7 @@ require_relative '../helpers'
 
 class ExampleMasterSlaveTest < IWNGTest
   def test_basic
-    Dir.chdir 'examples/ruby_ng/master_slave' do
+    Dir.chdir 'examples/master_slave' do
       client.codes_create(code_bundle('master'))
       client.codes_create(code_bundle('slave'))
 

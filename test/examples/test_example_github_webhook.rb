@@ -4,7 +4,7 @@ require 'rest'
 class ExampleGithubWebhookTest < IWNGTest
 
   def test_example
-    Dir.chdir 'examples/ruby_ng/github_to_hipchat_webhook_worker' do
+    Dir.chdir 'examples/github_to_hipchat_webhook_worker' do
       assert(cli('upload', 'github_webhook') =~ /Upload successful/) 
 
       assert(cli('webhook', 'github_webhook') =~ /^\s*(https.*)$/)
