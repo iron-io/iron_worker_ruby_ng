@@ -3,3 +3,4 @@
 .rvmrc
 pkg
 iron.json
+examples/github_to_hipchat_webhook_worker/webhook_config.yml
