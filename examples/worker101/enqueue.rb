@@ -6,7 +6,9 @@ IronCore::Logger.logger.level = ::Logger::DEBUG
 client = IronWorkerNG::Client.new
 
 # Now create/queue a task for the worker
-task = client.tasks.create('RubyWorker101', 'query' => 'bieber')
+task = client.tasks.create('RubyWorker101',
+                           'query' => 'bieber',
+                           'config' => File.read('twitter_config.json'))
 
 puts "Your task has been queued up, check https://hud.iron.io to see your task status and log or wait for it below..."
 
