@@ -4,38 +4,6 @@ require 'rake/testtask'
 Dir.chdir(File.dirname(__FILE__) + '/..')
 
 Rake::TestTask.new do |t|
-  examples_tests_dir = Dir.mktmpdir('iw_examples')
-
-  FileUtils::cp_r(Dir.glob('examples/*'), examples_tests_dir)
-
-  Dir.glob('examples/**/**.rb').each do |path|
-    next unless path =~ %r|examples/(.*)/([^/]+)/\2.rb$|
-
-    dir = $1
-    name = $2
-
-    test_path = examples_tests_dir + "/#{dir}/#{name}/test_example_#{name}.rb"
-
-    File.open(test_path, 'w') do |out|
-      out << "require 'helpers'\n"
-      out << "class #{name.capitalize}Test < Test::Unit::TestCase\n"
-      out << "def test_example\n"
-
-      File.readlines(path).each do |line|
-        line, assert_str = line.chomp.split /#>/
-        out << line << "\n"
-
-        if assert_str
-          cond, desc = assert_str.split /--/
-          out << "assert(" << cond << ", '" <<
-            (desc or "").gsub(/'/, "\\\\'") << "')\n"
-        end
-      end
-
-      out << "end\nend\n"
-    end
-  end
-
   if ENV['NEW_PROJECT']
     require_relative '../lib/iron_worker_ng.rb'
 
@@ -52,9 +20,9 @@ Rake::TestTask.new do |t|
     t.options = "-- --project-id=#{ENV['IRON_PROJECT_ID']}"
   end
 
-  t.libs << "lib" << "test" << examples_tests_dir
-  files = FileList['test/**/test_**.rb',
-                   examples_tests_dir + '/**/test_*.rb']
+  t.libs << "lib"
+
+  files = FileList['test/**/test_**.rb']
   t.test_files = files.keep_if do |f|
     f =~ Regexp.new(ENV['TESTP'] || '') and
       not ( r = ENV['EXCLP'] and

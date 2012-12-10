@@ -1,0 +1,3 @@
+runtime 'ruby'
+exec 'hello_worker.rb'
+name 'RubyHelloWorker'

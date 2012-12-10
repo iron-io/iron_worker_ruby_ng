@@ -1,0 +1,4 @@
+runtime 'ruby'
+exec 'worker101.rb'
+name 'RubyWorker101'
+gem 'twitter'

@@ -1,0 +1,34 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    builder (3.1.3)
+    iron_core (0.4.2)
+      rest (>= 2.0.2)
+    iron_worker_ng (0.10.4)
+      bundler (>= 1.0.0)
+      iron_core (>= 0.4.2)
+      zip
+    jwt (0.1.5)
+      multi_json (>= 1.0)
+    mime-types (1.19)
+    multi_json (1.3.6)
+    net-http-persistent (2.7)
+    rest (2.0.3)
+      net-http-persistent
+      rest-client (>= 0.3.0)
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
+    twilio-ruby (3.8.0)
+      builder (>= 2.1.2)
+      jwt (>= 0.1.2)
+      multi_json (>= 1.3.0)
+    uber_config (1.0.3)
+    zip (2.0.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  iron_worker_ng
+  twilio-ruby
+  uber_config

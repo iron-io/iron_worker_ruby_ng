@@ -91,7 +91,7 @@ RUBY_RUNNER
 
         def runtime_run_code(local = false)
           <<RUN_CODE
-#{local ? 'GEM_PATH="" ' : ''}ruby __runner__.rb "$@"
+ruby __runner__.rb "$@"
 RUN_CODE
         end
 

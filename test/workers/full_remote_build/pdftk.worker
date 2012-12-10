@@ -1,0 +1,6 @@
+runtime 'binary'
+full_remote_build true
+
+exec 'pdftk.sh'
+deb 'http://mirror.pnl.gov/ubuntu/pool/universe/p/pdftk/pdftk_1.44-3_amd64.deb'
+deb 'http://mirror.pnl.gov/ubuntu/pool/main/g/gcj-4.6/libgcj12_4.6.1-4ubuntu2_amd64.deb'

@@ -1,5 +1,5 @@
 module IronWorkerNG
-  VERSION = '0.12.2'
+  VERSION = '0.14.0'
 
   def self.version
     VERSION

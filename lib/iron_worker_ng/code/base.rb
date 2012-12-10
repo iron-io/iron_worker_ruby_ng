@@ -18,6 +18,8 @@ module IronWorkerNG
       attr_accessor :base_dir
       attr_accessor :dest_dir
 
+      attr_accessor :use_local_iron_worker_ng
+
       undef exec
       undef gem
 
@@ -38,6 +40,8 @@ module IronWorkerNG
 
         @name = nil
         @exec = nil
+
+        @use_local_iron_worker_ng = false
 
         worker_files = []
 
@@ -257,8 +261,12 @@ RUNNER
             builder = IronWorkerNG::Code::Builder.new
             builder.builder_remote_build_command = @remote_build_command
 
-            builder.gem('iron_worker_ng')
-            builder.fixate
+            builder.use_local_iron_worker_ng = @use_local_iron_worker_ng
+
+            if @use_local_iron_worker_ng
+              builder.gem('iron_worker_ng')
+              builder.fixate
+            end
 
             builder.bundle(container, local)
 

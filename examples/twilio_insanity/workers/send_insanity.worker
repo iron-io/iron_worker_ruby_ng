@@ -1,0 +1,8 @@
+runtime "ruby"
+exec "send_insanity.rb"
+name "SendInsanity"
+
+gem "twilio-ruby"
+gem "iron_cache"
+
+file "../config/config.yml"

@@ -2,36 +2,6 @@ require_relative 'helpers'
 
 class CLITest < IWNGTest
 
-  def cli(*args)
-    if args.last.is_a? Hash
-      args.pop.each do |k,v|
-        args << "--" + k.to_s.gsub(/_/,'-') + " " + v.to_s
-      end
-    end
-
-    args << '--debug'
-
-    out = Tempfile.new('cli_output').path
-    args << "2>&1 >#{out}"
-
-    cmd = 'ruby -Ilib test/cli_runner.rb ' + args.join(' ')
-    puts cmd
-
-    exec(cmd) if fork.nil?
-    Process.wait
-
-    puts "--- cli output begin -------------------------------------"
-
-    puts File.read(out)
-
-    puts "--- cli output end ---------------------------------------"
-
-    puts $?
-    assert $?.success?
-
-    File.read(out)
-  end
-
   def test_basic
     assert cli('upload', 'test/hello.worker') =~
       /Upload successful/

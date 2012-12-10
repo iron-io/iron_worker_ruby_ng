@@ -1,0 +1,5 @@
+runtime "ruby"
+name "IronMailerMaster"
+exec "iron_mailer_master.rb"
+gem "iron_worker_ng"
+file ".iron.json"

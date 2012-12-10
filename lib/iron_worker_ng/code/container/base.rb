@@ -23,8 +23,8 @@ module IronWorkerNG
         def get_output_stream(dest, &block)
         end
 
-	def commit
-	end
+        def commit
+        end
 
         def close
         end

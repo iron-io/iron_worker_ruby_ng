@@ -1,11 +1,17 @@
-puts `rake install`
+out = `gem build iron_worker_ng.gemspec`
+unless out =~ /File: (.*)$/
+  puts "Failed to build gem: #{out}"
+  exit(1)
+end
+puts `gem install #{$1}`
 
-require 'iron_worker_ng'
+require_relative '../lib/iron_worker_ng.rb'
 require_relative 'iron_io_config.rb'
 
 client = IronWorkerNG::Client.new
 
 code = IronWorkerNG::Code::Base.new do
+  name 'NgTestsWorker'
   runtime 'ruby'
 
   exec 'test/ng_tests_worker.rb'

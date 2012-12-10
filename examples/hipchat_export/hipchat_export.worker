@@ -1,0 +1,8 @@
+runtime 'ruby'
+exec 'hipchat_export.rb'
+name 'HipchatExport'
+gem 'hipchat-api'
+gem 'google_drive'
+gem 'oauth2'
+
+

@@ -17,9 +17,9 @@ module IronWorkerNG
           @zip.add(clear_dest(dest), src)
         end
 
-  def commit
+        def commit
           @zip.commit
-  end
+        end
 
         def get_output_stream(dest, &block)
           @zip.get_output_stream(clear_dest(dest), &block)
