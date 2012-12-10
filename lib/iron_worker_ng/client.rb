@@ -87,6 +87,11 @@ module IronWorkerNG
     def codes_create(code, options = {})
       IronCore::Logger.debug 'IronWorkerNG', "Calling codes.create with code='#{code.to_s}' and options='#{options.to_s}'"
 
+      if options[:config] && options[:config].is_a?(Hash)
+        options = options.dup
+        options[:config] = options[:config].to_json
+      end
+
       container_file = code.create_container
 
       if code.remote_build_command.nil? && (not code.full_remote_build)

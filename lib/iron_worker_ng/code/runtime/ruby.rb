@@ -30,11 +30,13 @@ end
 
 root = nil
 payload_file = nil
+config_file = nil
 task_id = nil
 
 0.upto($*.length - 2) do |i|
   root = $*[i + 1] if $*[i] == '-d'
   payload_file = $*[i + 1] if $*[i] == '-payload'
+  config_file = $*[i + 1] if $*[i] == '-config'
   task_id = $*[i + 1] if $*[i] == '-id'
 end
 
@@ -55,10 +57,24 @@ begin
 rescue
 end
 
+@config = nil
+if config_file
+  @config = File.read(config_file)
+  begin
+    @config = JSON.parse(@config)
+    @config = IronWorkerNGHash.new(@config)
+  rescue
+  end
+end
+
 @params = IronWorkerNGHash.new(params)
 
 def payload
   @payload
+end
+
+def config
+  @config
 end
 
 def params
