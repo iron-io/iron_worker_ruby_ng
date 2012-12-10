@@ -41,7 +41,7 @@ class IWNGTest < Test::Unit::TestCase
   attr_accessor :client
 
   def setup
-    options = { env: 'staging' }
+    options = { env: 'test' }
     OptionParser.new do |opts|
       opts.on('--project-id PROJECT_ID', String) do |p|
         options[:project_id] = p
