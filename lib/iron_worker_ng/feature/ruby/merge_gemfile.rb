@@ -23,13 +23,17 @@ module IronWorkerNG
 
             IronCore::Logger.info 'IronWorkerNG', "Adding ruby gems dependencies from #{groups.join(', ')} group#{groups.length > 1 ? 's' : ''} of #{path}"
 
-            specs = Bundler::Definition.build(path, path + '.lock', nil).specs_for(groups)
+            feature = IronWorkerNG::Feature::Ruby::MergeGemfile::Feature.new(self, path, groups)
 
-            specs.each do |spec|
-              merge_gem(spec.name, spec.version.to_s)
+            IronWorkerNG::Fetcher.fetch_to_file(feature.rebase(path)) do |gemfile|
+              specs = Bundler::Definition.build(gemfile, path + '.lock', nil).specs_for(groups)
+
+              specs.each do |spec|
+                merge_gem(spec.name, spec.version.to_s)
+              end
             end
 
-            @features << IronWorkerNG::Feature::Ruby::MergeGemfile::Feature.new(self, path, groups)
+            @features << feature
           end
 
           alias :gemfile :merge_gemfile
