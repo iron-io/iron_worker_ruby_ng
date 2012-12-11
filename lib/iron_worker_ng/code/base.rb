@@ -80,9 +80,9 @@ module IronWorkerNG
                 @full_remote_build = true
               end
 
-              eval(content)
-
               @base_dir = File.dirname(worker_file) == '.' ? '' : File.dirname(worker_file) + '/'
+
+              eval(content)
 
               break
             end
