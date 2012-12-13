@@ -24,4 +24,6 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'minitest'
   gem.add_development_dependency 'minitest-reporters', '>= 0.5.0'
   gem.add_development_dependency 'rake'
+  gem.add_development_dependency 'twitter'
+  gem.add_development_dependency 'actionmailer'
 end
