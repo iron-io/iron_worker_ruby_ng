@@ -1,27 +1,21 @@
 require 'cgi'
-require 'yaml'
 require 'broach'
 
 # the payload we get from github needs to be decoded first
 cgi_parsed = CGI::parse(payload)
 puts "cgi_parsed: #{cgi_parsed.inspect}"
 
-# Then we can parse the json
-#parsed = JSON.parse(cgi_parsed)
-#puts "parsed: #{parsed.inspect}"
-parsed = cgi_parsed # seems to already be in a hash?
+event = cgi_parsed["event"][0]
 
-@event = parsed["event"][0]
-
-# Also parse the config we uploaded with this worker for our Hipchat stuff
-webhook_config = YAML.load_file('webhook_config.yml')
-puts "webhook_config: #{webhook_config.inspect}"
-
-campfire_config = webhook_config['campfire']
+# parse campfire config
+cfg = JSON.parse(File.read('campfire_config.json'))
+puts "campfire config: #{cfg.inspect}"
 
 Broach.settings = {
-    'account' => campfire_config['account'],
-    'token'   => campfire_config['token'],
-    'use_ssl' => true
+  'account' => cfg['account'],
+  'token'   => cfg['token'],
+  'use_ssl' => true
 }
-Broach.speak(campfire_config['room'], @event)
+Broach.speak(cfg['room'], event)
+
+puts 'Done'
