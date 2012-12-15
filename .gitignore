@@ -7,3 +7,4 @@ examples/github_to_hipchat_webhook_worker/webhook_config.yml
 examples/worker101/twitter_config.json
 examples/actionmailer_standalone/actionmailer_config.json
 examples/chargify_to_campfire_webhook_worker/campfire_config.json
+examples/email_worker/email_config.json
