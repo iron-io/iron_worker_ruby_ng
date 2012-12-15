@@ -1,0 +1,26 @@
+{
+  "smtp": {
+    "user_name": "you@gmail.com",
+    "password": "secret",
+    "enable_starttls_auto": true,
+    "authentication": "plain",
+    "address": "smtp.gmail.com",
+    "port": 587
+    // "address": "smtp.sendgrid.net",
+    // "port": 25
+  },
+
+  // uncomment and edit to put email details on iron_cache
+  // "iron": {
+  //   "token": "Et1E98729890283837Fu34L3234",
+  //   "project_id": "523412343249345435342349"
+  // },
+
+  // uncomment and edit to send email detail via http api
+  // "endpoint": "www.myservice.com/api/email_sent",
+
+  "from": "you@gmail.com",
+  "to": "you@gmail.com",
+  "subject": "hello from IronWorker",
+  "body": "hello me"
+}
