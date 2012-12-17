@@ -1,0 +1,8 @@
+{
+  "gmail": {
+    "username": "you@gmail.com",
+    "password": "yourpwd"
+  },
+  "from": "you@gmail.com",
+  "to": ["you@gmail.com"]
+}

@@ -202,7 +202,7 @@ module IronWorkerNG
       code = codes.find { |code| code.name == name }
 
       unless code
-        log_name "Code package with name='#{name}' not found"
+        log "Code package with name='#{name}' not found"
         exit 1
       end
 
