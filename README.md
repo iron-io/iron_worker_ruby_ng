@@ -347,7 +347,7 @@ Merge a pip package with dependencies. If any pip package contains native extens
 
 ```ruby
 code.merge_pip 'iron_mq'
-code.merge_pip 'iron_worker', '>0.2'
+code.merge_pip 'iron_worker', '0.2'
 ```
 
 # Upload Your Worker
