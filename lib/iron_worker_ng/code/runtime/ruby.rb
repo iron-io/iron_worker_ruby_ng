@@ -1,9 +1,9 @@
 require 'tmpdir'
 require 'fileutils'
 
-require_relative '../../feature/ruby/merge_gem_dependency'
-require_relative '../../feature/ruby/merge_gemfile'
-require_relative '../../feature/ruby/merge_gem'
+require 'iron_worker_ng/feature/ruby/merge_gem_dependency'
+require 'iron_worker_ng/feature/ruby/merge_gemfile'
+require 'iron_worker_ng/feature/ruby/merge_gem'
 
 module IronWorkerNG
   module Code

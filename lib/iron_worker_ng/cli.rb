@@ -44,7 +44,7 @@ module IronWorkerNG
 
         project = client.projects.get
 
-        log "Project '#{project.name}' with id='#{project.id}'"
+        log "Project '#{project.name}' with id='#{project._id}'"
       end
 
       @client
@@ -78,7 +78,7 @@ module IronWorkerNG
         log 'Code package is building'
         log "Check 'https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{builder_task_id}' for more info"
       else
-        code_id = client.codes.create(code, options).id
+        code_id = client.codes.create(code, options)._id
         code_info = client.codes.get(code_id)
 
         log "Code package uploaded with id='#{code_id}' and revision='#{code_info.rev}'"
@@ -91,7 +91,7 @@ module IronWorkerNG
 
       log_group "Queueing task"
 
-      id = client.tasks.create(name, params[:payload] || params['payload'], options).id
+      id = client.tasks.create(name, params[:payload] || params['payload'], options)._id
 
       log "Code package '#{name}' queued with id='#{id}'"
       log "Check 'https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{id}' for more info"
@@ -102,7 +102,7 @@ module IronWorkerNG
 
       log_group "Scheduling task"
 
-      id = client.schedules.create(name, params[:payload] || params['payload'], options).id
+      id = client.schedules.create(name, params[:payload] || params['payload'], options)._id
 
       log "Code package '#{name}' scheduled with id='#{id}'"
       log "Check 'https://hud.iron.io/tq/projects/#{client.api.project_id}/scheduled_jobs/#{id}' for more info"
@@ -113,7 +113,7 @@ module IronWorkerNG
 
       log_group "Retrying task with id='#{task_id}'"
 
-      retry_task_id = client.tasks.retry(task_id, options).id
+      retry_task_id = client.tasks.retry(task_id, options)._id
 
       log "Task retried with id='#{retry_task_id}'"
       log "Check 'https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{retry_task_id}' for more info"
@@ -207,15 +207,15 @@ module IronWorkerNG
       end
 
       data = []
-      data << ['id', code.id]
+      data << ['id', code._id]
       data << ['name', code.name]
       data << ['revision', code.rev]
       data << ['uploaded', parse_time(code.latest_change) || '-']
       data << ['max concurrency', code.max_concurrency || '-']
       data << ['retries', code.retries || '-']
       data << ['retries delay', code.retries_delay || '-']
-      data << ['info', "https://hud.iron.io/tq/projects/#{client.api.project_id}/code/#{code.id}"]
-      data << ['tasks info', "https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{code.id}/activity"]
+      data << ['info', "https://hud.iron.io/tq/projects/#{client.api.project_id}/code/#{code._id}"]
+      data << ['tasks info', "https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{code._id}/activity"]
 
       display_table(data)
     end
@@ -228,7 +228,7 @@ module IronWorkerNG
       task = client.tasks.get(task_id)
 
       data = []
-      data << ['id', task.id]
+      data << ['id', task._id]
       data << ['code package', task.code_name]
       data << ['code revision', task.code_rev]
       data << ['status', task.status]
@@ -237,7 +237,7 @@ module IronWorkerNG
       data << ['started', parse_time(task.start_time) || '-']
       data << ['finished', parse_time(task.end_time) || '-']
       data << ['payload', task.payload]
-      data << ['info', "https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{task.id}"]
+      data << ['info', "https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{task._id}"]
 
       display_table(data)
     end
@@ -250,14 +250,14 @@ module IronWorkerNG
       schedule = client.schedules.get(schedule_id)
 
       data = []
-      data << ['id', schedule.id]
+      data << ['id', schedule._id]
       data << ['code package', schedule.code_name]
       data << ['status', schedule.status]
       data << ['created', parse_time(schedule.created_at) || '-']
       data << ['next start', parse_time(schedule.next_start) || '-']
       data << ['run count', schedule.run_count || '-']
       data << ['payload', schedule.payload]
-      data << ['info', "https://hud.iron.io/tq/projects/#{client.api.project_id}/scheduled_jobs/#{schedule.id}"]
+      data << ['info', "https://hud.iron.io/tq/projects/#{client.api.project_id}/scheduled_jobs/#{schedule._id}"]
 
       display_table(data)
     end

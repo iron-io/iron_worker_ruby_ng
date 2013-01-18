@@ -1,5 +1,5 @@
-require_relative '../../feature/python/merge_pip_dependency'
-require_relative '../../feature/python/merge_pip'
+require 'iron_worker_ng/feature/python/merge_pip_dependency'
+require 'iron_worker_ng/feature/python/merge_pip'
 
 module IronWorkerNG
   module Code

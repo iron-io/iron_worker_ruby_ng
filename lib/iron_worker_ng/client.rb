@@ -2,7 +2,7 @@ require 'ostruct'
 require 'json'
 require 'base64'
 
-require_relative 'api_client'
+require 'iron_worker_ng/api_client'
 
 module IronWorkerNG
   class ClientProxyCaller
@@ -74,14 +74,16 @@ module IronWorkerNG
 
         result
       else
-        @api.codes_list(options)['codes'].map { |c| OpenStruct.new(c) }
+        @api.codes_list(options)['codes'].map { |c| OpenStruct.new(c.merge('_id' => c['id'])) }
       end
     end
 
     def codes_get(code_id)
       IronCore::Logger.debug 'IronWorkerNG', "Calling codes.get with code_id='#{code_id}'"
 
-      OpenStruct.new(@api.codes_get(code_id))
+      c = @api.codes_get(code_id)
+      c['_id'] = c['id']
+      OpenStruct.new(c)
     end
 
     def codes_create(code, options = {})
@@ -98,10 +100,10 @@ module IronWorkerNG
 
         builder_task = tasks.create(builder_code_name, :code_name => code.name, :client_options => @api.options.to_json, :codes_create_options => options.to_json)
 
-        builder_task = tasks.wait_for(builder_task.id)
+        builder_task = tasks.wait_for(builder_task._id)
 
         if builder_task.status != 'complete'
-          log = tasks.log(builder_task.id)
+          log = tasks.log(builder_task._id)
 
           File.unlink(container_file)
 
@@ -113,6 +115,7 @@ module IronWorkerNG
 
       File.unlink(container_file)
 
+      res['_id'] = res['id']
       OpenStruct.new(res)
     end
 
@@ -132,11 +135,12 @@ module IronWorkerNG
 
         File.unlink(container_file)
 
-        return builder_task.id
+        return builder_task._id
       end
 
       File.unlink(container_file)
 
+      res['_id'] = res['id']
       OpenStruct.new(res)
     end
 
@@ -151,7 +155,7 @@ module IronWorkerNG
     def codes_revisions(code_id, options = {})
       IronCore::Logger.debug 'IronWorkerNG', "Calling codes.revisions with code_id='#{code_id}' and options='#{options.to_s}'"
 
-      @api.codes_revisions(code_id, options)['revisions'].map { |c| OpenStruct.new(c) }
+      @api.codes_revisions(code_id, options)['revisions'].map { |c| OpenStruct.new(c.merge('_id' => c['id'])) }
     end
 
     def codes_download(code_id, options = {})
@@ -163,13 +167,15 @@ module IronWorkerNG
     def tasks_list(options = {})
       IronCore::Logger.debug 'IronWorkerNG', "Calling tasks.list with options='#{options.to_s}'"
 
-      @api.tasks_list(options)['tasks'].map { |t| OpenStruct.new(t) }
+      @api.tasks_list(options)['tasks'].map { |t| OpenStruct.new(t.merge('_id' => t['id'])) }
     end
 
     def tasks_get(task_id)
       IronCore::Logger.debug 'IronWorkerNG', "Calling tasks.get with task_id='#{task_id}'"
 
-      OpenStruct.new(@api.tasks_get(task_id))
+      t = @api.tasks_get(task_id)
+      t['_id'] = t['id']
+      OpenStruct.new(t)
     end
 
     def tasks_create(code_name, params = {}, options = {})
@@ -177,7 +183,9 @@ module IronWorkerNG
 
       res = @api.tasks_create(code_name, params.is_a?(String) ? params : params.to_json, options)
 
-      OpenStruct.new(res['tasks'][0])
+      t = res['tasks'][0]
+      t['_id'] = t['id']
+      OpenStruct.new(t)
     end
 
     def tasks_create_legacy(code_name, params = {}, options = {})
@@ -185,7 +193,9 @@ module IronWorkerNG
 
       res = @api.tasks_create(code_name, params_for_legacy(code_name, params), options)
 
-      OpenStruct.new(res['tasks'][0])
+      t = res['tasks'][0]
+      t['_id'] = t['id']
+      OpenStruct.new(t)
     end
 
     def tasks_cancel(task_id)
@@ -239,7 +249,9 @@ module IronWorkerNG
 
       res = @api.tasks_retry(task_id, options)
 
-      OpenStruct.new(res['tasks'][0])
+      t = res['tasks'][0]
+      t['_id'] = t['id']
+      OpenStruct.new(t)
     end
 
     def schedules_list(options = {})
@@ -251,7 +263,9 @@ module IronWorkerNG
     def schedules_get(schedule_id)
       IronCore::Logger.debug 'IronWorkerNG', "Calling schedules.get with schedule_id='#{schedule_id}"
 
-      OpenStruct.new(@api.schedules_get(schedule_id))
+      s = @api.schedules_get(schedule_id)
+      s['_id'] = s['id']
+      OpenStruct.new(s)
     end
 
     def schedules_create(code_name, params = {}, options = {})
@@ -259,7 +273,9 @@ module IronWorkerNG
 
       res = @api.schedules_create(code_name, params.is_a?(String) ? params : params.to_json, options)
 
-      OpenStruct.new(res['schedules'][0])
+      s = res['schedules'][0]
+      s['_id'] = s['id']
+      OpenStruct.new(s)
     end
 
     def schedules_create_legacy(code_name, params = {}, options = {})
@@ -267,7 +283,9 @@ module IronWorkerNG
 
       res = @api.schedules_create(code_name, params_for_legacy(code_name, params), options)
 
-      OpenStruct.new(res['schedules'][0])
+      s = res['schedules'][0]
+      s['_id'] = s['id']
+      OpenStruct.new(s)
     end
 
     def schedules_cancel(schedule_id)
@@ -281,8 +299,9 @@ module IronWorkerNG
     def projects_get
       IronCore::Logger.debug 'IronWorkerNG', "Calling projects.get"
 
-      res =@api.projects_get
+      res = @api.projects_get
 
+      res['_id'] = res['id']
       OpenStruct.new(res)
     end
 

@@ -1,4 +1,4 @@
-require_relative '../../feature/java/merge_jar'
+require 'iron_worker_ng/feature/java/merge_jar'
 
 module IronWorkerNG
   module Code
