@@ -20,12 +20,11 @@ module IronWorkerNG
             tmp_dir_name = ::Dir.tmpdir + '/' + ::Dir::Tmpname.make_tmpname('iron-worker-ng-', 'pips')
 
             ::Dir.mkdir(tmp_dir_name)
+            ::Dir.mkdir(tmp_dir_name + '/bin')
+            ::Dir.mkdir(tmp_dir_name + '/lib')
 
             deps_string = @deps.map { |dep| dep.version == '' ? dep.name : dep.name + '==' + dep.version }.join(' ')
-            install_command = 'pip install --upgrade --install-option="--prefix=' + tmp_dir_name + '" ' + deps_string
-
-            ::Dir.mkdir tmp_dir_name + '/bin'
-            ::Dir.mkdir tmp_dir_name + '/lib'
+            install_command = 'pip install --ignore-installed --install-option="--prefix=' + tmp_dir_name + '" ' + deps_string
 
             system(install_command)
 
