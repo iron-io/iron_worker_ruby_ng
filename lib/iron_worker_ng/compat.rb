@@ -1,3 +1,4 @@
+require 'tmpdir'
 require 'fileutils'
 
 unless Dir.const_defined?(:Tmpname)

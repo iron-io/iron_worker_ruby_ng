@@ -94,7 +94,7 @@ module IronWorkerNG
       if code.remote_build_command.nil? && (not code.full_remote_build)
         res = @api.codes_create(code.name, container_file, 'sh', '__runner__.sh', options)
       else
-        builder_code_name = code.name + (code.name[0].upcase == code.name[0] ? '::Builder' : '::builder')
+        builder_code_name = code.name + (code.name[0 .. 0].upcase == code.name[0 .. 0] ? '::Builder' : '::builder')
 
         @api.codes_create(builder_code_name, container_file, 'sh', '__runner__.sh', options)
 
@@ -127,7 +127,7 @@ module IronWorkerNG
       if code.remote_build_command.nil? && (not code.full_remote_build)
         res = @api.codes_create(code.name, container_file, 'sh', '__runner__.sh', options)
       else
-        builder_code_name = code.name + (code.name[0].upcase == code.name[0] ? '::Builder' : '::builder')
+        builder_code_name = code.name + (code.name[0 .. 0].upcase == code.name[0 .. 0] ? '::Builder' : '::builder')
 
         @api.codes_create(builder_code_name, container_file, 'sh', '__runner__.sh', options)
 
