@@ -1,4 +1,4 @@
-require_relative 'runtime/php'
+require 'iron_worker_ng/code/runtime/php'
 
 module IronWorkerNG
   module Code

@@ -340,6 +340,16 @@ Merge the exec located at `path`.
 code.merge_exec 'my_worker.py'
 ```
 
+### merge_pip(name, version = '')
+### pip(name, version = '')
+
+Merge a pip package with dependencies. If any pip package contains native extensions, switch to full remote build. You can use version constrains if you need a specific pip package version.
+
+```ruby
+code.merge_pip 'iron_mq'
+code.merge_pip 'iron_worker', '0.2'
+```
+
 # Upload Your Worker
 
 When you have your code package, you are ready to upload and run it on the IronWorker cloud.

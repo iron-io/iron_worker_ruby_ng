@@ -1,4 +1,4 @@
-require_relative 'runtime/python'
+require 'iron_worker_ng/code/runtime/python'
 
 module IronWorkerNG
   module Code

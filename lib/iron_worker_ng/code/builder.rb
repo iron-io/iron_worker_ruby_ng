@@ -1,4 +1,4 @@
-require_relative '../feature/ruby/merge_gem'
+require 'iron_worker_ng/feature/ruby/merge_gem'
 
 module IronWorkerNG
   module Code
