@@ -1,0 +1,4 @@
+exec 'actionmailer_worker.rb'
+file 'mailer.rb'
+dir 'mailer'
+gem 'actionmailer'

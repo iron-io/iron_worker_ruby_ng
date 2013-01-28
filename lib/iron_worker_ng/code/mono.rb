@@ -1,4 +1,4 @@
-require_relative 'runtime/mono'
+require 'iron_worker_ng/code/runtime/mono'
 
 module IronWorkerNG
   module Code

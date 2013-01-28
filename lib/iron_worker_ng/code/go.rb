@@ -1,4 +1,4 @@
-require_relative 'runtime/go'
+require 'iron_worker_ng/code/runtime/go'
 
 module IronWorkerNG
   module Code

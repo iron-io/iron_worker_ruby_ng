@@ -1,4 +1,4 @@
-require_relative 'runtime/java'
+require 'iron_worker_ng/code/runtime/java'
 
 module IronWorkerNG
   module Code

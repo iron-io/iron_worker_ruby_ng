@@ -1,4 +1,4 @@
-require_relative 'runtime/perl'
+require 'iron_worker_ng/code/runtime/perl'
 
 module IronWorkerNG
   module Code

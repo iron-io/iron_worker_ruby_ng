@@ -1,4 +1,4 @@
-require_relative 'runtime/ruby'
+require 'iron_worker_ng/code/runtime/ruby'
 
 module IronWorkerNG
   module Code

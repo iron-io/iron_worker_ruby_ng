@@ -1,4 +1,4 @@
-require_relative 'runtime/node'
+require 'iron_worker_ng/code/runtime/node'
 
 module IronWorkerNG
   module Code

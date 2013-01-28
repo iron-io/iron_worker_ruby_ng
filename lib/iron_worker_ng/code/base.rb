@@ -1,13 +1,13 @@
 require 'fileutils'
 
-require_relative 'container/base'
-require_relative 'container/zip'
-require_relative 'container/dir'
-require_relative '../feature/base'
-require_relative '../feature/common/merge_exec'
-require_relative '../feature/common/merge_file'
-require_relative '../feature/common/merge_dir'
-require_relative '../feature/common/merge_deb'
+require 'iron_worker_ng/code/container/base'
+require 'iron_worker_ng/code/container/zip'
+require 'iron_worker_ng/code/container/dir'
+require 'iron_worker_ng/feature/base'
+require 'iron_worker_ng/feature/common/merge_exec'
+require 'iron_worker_ng/feature/common/merge_file'
+require 'iron_worker_ng/feature/common/merge_dir'
+require 'iron_worker_ng/feature/common/merge_deb'
 
 module IronWorkerNG
   module Code
@@ -80,9 +80,9 @@ module IronWorkerNG
                 @full_remote_build = true
               end
 
-              eval(content)
-
               @base_dir = File.dirname(worker_file) == '.' ? '' : File.dirname(worker_file) + '/'
+
+              eval(content)
 
               break
             end

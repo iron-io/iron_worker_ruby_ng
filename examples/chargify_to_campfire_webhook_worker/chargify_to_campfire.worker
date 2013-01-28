@@ -1,0 +1,4 @@
+exec 'chargify_to_campfire_webhook_worker.rb'
+gem 'broach'
+file 'campfire_config.json'
+full_remote_build true

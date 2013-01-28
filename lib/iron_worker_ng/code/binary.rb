@@ -1,4 +1,4 @@
-require_relative 'runtime/binary'
+require 'iron_worker_ng/code/runtime/binary'
 
 module IronWorkerNG
   module Code
