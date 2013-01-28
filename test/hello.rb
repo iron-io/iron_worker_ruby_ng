@@ -1,3 +1,3 @@
-puts "hello worker!"
+puts "hello"
 
 #raise "DOH!"
