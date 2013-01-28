@@ -2,7 +2,7 @@ require_relative 'helpers'
 
 class QuickRun < IWNGTest
 
-  N_TASKS = 1
+  N_TASKS = 100
 
   def setup
     super
