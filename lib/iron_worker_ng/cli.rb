@@ -65,6 +65,7 @@ module IronWorkerNG
       log "Max concurrency set to '#{options[:max_concurrency]}'" unless options[:max_concurrency].nil?
       log "Retries set to '#{options[:retries]}'" unless options[:retries].nil?
       log "Retries delay set to '#{options[:retries_delay]}'" unless options[:retries_delay].nil?
+      log "Host set to '#{options[:host]}'" unless options[:host].nil?
 
       if code.remote_build_command || code.full_remote_build
         log_group "Uploading and building code package '#{code.name}'"
