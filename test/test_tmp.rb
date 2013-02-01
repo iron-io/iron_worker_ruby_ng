@@ -3,6 +3,7 @@ require_relative 'helpers'
 class TestTmp < IWNGTest
 
   N_TASKS = 1
+  puts 'here'
 
   def setup
     puts 'setup2'
@@ -11,22 +12,25 @@ class TestTmp < IWNGTest
   end
 
 
-  def text_max_concurrency
-    name = 'text_max_concurrency'
-    puts name
+  def test_config
 
-    worker_name = "sleepy"
+    client.codes.create(IronWorkerNG::Code::Base.new('workers/config_worker'), {config: {c1: "some config var"}})
 
-    code = IronWorkerNG::Code::Base.new(:workerfile => 'workers/sleepy.worker')
-    code.name = worker_name
-    @iron_worker.codes.create(code, :max_concurrency => 10)
-
-    @iron_worker = IronWorkerNG::Client.new()
-    100.times do |i|
-      puts "Queuing #{i}..."
-      @iron_worker.tasks.create(worker_name, {:sleep => 1*60, :i => i, :stathat => {:email => "travis@iron.io"}})
+    task_ids = []
+    N_TASKS.times do |i|
+      puts "#{i}"
+      task_ids << client.tasks.create('config_worker', {:foo=>"bar"}).id
     end
 
+    task_ids.each_with_index do |id, i|
+      puts "#{i}"
+      task = client.tasks.wait_for(id)
+      p task
+      assert_equal 'complete', task.status
+      log = client.tasks.log(id)
+      puts log
+      assert log.include?("some config var")
+    end
 
   end
 
