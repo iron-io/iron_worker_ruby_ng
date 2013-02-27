@@ -1,5 +1,5 @@
-require 'iron_worker_ng/feature/python/merge_pip_dependency'
-require 'iron_worker_ng/feature/python/merge_pip'
+require File.expand_path('../../feature/python/merge_pip_dependency', File.dirname(__FILE__))
+require File.expand_path('../../feature/python/merge_pip', File.dirname(__FILE__))
 
 module IronWorkerNG
   module Code

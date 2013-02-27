@@ -1,4 +1,4 @@
-require 'iron_worker_ng/code/runtime/perl'
+require File.expand_path('runtime/perl', File.dirname(__FILE__))
 
 module IronWorkerNG
   module Code

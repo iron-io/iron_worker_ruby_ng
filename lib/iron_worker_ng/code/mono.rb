@@ -1,4 +1,4 @@
-require 'iron_worker_ng/code/runtime/mono'
+require File.expand_path('runtime/mono', File.dirname(__FILE__))
 
 module IronWorkerNG
   module Code

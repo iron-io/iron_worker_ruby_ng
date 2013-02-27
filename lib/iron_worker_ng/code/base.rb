@@ -1,13 +1,13 @@
 require 'fileutils'
 
-require 'iron_worker_ng/code/container/base'
-require 'iron_worker_ng/code/container/zip'
-require 'iron_worker_ng/code/container/dir'
-require 'iron_worker_ng/feature/base'
-require 'iron_worker_ng/feature/common/merge_exec'
-require 'iron_worker_ng/feature/common/merge_file'
-require 'iron_worker_ng/feature/common/merge_dir'
-require 'iron_worker_ng/feature/common/merge_deb'
+require File.expand_path('container/base', File.dirname(__FILE__))
+require File.expand_path('container/zip', File.dirname(__FILE__))
+require File.expand_path('container/dir', File.dirname(__FILE__))
+require File.expand_path('../feature/base', File.dirname(__FILE__))
+require File.expand_path('../feature/common/merge_exec', File.dirname(__FILE__))
+require File.expand_path('../feature/common/merge_file', File.dirname(__FILE__))
+require File.expand_path('../feature/common/merge_dir', File.dirname(__FILE__))
+require File.expand_path('../feature/common/merge_deb', File.dirname(__FILE__))
 
 module IronWorkerNG
   module Code
@@ -72,6 +72,7 @@ module IronWorkerNG
         end
 
         worker_files.each do |worker_file|
+          puts "fetching #{worker_file}"
           IronWorkerNG::Fetcher.fetch(worker_file) do |content|
             unless content.nil?
               IronCore::Logger.info 'IronWorkerNG', "Found workerfile with path='#{worker_file}'"

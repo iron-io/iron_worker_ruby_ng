@@ -1,4 +1,4 @@
-require 'iron_worker_ng/code/runtime/ruby'
+require File.expand_path('runtime/ruby', File.dirname(__FILE__))
 
 module IronWorkerNG
   module Code

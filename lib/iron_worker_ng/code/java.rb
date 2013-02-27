@@ -1,4 +1,4 @@
-require 'iron_worker_ng/code/runtime/java'
+require File.expand_path('runtime/java', File.dirname(__FILE__))
 
 module IronWorkerNG
   module Code

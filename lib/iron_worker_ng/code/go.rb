@@ -1,4 +1,4 @@
-require 'iron_worker_ng/code/runtime/go'
+require File.expand_path('runtime/go', File.dirname(__FILE__))
 
 module IronWorkerNG
   module Code
