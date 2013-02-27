@@ -1,4 +1,4 @@
-require 'iron_worker_ng/feature/java/merge_jar'
+require File.expand_path('../../feature/java/merge_jar', File.dirname(__FILE__))
 
 module IronWorkerNG
   module Code

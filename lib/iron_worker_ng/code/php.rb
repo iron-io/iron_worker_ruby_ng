@@ -1,4 +1,4 @@
-require 'iron_worker_ng/code/runtime/php'
+require File.expand_path('runtime/php', File.dirname(__FILE__))
 
 module IronWorkerNG
   module Code
@@ -7,7 +7,7 @@ module IronWorkerNG
         runtime(:python)
 
         super(*args, &block)
-      end
     end
+      end
   end
 end

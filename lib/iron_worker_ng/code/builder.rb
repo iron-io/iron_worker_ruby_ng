@@ -1,4 +1,4 @@
-require 'iron_worker_ng/feature/ruby/merge_gem'
+require File.expand_path('../feature/ruby/merge_gem', File.dirname(__FILE__))
 
 module IronWorkerNG
   module Code

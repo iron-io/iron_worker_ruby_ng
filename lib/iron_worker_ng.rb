@@ -1,15 +1,15 @@
-require 'iron_worker_ng/version'
-require 'iron_worker_ng/compat'
-require 'iron_worker_ng/fetcher'
-require 'iron_worker_ng/client'
-require 'iron_worker_ng/code/base'
-require 'iron_worker_ng/code/ruby'
-require 'iron_worker_ng/code/binary'
-require 'iron_worker_ng/code/java'
-require 'iron_worker_ng/code/node'
-require 'iron_worker_ng/code/mono'
-require 'iron_worker_ng/code/python'
-require 'iron_worker_ng/code/php'
-require 'iron_worker_ng/code/go'
-require 'iron_worker_ng/code/perl'
-require 'iron_worker_ng/code/builder'
+require File.expand_path('iron_worker_ng/version', File.dirname(__FILE__)) 
+require File.expand_path('iron_worker_ng/compat', File.dirname(__FILE__))
+require File.expand_path('iron_worker_ng/fetcher', File.dirname(__FILE__))
+require File.expand_path('iron_worker_ng/client', File.dirname(__FILE__))
+require File.expand_path('iron_worker_ng/code/base', File.dirname(__FILE__))
+require File.expand_path('iron_worker_ng/code/ruby', File.dirname(__FILE__))
+require File.expand_path('iron_worker_ng/code/binary', File.dirname(__FILE__))
+require File.expand_path('iron_worker_ng/code/java', File.dirname(__FILE__))
+require File.expand_path('iron_worker_ng/code/node', File.dirname(__FILE__))
+require File.expand_path('iron_worker_ng/code/mono', File.dirname(__FILE__))
+require File.expand_path('iron_worker_ng/code/python', File.dirname(__FILE__))
+require File.expand_path('iron_worker_ng/code/php', File.dirname(__FILE__))
+require File.expand_path('iron_worker_ng/code/go', File.dirname(__FILE__))
+require File.expand_path('iron_worker_ng/code/perl', File.dirname(__FILE__))
+require File.expand_path('iron_worker_ng/code/builder', File.dirname(__FILE__)) 

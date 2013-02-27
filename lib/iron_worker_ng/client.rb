@@ -2,7 +2,8 @@ require 'ostruct'
 require 'json'
 require 'base64'
 
-require 'iron_worker_ng/api_client'
+require File.expand_path('api_client', File.dirname(__FILE__))
+
 
 module IronWorkerNG
   class ClientProxyCaller
