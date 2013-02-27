@@ -4,7 +4,7 @@ require 'go'
 
 class QuickRun < IWNGTest
 
-  N_TASKS = 100
+  N_TASKS = 500
 
   def setup
     super
