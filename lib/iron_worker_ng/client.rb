@@ -1,5 +1,4 @@
 require 'ostruct'
-require 'json'
 require 'base64'
 
 require 'iron_worker_ng/api_client'
@@ -126,6 +125,11 @@ module IronWorkerNG
 
     def codes_create_async(code, options = {})
       IronCore::Logger.debug 'IronWorkerNG', "Calling codes.create_async with code='#{code.to_s}' and options='#{options.to_s}'"
+
+      if options[:config] && options[:config].is_a?(Hash)
+        options = options.dup
+        options[:config] = options[:config].to_json
+      end
 
       container_file = code.create_container
 

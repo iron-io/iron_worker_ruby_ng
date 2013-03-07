@@ -1,3 +1,9 @@
+begin
+  require 'json'
+rescue LoadError
+  raise "Please install json gem"
+end
+
 require 'iron_worker_ng/version'
 require 'iron_worker_ng/compat'
 require 'iron_worker_ng/fetcher'
