@@ -22,9 +22,10 @@ module IronWorkerNG
           def gem_path
             path = @spec.full_gem_path
 
-            # bundler fix
+            # bundler fixes
 
             ['/gems/' + @spec.full_name, '/gems'].each do |bad_part|
+              path.gsub!(bad_part + '/lib' + bad_part, bad_part)
               path.gsub!(bad_part + bad_part, bad_part)
             end
 
@@ -42,6 +43,12 @@ module IronWorkerNG
 
                 if loaded_from.end_with?("/gems/bundler-#{@spec.version}/lib/bundler")
                   loaded_from = loaded_from.gsub("/gems/bundler-#{@spec.version}/lib/bundler", "/specifications/bundler-#{@spec.version}.gemspec")
+                end
+
+                # and yet another one
+
+                if loaded_from.end_with?("/gems/bundler-#{@spec.version}/lib/bundler/source")
+                  loaded_from = loaded_from.gsub("/gems/bundler-#{@spec.version}/lib/bundler/source", "/specifications/bundler-#{@spec.version}.gemspec")
                 end
 
                 if File.exists?(gem_path)
