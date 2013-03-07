@@ -157,6 +157,10 @@ code.remote_build_command('curl http://www.kernel.org/pub/linux/kernel/v3.0/linu
 
 If set to true, activates full remote build mode. In this mode iron_worker will try to resolve as much things as possible at build step. For example, all gems will be installed at build step, which will allow you to use gems with native extensions.
 
+### remote
+
+Alias for `full_remote_build(true)`.
+
 ### run()
 
 Runs code package on your local box. Can be useful for testing.

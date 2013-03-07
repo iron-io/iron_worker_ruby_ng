@@ -56,7 +56,7 @@ module IronWorkerNG
 
                 container_add(container, "__gems__/specifications/#{@spec.full_name}.gemspec", loaded_from)
               else
-                IronCore::Logger.warn 'IronWorkerNG', "Skipping ruby gem with name='#{@spec.name}' and version='#{@spec.version}' as it contains native extensions, switching to full remote build should fix this"
+                IronCore::Logger.warn 'IronWorkerNG', "Skipping ruby gem with name='#{@spec.name}' and version='#{@spec.version}' as it contains native extensions, switching to full remote build should fix this (add 'remote' to your .worker)"
               end
             end
           end

@@ -148,6 +148,10 @@ module IronWorkerNG
         @full_remote_build = full_remote_build
       end
 
+      def remote
+        @full_remote_build = true
+      end
+
       def runtime(runtime = nil)
         return @runtime unless runtime
 
@@ -256,7 +260,7 @@ RUNNER
           bundle(container, local)
 
           if @remote_build_command || @full_remote_build
-            IronCore::Logger.info 'IronWorkerNG', 'Creating builder'
+            IronCore::Logger.info 'IronWorkerNG', 'Remote building worker'
 
             builder = IronWorkerNG::Code::Builder.new
             builder.builder_remote_build_command = @remote_build_command
