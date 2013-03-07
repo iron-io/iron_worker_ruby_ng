@@ -125,7 +125,7 @@ RUN_CODE
             gemfile = File.open(gemfile_dir + '/Gemfile', 'w')
           end
 
-          gemfile.puts('source :rubygems')
+          gemfile.puts('source \'http://rubygems.org\'')
 
           deps = @features.reject { |f| f.class != IronWorkerNG::Feature::Ruby::MergeGemDependency::Feature }
 
