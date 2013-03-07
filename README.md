@@ -26,7 +26,7 @@ the following is an acceptable worker:
 
 ```ruby
 puts "Hello Worker!"
-puts "My task_id is #{@iron_worker_task_id}"
+puts "My task_id is #{@iron_task_id}"
 puts "I got '#{params}' parameters"
 ```
 
