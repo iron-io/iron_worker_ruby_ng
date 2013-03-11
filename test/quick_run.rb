@@ -4,7 +4,7 @@ require 'go'
 
 class QuickRun < IWNGTest
 
-  N_TASKS = 500
+  N_TASKS = 100
 
   def setup
     super
@@ -34,9 +34,10 @@ class QuickRun < IWNGTest
       task = client.tasks.wait_for(id)
       p task
       assert_equal 'complete', task.status
-      #log = client.tasks.log(id)
-      #puts log
-      #assert_equal "hello\n", log, "for #{i}th task, task_id: ##{id}"
+      sleep 1
+      log = client.tasks.log(id)
+      puts log
+      assert_equal "hello\n", log, "for #{i}th task, task_id: ##{id}"
     end
   end
 
