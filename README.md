@@ -26,7 +26,7 @@ the following is an acceptable worker:
 
 ```ruby
 puts "Hello Worker!"
-puts "My task_id is #{@iron_worker_task_id}"
+puts "My task_id is #{@iron_task_id}"
 puts "I got '#{params}' parameters"
 ```
 
@@ -156,6 +156,10 @@ code.remote_build_command('curl http://www.kernel.org/pub/linux/kernel/v3.0/linu
 ### full_remote_build(activate)
 
 If set to true, activates full remote build mode. In this mode iron_worker will try to resolve as much things as possible at build step. For example, all gems will be installed at build step, which will allow you to use gems with native extensions.
+
+### remote
+
+Alias for `full_remote_build(true)`.
 
 ### run()
 

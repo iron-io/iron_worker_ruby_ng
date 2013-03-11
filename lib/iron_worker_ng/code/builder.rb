@@ -37,7 +37,7 @@ BUILDER_SH
         install_iron_worker_ng = ''
 
         if not @use_local_iron_worker_ng
-          install_iron_worker_ng = "system(\"gem install iron_worker_ng -v #{IronWorkerNG::VERSION}\")"
+          install_iron_worker_ng = "system('gem install iron_worker_ng -v #{IronWorkerNG::VERSION}')"
         end
 
         container.get_output_stream(@dest_dir + '__builder__.rb') do |builder|
@@ -57,6 +57,20 @@ require 'iron_worker_ng'
 IronWorkerNG::Feature::Ruby::MergeGem.merge_binary = true
 
 code = IronWorkerNG::Code::Base.new(params[:code_name])
+
+if not File.exists?('bundler.magic')
+  deps = code.features.reject { |f| f.class != IronWorkerNG::Feature::Ruby::MergeGemDependency::Feature }
+
+  deps.each do |dep|
+    if dep.name == 'bundler' and dep.version != '>= 0'
+      system('touch bundler.magic')
+      system('gem uninstall bundler')
+      system("gem install bundler -v '\#{dep.version}'")
+      success = system("ruby __runner__.rb \#{ARGV.join(' ')}")
+      exit(success ? 0 : 1)
+    end
+  end
+end
 
 if File.exists?('__builder__.sh')
   pre_build_list = Dir.glob('__build__/**/**')
