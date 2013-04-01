@@ -17,7 +17,7 @@ module IronWorkerNG
 
       attr_accessor :base_dir
       attr_accessor :dest_dir
-      attr_reader :env
+      attr_accessor :env
 
       attr_accessor :use_local_iron_worker_ng
 
