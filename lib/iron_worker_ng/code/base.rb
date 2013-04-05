@@ -221,10 +221,10 @@ root() {
 
 cd "$(root "$@")"
 
-LD_LIBRARY_PATH=.:./__debs__/usr/lib:./__debs__/usr/lib/x86_64-linux-gnu:./__debs__/lib:./__debs__/lib/x86_64-linux-gnu
+LD_LIBRARY_PATH=.:./lib:./__debs__/usr/lib:./__debs__/usr/lib/x86_64-linux-gnu:./__debs__/lib:./__debs__/lib/x86_64-linux-gnu
 export LD_LIBRARY_PATH
 
-PATH=.:./__debs__/usr/bin:./__debs__/bin:$PATH
+PATH=.:./bin:./__debs__/usr/bin:./__debs__/bin:$PATH
 export PATH
 
 #{runtime_run_code(local)}

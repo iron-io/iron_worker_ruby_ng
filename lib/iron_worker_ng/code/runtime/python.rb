@@ -10,7 +10,7 @@ module IronWorkerNG
 
         def runtime_run_code(local = false)
           <<RUN_CODE
-PATH=`pwd`/__pips__/bin:$PATH PYTHONPATH=`pwd`/__pips__ python -u #{File.basename(@exec.path)} "$@"
+PATH=`pwd`/__pips__/__bin__:$PATH PYTHONPATH=`pwd`/__pips__ python -u #{File.basename(@exec.path)} "$@"
 RUN_CODE
         end
       end
