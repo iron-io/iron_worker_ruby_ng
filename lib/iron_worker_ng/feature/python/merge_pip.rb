@@ -28,8 +28,12 @@ module IronWorkerNG
 
             pip_packages_dir = Dir.glob(pip_dir_name + '/usr/' + local + '/lib/*python*').first
 
+            pips_dir_name = ::Dir.tmpdir + '/' + ::Dir::Tmpname.make_tmpname('iron-worker-ng-', 'pips')
+
+            ::Dir.mkdir(pips_dir_name)
+
             deps_string = @deps.map { |dep| dep.version == '' ? dep.name : dep.name + dep.version }.join(' ')
-            install_command = pip_dir_name + '/usr/' + local + '/bin/pip install --user -U -I ' + deps_string
+            install_command = pip_dir_name + '/usr/' + local + '/bin/pip install --user -U -I --root ' + pips_dir_name + ' ' + deps_string
 
             fork do
               ENV['PYTHONPATH'] = pip_packages_dir + '/site_packages:' + pip_packages_dir + '/dist-packages'
@@ -38,10 +42,10 @@ module IronWorkerNG
 
             Process.wait
 
-            pips_packages_dir = Dir.glob(ENV['HOME'] + '/.local/lib/*python*').first
+            pips_packages_dir = Dir.glob(pips_dir_name + ENV['HOME'] + '/.local/lib/*python*').first
 
-            if File.exists?(ENV['HOME'] + '/.local/bin')
-              container_add(container, '__pips__/__bin__', ENV['HOME'] + '/.local/bin', true)
+            if File.exists?(pips_dir_name + ENV['HOME'] + '/.local/bin')
+              container_add(container, '__pips__/__bin__', pips_dir_name + ENV['HOME'] + '/.local/bin', true)
             end
 
             if File.exists?(pips_packages_dir + '/site-packages')
@@ -52,6 +56,7 @@ module IronWorkerNG
               container_add(container, '__pips__', pips_packages_dir + '/dist-packages' , true)
             end
 
+            FileUtils.rm_rf(pips_dir_name)
             FileUtils.rm_rf(pip_dir_name)
           end
         end
