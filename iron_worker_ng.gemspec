@@ -27,4 +27,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'twitter'
   gem.add_development_dependency 'actionmailer'
   gem.add_development_dependency 'iron_cache', '>= 1.4.0'
+  gem.add_development_dependency 'go'
 end
