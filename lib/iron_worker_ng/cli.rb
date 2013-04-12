@@ -77,7 +77,6 @@ module IronWorkerNG
       if options[:worker_config]
         log "Loading worker_config at #{options[:worker_config]}"
         c = IO.read(options[:worker_config])
-        puts "c: #{c}"
         options[:config] = c
       end
 
