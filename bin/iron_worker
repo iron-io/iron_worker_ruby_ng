@@ -19,11 +19,15 @@ IronCore::Logger.logger.formatter = IronWorkerCLILoggerFormatter.new
 @cli = IronWorkerNG::CLI.new
 
 def common_opts(opts)
+  opts.on('--config CONFIG', 'config file') do |v|
+    @cli.config = v
+  end
+
   opts.on('-e', '--env ENV', 'environment') do |v|
     @cli.env = v
   end
 
-  opts.on('--project-id PROJECT_ID', 'project_id') do |v|
+  opts.on('--project-id PROJECT_ID', 'project id') do |v|
     @cli.project_id = v
   end
 end

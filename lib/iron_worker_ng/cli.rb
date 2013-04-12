@@ -6,6 +6,7 @@ module IronWorkerNG
     def initialize
       @client = nil
 
+      @config = nil
       @env = nil
       @project_id = nil
     end
@@ -14,6 +15,12 @@ module IronWorkerNG
       beta = ENV['IRON_BETA']
 
       beta == '1' || beta == 1 || beta == 'true' || beta == true || beta == 'beta'
+    end
+
+    def config=(config)
+      @client = nil
+
+      @config = config
     end
 
     def env=(env)
@@ -40,7 +47,7 @@ module IronWorkerNG
       if @client.nil?
         log_group "Creating client"
 
-        @client = IronWorkerNG::Client.new(:env => @env, :project_id => @project_id)
+        @client = IronWorkerNG::Client.new(:config => @config, :env => @env, :project_id => @project_id)
 
         project = client.projects.get
 
