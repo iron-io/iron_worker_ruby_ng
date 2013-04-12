@@ -77,6 +77,10 @@ if command == 'upload'
       options[:retries_delay] = v
     end
 
+    opts.on('--worker-config CONFIG_FILE', 'config file for worker') do |v|
+      options[:worker_config] = v
+    end
+
     opts.on('-h', '--host HOST', String, 'host name, eg: www.mydomain.com') do |v|
       options[:host] = v
     end

@@ -74,6 +74,13 @@ module IronWorkerNG
       log "Retries delay set to '#{options[:retries_delay]}'" unless options[:retries_delay].nil?
       log "Host set to '#{options[:host]}'" unless options[:host].nil?
 
+      if options[:worker_config]
+        log "Loading worker_config at #{options[:worker_config]}"
+        c = IO.read(options[:worker_config])
+        puts "c: #{c}"
+        options[:config] = c
+      end
+
       if code.remote_build_command || code.full_remote_build
         log_group "Uploading and building code package '#{code.name}'"
       else

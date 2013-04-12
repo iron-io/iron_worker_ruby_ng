@@ -46,6 +46,7 @@ ENV['GEM_HOME'] = root + '__gems__'
 $:.unshift("\#{root}")
 
 require 'json'
+require 'yaml'
 
 @iron_task_id = task_id
 
@@ -64,6 +65,12 @@ if config_file
     @config = JSON.parse(@config)
     @config = IronWorkerNGHash.new(@config)
   rescue
+    # try yaml
+    begin
+      @config = YAML.load(@config)
+      @config = IronWorkerNGHash.new(@config)
+    rescue
+    end
   end
 end
 
