@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    iron_worker_ng (0.16.2)
+    iron_worker_ng (0.16.3)
       bundler (>= 1.2.0)
       iron_core (>= 0.5.1)
       rubyzip (>= 0.9.9)
@@ -17,33 +17,28 @@ GEM
     activesupport (2.3.18)
     ansi (1.4.3)
     builder (3.2.0)
-    concur (2.0.0)
     faraday (0.8.7)
       multipart-post (~> 1.1)
-    go (1.0.1)
-      concur
     hashie (2.0.3)
     iron_cache (1.4.0)
       iron_core (>= 0.5.1)
-    iron_core (0.5.2)
+    iron_core (0.6.0)
       rest (>= 2.2.0)
     mime-types (1.22)
-    minitest (4.7.0)
-    minitest-reporters (0.14.13)
+    minitest (4.7.1)
+    minitest-reporters (0.14.16)
       ansi
       builder
       minitest (>= 2.12, < 5.0)
       powerbar
     multi_json (1.7.2)
     multipart-post (1.2.0)
-    net-http-persistent (2.8)
     powerbar (1.0.11)
       ansi (~> 1.4.0)
       hashie (>= 1.1.0)
     rack (1.1.6)
     rake (10.0.4)
     rest (2.6.0)
-      net-http-persistent
       rest-client (>= 0.3.0)
     rest-client (1.6.7)
       mime-types (>= 1.16)
@@ -60,7 +55,6 @@ PLATFORMS
 
 DEPENDENCIES
   actionmailer
-  go
   iron_cache (>= 1.4.0)
   iron_worker_ng!
   minitest
