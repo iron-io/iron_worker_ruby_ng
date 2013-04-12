@@ -1,2 +1,0 @@
-exec 'sample_worker.rb'
-gemfile 'Gemfile', :default, :extra

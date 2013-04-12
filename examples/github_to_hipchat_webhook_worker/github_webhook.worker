@@ -1,3 +1,0 @@
-exec 'github_to_hipchat_webhook_worker.rb'
-file 'webhook_config.yml'
-gem 'hipchat-api'
