@@ -109,6 +109,7 @@ module IronWorkerNG
 
       log "Code package '#{name}' queued with id='#{id}'"
       log "Check 'https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{id}' for more info"
+      return id
     end
 
     def schedule(name, params, options)
@@ -139,7 +140,7 @@ module IronWorkerNG
       live = params[:live] || params['live']
       wait = params[:wait] || params['wait']
 
-      log_group "Getting log for task with id='#{task_id}'"
+      log_group "Getting log for task with id='#{task_id}'..."
 
       log = ''
 
@@ -156,7 +157,9 @@ module IronWorkerNG
         log = client.tasks.log(task_id)
       end
 
-      print log
+      puts "== LOG START =="
+      puts log
+      puts "== LOG END =="
 
       if live
         client.tasks.wait_for(task_id) do |task|
