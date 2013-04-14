@@ -70,7 +70,7 @@ Use the `-p` parameter to pass in a payload:
 
 Use the `--wait` parameter to queue a task, wait for it to complete and print the log.
 
-    iron_worker queue hello -p "{\"hi\": \"world\"}"
+    iron_worker queue hello -p "{\"hi\": \"world\"}" --wait
 
 Most commonly you'll be queuing up tasks from code though, so you can do this:
 
