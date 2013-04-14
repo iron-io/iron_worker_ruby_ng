@@ -68,6 +68,10 @@ Use the `-p` parameter to pass in a payload:
 
     iron_worker queue hello -p "{\"hi\": \"world\"}"
 
+Use the `--wait` parameter to queue a task, wait for it to complete and print the log.
+
+    iron_worker queue hello -p "{\"hi\": \"world\"}"
+
 Most commonly you'll be queuing up tasks from code though, so you can do this:
 
 ```ruby
@@ -77,6 +81,18 @@ client = IronWorkerNG::Client.new
    client.tasks.create("hello", "foo"=>"bar")
 end
 ```
+
+## Get task status
+
+When you call `iron_worker queue X`, you'll see the task ID in the output which you can use to get the status.
+
+    iron_worker info task 5032f7360a4681382838e082
+
+## Get task log
+
+Similar to getting status, get the task ID in the queue command output, then:
+
+    iron_worker log 5032f7360a4681382838e082 --wait
 
 ## Retry a Task
 

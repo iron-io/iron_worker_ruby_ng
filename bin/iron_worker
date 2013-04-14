@@ -137,6 +137,13 @@ elsif command == 'queue' || command == 'schedule'
       options[:delay] = v
     end
 
+    if command == 'queue'
+      opts.on('-w', '--wait', 'wait for task to finish and print log') do |v|
+        params[:wait] = true
+      end
+    end
+
+
     if command == 'schedule'
       opts.on('--start-at TIME', 'start task at specified time') do |v|
         options[:start_at] = Time.parse(v)
@@ -172,7 +179,10 @@ elsif command == 'queue' || command == 'schedule'
   end
 
   if command == 'queue'
-    @cli.queue($*[0], params, options)
+    task_id = @cli.queue($*[0], params, options)
+    if params[:wait]
+      @cli.getlog(task_id, params, options)
+    end
   else
     @cli.schedule($*[0], params, options)
   end
