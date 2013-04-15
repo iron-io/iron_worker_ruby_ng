@@ -137,6 +137,12 @@ elsif command == 'queue' || command == 'schedule'
       options[:delay] = v
     end
 
+    if command == 'queue'
+      opts.on('--wait', Integer, 'wait for task to complete and print log') do |v|
+        options[:wait] = true
+      end
+    end
+
     if command == 'schedule'
       opts.on('--start-at TIME', 'start task at specified time') do |v|
         options[:start_at] = Time.parse(v)
@@ -187,6 +193,10 @@ elsif command == 'retry'
       options[:delay] = v
     end
 
+    opts.on('--wait', Integer, 'wait for task to complete and print log') do |v|
+      options[:wait] = true
+    end
+
     common_opts(opts)
   end
 
@@ -211,8 +221,8 @@ elsif command == 'log'
   opts = OptionParser.new do |opts|
     opts.banner = "usage: iron_worker log TASK_ID [OPTIONS]"
 
-    opts.on('-w', '--wait', 'wait for task') do |v|
-      params[:wait] = true
+    opts.on('-w', '--wait', 'wait for task to complete') do |v|
+      options[:wait] = true
     end
 
     common_opts(opts)

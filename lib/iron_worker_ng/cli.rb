@@ -109,6 +109,10 @@ module IronWorkerNG
 
       log "Code package '#{name}' queued with id='#{id}'"
       log "Check 'https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{id}' for more info"
+
+      if options[:wait] == true
+        getlog(id, {}, {:wait => true})
+      end
     end
 
     def schedule(name, params, options)
@@ -131,41 +135,40 @@ module IronWorkerNG
 
       log "Task retried with id='#{retry_task_id}'"
       log "Check 'https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{retry_task_id}' for more info"
+
+      if options[:wait] == true
+        getlog(retry_task_id, {}, {:wait => true})
+      end
     end
 
     def getlog(task_id, params, options)
       client
 
-      live = params[:live] || params['live']
-      wait = params[:wait] || params['wait']
+      wait = options[:wait] || options['wait']
 
       log_group "Getting log for task with id='#{task_id}'"
 
       log = ''
 
-      if live
+      if wait
         begin
           log = client.tasks.log(task_id)
-        rescue IronCore::Error
+        rescue
         end
       else
-        if wait
-          client.tasks.wait_for(task_id)
-        end
-
         log = client.tasks.log(task_id)
       end
 
       print log
 
-      if live
+      if wait
         client.tasks.wait_for(task_id) do |task|
           if task.status == 'running'
             begin
               next_log = client.tasks.log(task_id)
               print next_log[log.length .. - 1]
               log = next_log
-            rescue IronCore::Error
+            rescue
             end
           end
         end
@@ -173,7 +176,7 @@ module IronWorkerNG
         begin
           next_log = client.tasks.log(task_id)
           print next_log[log.length .. - 1]
-        rescue IronCore::Error
+        rescue
         end
       end
     end
