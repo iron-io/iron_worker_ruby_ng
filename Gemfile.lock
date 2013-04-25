@@ -17,15 +17,19 @@ GEM
     activesupport (2.3.18)
     ansi (1.4.3)
     builder (3.2.0)
+    concur (2.1.0)
+      concur
     faraday (0.8.7)
       multipart-post (~> 1.1)
+    go (1.1.0)
+      concur
     hashie (2.0.3)
     iron_cache (1.4.0)
       iron_core (>= 0.5.1)
     iron_core (0.6.0)
       rest (>= 2.2.0)
     mime-types (1.22)
-    minitest (4.7.1)
+    minitest (4.7.2)
     minitest-reporters (0.14.16)
       ansi
       builder
@@ -55,6 +59,7 @@ PLATFORMS
 
 DEPENDENCIES
   actionmailer
+  go
   iron_cache (>= 1.4.0)
   iron_worker_ng!
   minitest
