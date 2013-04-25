@@ -138,11 +138,10 @@ elsif command == 'queue' || command == 'schedule'
     end
 
     if command == 'queue'
-      opts.on('-w', '--wait', 'wait for task to finish and print log') do |v|
-        params[:wait] = true
+      opts.on('--wait', Integer, 'wait for task to complete and print log') do |v|
+        options[:wait] = true
       end
     end
-
 
     if command == 'schedule'
       opts.on('--start-at TIME', 'start task at specified time') do |v|
@@ -179,10 +178,7 @@ elsif command == 'queue' || command == 'schedule'
   end
 
   if command == 'queue'
-    task_id = @cli.queue($*[0], params, options)
-    if params[:wait]
-      @cli.getlog(task_id, params, options)
-    end
+    @cli.queue($*[0], params, options)
   else
     @cli.schedule($*[0], params, options)
   end
@@ -195,6 +191,10 @@ elsif command == 'retry'
 
     opts.on('--delay DELAY', Integer, 'delay before start in seconds') do |v|
       options[:delay] = v
+    end
+
+    opts.on('--wait', Integer, 'wait for task to complete and print log') do |v|
+      options[:wait] = true
     end
 
     common_opts(opts)
@@ -221,8 +221,8 @@ elsif command == 'log'
   opts = OptionParser.new do |opts|
     opts.banner = "usage: iron_worker log TASK_ID [OPTIONS]"
 
-    opts.on('-w', '--wait', 'wait for task') do |v|
-      params[:wait] = true
+    opts.on('-w', '--wait', 'wait for task to complete') do |v|
+      options[:wait] = true
     end
 
     common_opts(opts)
