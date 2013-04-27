@@ -30,6 +30,10 @@ def common_opts(opts)
   opts.on('--project-id PROJECT_ID', 'project id') do |v|
     @cli.project_id = v
   end
+
+  opts.on('--token TOKEN', 'token') do |v|
+    @cli.token = v
+  end
 end
 
 if $*.size == 1 && ($*[0] == '-v' || $*[0] == '--version')

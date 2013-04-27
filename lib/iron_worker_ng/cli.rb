@@ -9,6 +9,7 @@ module IronWorkerNG
       @config = nil
       @env = nil
       @project_id = nil
+      @token = nil
     end
 
     def beta?
@@ -35,6 +36,12 @@ module IronWorkerNG
       @project_id = project_id
     end
 
+    def token=(token)
+      @client = nil
+
+      @token = token
+    end
+
     def log(msg)
       IronCore::Logger.info 'IronWorkerNG', msg
     end
@@ -47,7 +54,7 @@ module IronWorkerNG
       if @client.nil?
         log_group "Creating client"
 
-        @client = IronWorkerNG::Client.new(:config => @config, :env => @env, :project_id => @project_id)
+        @client = IronWorkerNG::Client.new(:config => @config, :env => @env, :project_id => @project_id, :token => @token)
 
         project = client.projects.get
 
