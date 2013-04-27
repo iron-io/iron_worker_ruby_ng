@@ -41,7 +41,7 @@ if $*.size == 1 && ($*[0] == '-v' || $*[0] == '--version')
   exit 0
 end
 
-commands = ['upload', 'queue', 'retry', 'schedule', 'log', 'run', 'install', 'webhook', 'info']
+commands = ['upload', 'patch', 'queue', 'retry', 'schedule', 'log', 'run', 'install', 'webhook', 'info']
 
 if $*.size == 0 || (not commands.include?($*[0]))
   puts 'usage: iron_worker COMMAND [OPTIONS]'
@@ -114,6 +114,40 @@ if command == 'upload'
   end
 
   @cli.upload($*[0], params, options)
+elsif command == 'patch'
+  params = {}
+  options = {}
+
+  opts = OptionParser.new do |opts|
+    opts.banner = "usage: iron_worker patch CODE_PACKAGE_NAME [OPTIONS]"
+
+    opts.on('-p', '--patch PATCH', 'patch file') do |v|
+      options[:patch] = v
+    end
+
+    common_opts(opts)
+  end
+
+  begin
+    opts.parse!
+  rescue OptionParser::ParseError
+    puts $!.to_s
+    exit 1
+  end
+
+  unless $*.size == 1
+    puts 'Please specify code package name'
+    puts opts
+    exit 1
+  end
+
+  if options[:patch].nil?
+    puts 'Please specify patch'
+    puts opts
+    exit 1
+  end
+
+  @cli.patch($*[0], params, options)
 elsif command == 'queue' || command == 'schedule'
   params = {}
   options = {}

@@ -107,6 +107,18 @@ module IronWorkerNG
       end
     end
 
+    def patch(name, params, options)
+      client
+
+      log_group "Patching code package '#{name}'"
+
+      code_id = client.codes.patch(name, options)._id
+      code_info = client.codes.get(code_id)
+
+      log "Patched code package uploaded with id='#{code_id}' and revision='#{code_info.rev}'"
+      log "Check 'https://hud.iron.io/tq/projects/#{client.api.project_id}/code/#{code_id}' for more info"
+    end
+
     def queue(name, params, options)
       client
 

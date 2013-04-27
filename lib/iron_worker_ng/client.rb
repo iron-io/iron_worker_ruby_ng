@@ -1,5 +1,7 @@
 require 'ostruct'
 require 'base64'
+require 'tmpdir'
+require 'fileutils'
 
 require 'iron_worker_ng/api_client'
 
@@ -149,6 +151,93 @@ module IronWorkerNG
 
       File.unlink(container_file)
 
+      res['_id'] = res['id']
+      OpenStruct.new(res)
+    end
+
+    def codes_patch(name, options = {})
+      IronCore::Logger.debug 'IronWorkerNG', "Calling codes.patch with name='#{name}' and options='#{options.to_s}'"
+  
+      code = codes.list(:all => true).find { |c| c.name == name }
+
+      if code.nil?
+        IronCore::Logger.error 'IronWorkerNG', "Can't find code with name='#{name}' to patch", IronCore::Error
+      end
+
+      patcher_code_name = name + (name[0 .. 0].upcase == name[0 .. 0] ? '::Patcher' : '::patcher')
+
+      exec_dir = ::Dir.tmpdir + '/' + ::Dir::Tmpname.make_tmpname('iron-worker-ng-', 'exec')
+      exec_file_name = exec_dir + '/patchcer.rb'
+
+      FileUtils.mkdir_p(exec_dir)
+
+      exec_file = File.open(exec_file_name, 'w')
+      exec_file.write <<EXEC_FILE
+# #{IronWorkerNG.full_version}
+
+File.open('.gemrc', 'w') do |gemrc|
+  gemrc.puts('gem: --no-ri --no-rdoc')
+end
+
+`gem install iron_worker_ng`
+
+require 'iron_worker_ng'
+
+client = IronWorkerNG::Client.new(JSON.parse(params[:client_options]))
+
+original_code = client.codes.get(params[:code_id])
+original_code_data = client.codes.download(params[:code_id])
+
+`mkdir code`
+original_code_zip = File.open('code/code.zip', 'w')
+original_code_zip.write(original_code_data)
+original_code_zip.close
+`cd code && unzip code.zip && rm code.zip && cd ..`
+
+patch_file = Dir['patch/*'].first
+
+system("cd code && patch -fp1 <../\#{patch_file} && cd ..") || exit(1)
+
+code_container = IronWorkerNG::Code::Container::Zip.new
+
+Dir['code/*'].each do |entry|
+  code_container.add(entry[5 .. -1], entry)
+end
+
+code_container.close
+
+res = client.api.codes_create(original_code.name, code_container.name, 'sh', '__runner__.sh', :config => original_code.config)
+
+res['_id'] = res['id']
+res = OpenStruct.new(res)
+
+client.tasks.set_progress(iron_task_id, :msg => res.marshal_dump.to_json)
+EXEC_FILE
+      exec_file.close
+
+      patcher_code = IronWorkerNG::Code::Base.new
+      patcher_code.runtime = :ruby
+      patcher_code.name = patcher_code_name
+      patcher_code.exec(exec_file_name)
+      patcher_code.file(options[:patch], 'patch')
+
+      patcher_container_file = patcher_code.create_container
+
+      @api.codes_create(patcher_code_name, patcher_container_file, 'sh', '__runner__.sh', {})
+
+      FileUtils.rm_rf(exec_dir)
+      File.unlink(patcher_container_file)
+
+      patcher_task = tasks.create(patcher_code_name, :code_id => code._id, :client_options => @api.options.to_json)
+
+      patcher_task = tasks.wait_for(patcher_task._id)
+
+      if patcher_task.status != 'complete'
+        log = tasks.log(patcher_task._id)
+        IronCore::Logger.error 'IronWorkerNG', "Error while patching worker\n" + log, IronCore::Error
+      end
+
+      res = JSON.parse(patcher_task.msg)
       res['_id'] = res['id']
       OpenStruct.new(res)
     end
