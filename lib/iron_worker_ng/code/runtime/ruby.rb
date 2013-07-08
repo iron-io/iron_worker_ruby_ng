@@ -40,8 +40,8 @@ task_id = nil
   task_id = $*[i + 1] if $*[i] == '-id'
 end
 
-ENV['GEM_PATH'] = ([root + '__gems__'] + (ENV['GEM_PATH'] || '').split(':')).join(':')
-ENV['GEM_HOME'] = root + '__gems__'
+ENV['GEM_PATH'] = ([File.join(root, '__gems__')] + Gem.path).join(':')
+ENV['GEM_HOME'] = File.join(root, '__gems__')
 
 $:.unshift("\#{root}")
 
