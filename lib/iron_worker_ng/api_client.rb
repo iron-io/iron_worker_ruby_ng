@@ -83,7 +83,13 @@ module IronWorkerNG
 
     def tasks_log(id)
       check_id(id)
-      parse_response(get("projects/#{@project_id}/tasks/#{id}/log"), false)
+      if block_given?
+        stream_get("projects/#{@project_id}/tasks/#{id}/log") do |chunk|
+          yield chunk
+        end
+      else
+        parse_response(get("projects/#{@project_id}/tasks/#{id}/log"), false)
+      end
     end
 
     def tasks_set_progress(id, options = {})
