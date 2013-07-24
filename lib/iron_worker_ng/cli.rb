@@ -169,10 +169,11 @@ module IronWorkerNG
 
       if wait
         log_size = print_streamed_log rescue 0
+
         if log_size == 0
-          client.tasks.wait_for(task_id) do |task|
-            print_streamed_log
-          end
+          client.tasks.wait_for(task_id)
+
+          print_streamed_log
         end
       else
         print_streamed_log
