@@ -315,7 +315,11 @@ EXEC_FILE
     def tasks_log(task_id)
       IronCore::Logger.debug 'IronWorkerNG', "Calling tasks.log with task_id='#{task_id}'"
 
-      @api.tasks_log(task_id)
+      if block_given?
+        @api.tasks_log(task_id) { |chunk| yield(chunk) }
+      else
+        @api.tasks_log(task_id)
+      end
     end
 
     def tasks_set_progress(task_id, options = {})
