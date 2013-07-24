@@ -167,36 +167,15 @@ module IronWorkerNG
 
       log_group "Getting log for task with id='#{task_id}'"
 
-      log = ''
-
       if wait
-        begin
-          log = client.tasks.log(task_id)
-        rescue
-        end
-      else
-        log = client.tasks.log(task_id)
-      end
-
-      print log
-
-      if wait
-        client.tasks.wait_for(task_id) do |task|
-          if task.status == 'running'
-            begin
-              next_log = client.tasks.log(task_id)
-              print next_log[log.length .. - 1]
-              log = next_log
-            rescue
-            end
+        log_size = print_streamed_log rescue 0
+        if log_size == 0
+          client.tasks.wait_for(task_id) do |task|
+            print_streamed_log
           end
         end
-
-        begin
-          next_log = client.tasks.log(task_id)
-          print next_log[log.length .. - 1]
-        rescue
-        end
+      else
+        print_streamed_log
       end
     end
 
@@ -310,6 +289,16 @@ module IronWorkerNG
       t.each do |r|
         log sprintf('%-16s %s', r[0], r[1])
       end
+    end
+
+    private
+    def print_streamed_log
+      log_size = 0
+      client.tasks.log(task_id) do |chunk|
+        log_size += chunk.size
+        print chunk
+      end
+      log_size
     end
   end
 end
