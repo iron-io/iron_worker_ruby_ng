@@ -69,7 +69,7 @@ module IronWorkerNG
 
       log_group "Creating code package"
 
-      code = IronWorkerNG::Code::Base.new(name)
+      code = IronWorkerNG::Code::Base.new(:name => name, :env => @env)
 
       code.name(params[:name]) unless params[:name].nil?
 
@@ -97,7 +97,7 @@ module IronWorkerNG
         builder_task_id = client.codes.create_async(code, options)
 
         log 'Code package is building'
-        log "Check 'https://hud.iron.io/tq/projects/#{client.api.project_id}/jobs/#{builder_task_id}' for more info"
+        log "Check 'https://hud.iron.io/tq/projects/#{client.api.project_id}/tasks/#{builder_task_id}' for more info"
       else
         code_id = client.codes.create(code, options)._id
         code_info = client.codes.get(code_id)
