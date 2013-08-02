@@ -17,6 +17,7 @@ module IronWorkerNG
 
       attr_accessor :base_dir
       attr_accessor :dest_dir
+      attr_accessor :env
 
       attr_accessor :use_local_iron_worker_ng
 
@@ -46,21 +47,23 @@ module IronWorkerNG
         worker_files = []
 
         if args.length == 1 && args[0].is_a?(String)
-          if args[0].end_with?('.worker')
-            @name = args[0].gsub(/\.worker$/, '')
-          else
-            @name = args[0]
-          end
+          @name = args[0]
         elsif args.length == 1 && args[0].is_a?(Hash)
           @name = args[0][:name] || args[0]['name']
 
           worker_file = args[0][:workerfile] || args[0]['workerfile']
           worker_files << worker_file unless worker_file.nil?
 
+          @env = args[0][:env] || args[0]['env']
+
           exec = args[0][:exec] || args[0]['exec'] || args[0][:worker] || args[0]['worker']
           unless exec.nil?
             merge_exec(exec)
           end
+        end
+
+        if @name.is_a?(String) && @name.end_with?('.worker')
+          @name = @name.gsub(/\.worker$/, '')
         end
 
         if @name.nil? and (not @exec.nil?)
