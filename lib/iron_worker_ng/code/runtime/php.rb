@@ -13,7 +13,7 @@ module IronWorkerNG
 function getArgs() {
   global $argv;
 
-  $args = array('task_id' => null, 'dir' => null, 'payload' => array());
+  $args = array('task_id' => null, 'dir' => null, 'payload' => array(), 'config' => null);
 
   foreach ($argv as $k => $v) {
     if (empty($argv[$k + 1])) continue;
@@ -26,8 +26,18 @@ function getArgs() {
 
       $parsed_payload = json_decode($args['payload']);
 
-      if ($parsed_payload != NULL) {
+      if ($parsed_payload != null) {
         $args['payload'] = $parsed_payload;
+      }
+    }
+
+    if ($v == '-config' && file_exists($argv[$k + 1])) {
+      $args['config'] = file_get_contents($argv[$k + 1]);
+
+      $parsed_config = json_decode($args['config'], true);
+
+      if ($parsed_config != null) {
+          $args['config'] = $parsed_config;
       }
     }
   }
@@ -39,6 +49,12 @@ function getPayload() {
   $args = getArgs();
 
   return $args['payload'];
+}
+
+function getConfig(){
+  $args = getArgs();
+
+  return $args['config'];
 }
 
 require '#{File.basename(@exec.path)}';
