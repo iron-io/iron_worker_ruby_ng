@@ -14,11 +14,11 @@ var params = null;
 var task_id = null;
 
 process.argv.forEach(function(val, index, array) {
-  if (val == "-payload" && index < process.argv.length) {
+  if (val == "-payload") {
     params = JSON.parse(fs.readFileSync(process.argv[index + 1], 'ascii'));
   }
 
-  if (val == "-id" && index < process.argv.length) {
+  if (val == "-id") {
     task_id = process.argv[index + 1];
   }
 });
