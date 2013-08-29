@@ -1,10 +1,10 @@
 PATH
   remote: .
   specs:
-    iron_worker_ng (1.0.0)
+    iron_worker_ng (1.0.2)
       bundler (>= 1.2.0)
-      iron_core (>= 0.5.1)
-      rubyzip (>= 0.9.9)
+      iron_core (>= 1.0.0)
+      rubyzip (= 0.9.9)
 
 GEM
   remote: https://rubygems.org/
@@ -25,7 +25,7 @@ GEM
     hashie (2.0.5)
     iron_cache (1.4.0)
       iron_core (>= 0.5.1)
-    iron_core (0.6.2)
+    iron_core (1.0.1)
       rest (>= 2.2.0)
     mime-types (1.23)
     minitest (4.7.5)
