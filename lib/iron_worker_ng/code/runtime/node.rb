@@ -15,7 +15,7 @@ var task_id = null;
 
 process.argv.forEach(function(val, index, array) {
   if (val == "-payload") {
-    params = JSON.parse(fs.readFileSync(process.argv[index + 1], 'ascii'));
+    params = JSON.parse(fs.readFileSync(process.argv[index + 1], 'utf8'));
   }
 
   if (val == "-id") {
