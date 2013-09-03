@@ -550,7 +550,7 @@ puts client.schedules.get('1234567890').last_run_time
 Create a new scheduled task for the code package specified by `code_name`, passing the params hash to it as a data payload and returning a scheduled task object with only the `id` field filled. Visit http://dev.iron.io/worker/reference/api/#schedule_a_task for more information about the available options.
 
 ```ruby
-schedule = client.schedules.create('MyWorker', {:client => 'Joe'}, {:start_at => Time.now + 3600})
+schedule = client.schedules.create('MyWorker', {:client => 'Joe'}, {:start_at => Time.now + 3600, :run_every =>60, :priority => 0, :run_times => 100, :end_at: Time.now + 2592000, Time.now + 84600})
 puts schedule.id
 ```
 
