@@ -32,8 +32,6 @@ module IronWorkerNG
 
             @features << IronWorkerNG::Feature::Common::SetEnv::Feature.new(self, key, value)
           end
-
-          alias :env :set_env
         end
       end
     end
