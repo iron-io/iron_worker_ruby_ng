@@ -41,7 +41,7 @@ module IronWorkerNG
 
             ::Dir.mkdir(pips_dir_name)
 
-            deps_string = @deps.map { |dep| dep.version == '' ? dep.name : dep.name + dep.version }.join(' ')
+            deps_string = @deps.map { |dep| dep.name + dep.version.to_s.sub(/\A\d/, '==\0') }.join(' ')
             install_command = pip_binary + ' install -U -I --user --root ' + pips_dir_name + ' ' + deps_string
 
             fork do
