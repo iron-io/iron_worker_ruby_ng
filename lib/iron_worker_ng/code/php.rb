@@ -4,7 +4,7 @@ module IronWorkerNG
   module Code
     class PHP < IronWorkerNG::Code::Base
       def initialize(*args, &block)
-        runtime(:python)
+        runtime(:php)
 
         super(*args, &block)
       end

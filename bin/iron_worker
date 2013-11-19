@@ -8,7 +8,7 @@ require 'iron_worker_ng/cli'
 
 class IronWorkerCLILoggerFormatter < ::Logger::Formatter
   def call(severity, time, proname, msg)
-    msg = IronWorkerNG::CLI::LOG_ENTRY + msg unless msg.start_with?(IronWorkerNG::CLI::LOG_GROUP)
+    msg = IronWorkerNG::CLI::LOG_ENTRY + msg unless msg[0, IronWorkerNG::CLI::LOG_GROUP.length] == IronWorkerNG::CLI::LOG_GROUP
 
     msg + "\n"
   end
