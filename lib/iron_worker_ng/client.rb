@@ -359,7 +359,7 @@ EXEC_FILE
     def schedules_list(options = {})
       IronCore::Logger.debug 'IronWorkerNG', "Calling schedules.list with options='#{options.to_s}'"
 
-      @api.schedules_list(options)['schedules'].map { |s| OpenStruct.new(s) }
+      @api.schedules_list(options)['schedules'].map { |s| OpenStruct.new(s.merge('_id' => s['id'])) }
     end
 
     def schedules_get(schedule_id)
