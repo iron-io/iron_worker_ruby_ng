@@ -95,9 +95,12 @@ module IronWorkerNG
         options[:config] = options[:config].to_json
       end
 
-      container_file = code.create_container
-
-      if code.remote_build_command.nil? && (not code.full_remote_build)
+      if code.zip_package
+        res = nil
+        IronWorkerNG::Fetcher.fetch_to_file(code.zip_package) do |file|
+          res = @api.codes_create(code.name, file, 'sh', '__runner__.sh', options)
+        end
+      elsif code.remote_build_command.nil? && (not code.full_remote_build)
         res = @api.codes_create(code.name, container_file, 'sh', '__runner__.sh', options)
       else
         builder_code_name = code.name + (code.name[0 .. 0].upcase == code.name[0 .. 0] ? '::Builder' : '::builder')
@@ -119,7 +122,7 @@ module IronWorkerNG
         res = JSON.parse(builder_task.msg)
       end
 
-      File.unlink(container_file)
+      File.unlink(container_file) if code.zip_package.nil?
 
       res['_id'] = res['id']
       OpenStruct.new(res)
