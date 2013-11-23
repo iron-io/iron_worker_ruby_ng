@@ -20,6 +20,8 @@ module IronWorkerNG
       attr_accessor :dest_dir
       attr_accessor :env
 
+      attr_accessor :zip_package
+
       attr_accessor :use_local_iron_worker_ng
 
       undef exec
@@ -43,6 +45,8 @@ module IronWorkerNG
 
         @name = nil
         @exec = nil
+
+        @zip_package = nil
 
         @use_local_iron_worker_ng = false
 
@@ -68,11 +72,16 @@ module IronWorkerNG
           @name = @name.gsub(/\.worker$/, '')
         end
 
+        if @name.is_a?(String) && @name.end_with?('.zip')
+          @zip_package = @name
+          @name = @name.gsub(/\.zip/, '')
+        end
+
         if @name.nil? and (not @exec.nil?)
           @name = guess_name_for_path(@exec.path)
         end
 
-        unless @name.nil?
+        if (not @name.nil?) && @zip_package.nil?
           worker_files << @name + '.worker'
         end
 
