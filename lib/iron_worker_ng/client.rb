@@ -95,6 +95,8 @@ module IronWorkerNG
         options[:config] = options[:config].to_json
       end
 
+      container_file = code.create_container
+
       if code.zip_package
         res = nil
         IronWorkerNG::Fetcher.fetch_to_file(code.zip_package) do |file|

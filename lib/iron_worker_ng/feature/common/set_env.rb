@@ -28,7 +28,7 @@ module IronWorkerNG
 
         module InstanceMethods
           def set_env(key, value)
-            IronCore::Logger.info 'IronWorkerNG', "Setting ENV variable with name='#{key}' and value='#{@value}'"
+            IronCore::Logger.info 'IronWorkerNG', "Setting ENV variable with name='#{key}' and value='#{value}'"
 
             @features << IronWorkerNG::Feature::Common::SetEnv::Feature.new(self, key, value)
           end
