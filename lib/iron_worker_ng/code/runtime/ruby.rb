@@ -106,6 +106,10 @@ unless #{@exec.arg(:class, 0) == nil}
     end
   end
 
+  if exec_inst.respond_to?(:iron_task_id=)
+    exec_inst.send(:iron_task_id=, iron_task_id)
+  end
+
   exec_inst.run
 end
 RUBY_RUNNER
