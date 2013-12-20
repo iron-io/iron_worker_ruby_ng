@@ -17,6 +17,10 @@ module IronWorkerNG
             super(code)
 
             @spec = spec
+
+            if @spec.name == 'nokogiri' && @spec.version.to_s.start_with?('1.6.')
+              IronCore::Logger.warn 'IronWorkerNG', "WARNING: Building nokogiri version #{@spec.version} will take a lot of time. Switching to version '~> 1.5.9' should fix this"
+            end
           end
 
           def gem_path
