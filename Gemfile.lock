@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    iron_worker_ng (1.0.4)
+    iron_worker_ng (1.1.0)
       bundler
       iron_core (>= 1.0.0)
       rubyzip (= 0.9.9)
