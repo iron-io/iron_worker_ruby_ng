@@ -4,7 +4,7 @@ PATH
     iron_worker_ng (1.1.0)
       bundler
       iron_core (>= 1.0.0)
-      rubyzip (= 0.9.9)
+      rubyzip (>= 1.0.0)
 
 GEM
   remote: https://rubygems.org/
@@ -57,7 +57,7 @@ GEM
       rest_client (>= 1.7.1)
     rest_client (1.7.2)
       netrc (~> 0.7.7)
-    rubyzip (0.9.9)
+    rubyzip (1.1.0)
     simple_oauth (0.2.0)
     test-unit (2.5.5)
     thread_safe (0.1.3)

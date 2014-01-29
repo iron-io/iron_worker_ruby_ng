@@ -1,6 +1,6 @@
-require 'zip/zip'
+require 'zip'
 
-Zip.options[:continue_on_exists_proc] = true
+Zip.continue_on_exists_proc = true
 
 module IronWorkerNG
   module Code
@@ -10,7 +10,7 @@ module IronWorkerNG
           super
 
           @name = @name + '.zip'
-          @zip = ::Zip::ZipFile.open(@name, ::Zip::ZipFile::CREATE)
+          @zip = ::Zip::File.open(@name, ::Zip::File::CREATE)
         end
 
         def add(dest, src)
