@@ -1,5 +1,5 @@
 require_relative 'helpers'
-require 'zip/zip'
+require 'zip'
 
 class CommonFeaturesTest < IWNGTest
 
