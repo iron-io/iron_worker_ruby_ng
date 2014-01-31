@@ -95,6 +95,8 @@ module IronWorkerNG
         options[:config] = options[:config].to_json
       end
 
+      options.merge!(stack:code.stack) if code.stack
+
       container_file = code.create_container
 
       if code.zip_package
@@ -137,6 +139,8 @@ module IronWorkerNG
         options = options.dup
         options[:config] = options[:config].to_json
       end
+
+      options.merge!(stack:code.stack) if code.stack
 
       container_file = code.create_container
 

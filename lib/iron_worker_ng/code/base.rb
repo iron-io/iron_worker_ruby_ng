@@ -139,6 +139,13 @@ module IronWorkerNG
         @name = name
       end
 
+      def stack(stack_name = nil)
+        @stack = stack_name if stack_name
+
+        @stack
+      end
+
+
       def remote_build_command(remote_build_command = nil)
         @remote_build_command = remote_build_command unless remote_build_command.nil?
 
