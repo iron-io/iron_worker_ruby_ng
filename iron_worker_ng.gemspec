@@ -14,7 +14,7 @@ Gem::Specification.new do |gem|
   gem.version       = IronWorkerNG::VERSION
 
   gem.required_rubygems_version = '>= 1.3.6'
-  gem.required_ruby_version = Gem::Requirement.new('>= 1.8')
+  gem.required_ruby_version = Gem::Requirement.new('>= 1.9')
 
   gem.add_runtime_dependency 'iron_core', '>= 1.0.0'
   gem.add_runtime_dependency 'bundler'

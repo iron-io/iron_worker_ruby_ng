@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    iron_worker_ng (1.1.0)
+    iron_worker_ng (1.2.0)
       bundler
       iron_core (>= 1.0.0)
       rubyzip (>= 1.0.0)
@@ -31,29 +31,30 @@ GEM
     http (0.5.0)
       http_parser.rb
     http_parser.rb (0.6.0)
-    iron_cache (1.4.0)
+    iron_cache (1.4.1)
       iron_core (>= 0.5.1)
     iron_core (1.0.3)
       rest (>= 2.6.4)
     json (1.8.1)
     memoizable (0.4.0)
       thread_safe (~> 0.1.3)
-    minitest (5.2.1)
+    minitest (5.2.2)
     minitest-reporters (1.0.0)
       ansi
       builder
       minitest (>= 5.0)
       powerbar
     multipart-post (2.0.0)
-    net-http-persistent (2.9)
+    naught (1.0.0)
+    net-http-persistent (2.9.1)
     netrc (0.7.7)
     powerbar (1.0.11)
       ansi (~> 1.4.0)
       hashie (>= 1.1.0)
     rack (1.1.6)
     rake (10.1.1)
-    rest (2.7.0)
-      net-http-persistent
+    rest (2.7.1)
+      net-http-persistent (>= 2.9.1)
       rest_client (>= 1.7.1)
     rest_client (1.7.2)
       netrc (~> 0.7.7)
@@ -62,16 +63,17 @@ GEM
     test-unit (2.5.5)
     thread_safe (0.1.3)
       atomic
-    twitter (5.5.1)
+    twitter (5.6.0)
       addressable (~> 2.3)
       buftok (~> 0.2.0)
       descendants_tracker (~> 0.0.3)
       equalizer (~> 0.0.9)
-      faraday (>= 0.8, < 0.10)
+      faraday (~> 0.9.0)
       http (~> 0.5.0)
       http_parser.rb (~> 0.6.0)
       json (~> 1.8)
       memoizable (~> 0.4.0)
+      naught (~> 1.0)
       simple_oauth (~> 0.2.0)
 
 PLATFORMS
