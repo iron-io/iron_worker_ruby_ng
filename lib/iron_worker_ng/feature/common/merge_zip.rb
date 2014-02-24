@@ -28,13 +28,18 @@ module IronWorkerNG
                 zipf.each do |f|
                   next if zipf.get_entry(f).ftype == :directory
 
-                  zipf.get_entry(f).extract(tmp_dir_name + '/' + File.basename(f.name))
+                  FileUtils::mkdir_p(tmp_dir_name + '/' + File.dirname(f.name))
+                  zipf.get_entry(f).extract(tmp_dir_name + '/' + f.name)
+                end
 
-                  container_add(container, @dest + f.name, tmp_dir_name + '/' + File.basename(f.name), true)
+                zipf.each do |f|
+                  next if zipf.get_entry(f).ftype == :directory
 
-                  FileUtils.rm(tmp_dir_name + '/' + File.basename(f.name))
+                  container_add(container, @dest + f.name, tmp_dir_name + '/' + f.name)
                 end
               end
+
+              container.commit
 
               FileUtils.rm_rf(tmp_dir_name)
             end
