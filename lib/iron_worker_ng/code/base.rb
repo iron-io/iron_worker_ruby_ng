@@ -8,6 +8,7 @@ require 'iron_worker_ng/feature/common/merge_exec'
 require 'iron_worker_ng/feature/common/merge_file'
 require 'iron_worker_ng/feature/common/merge_dir'
 require 'iron_worker_ng/feature/common/merge_deb'
+require 'iron_worker_ng/feature/common/merge_zip'
 require 'iron_worker_ng/feature/common/set_env'
 
 module IronWorkerNG
@@ -30,6 +31,7 @@ module IronWorkerNG
       include IronWorkerNG::Feature::Common::MergeFile::InstanceMethods
       include IronWorkerNG::Feature::Common::MergeDir::InstanceMethods
       include IronWorkerNG::Feature::Common::MergeDeb::InstanceMethods
+      include IronWorkerNG::Feature::Common::MergeZip::InstanceMethods
       include IronWorkerNG::Feature::Common::SetEnv::InstanceMethods
 
       def initialize(*args, &block)
