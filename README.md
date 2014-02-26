@@ -72,6 +72,8 @@ Use the `--wait` parameter to queue a task, wait for it to complete and print th
 
     iron_worker queue hello -p "{\"hi\": \"world\"}" --wait
 
+### Queue up a task from code
+
 Most commonly you'll be queuing up tasks from code though, so you can do this:
 
 ```ruby
@@ -80,6 +82,23 @@ client = IronWorkerNG::Client.new
 100.times do
    client.tasks.create("hello", "foo"=>"bar")
 end
+```
+
+### Setting Task Priority
+
+You can specify priority of the task using `--priority` parameter:
+
+```ruby
+iron_worker queue hello --priority 0 # default value, lowest priority
+iron_worker queue hello --priority 1 # medium priority
+```
+
+Value of priority parameter means the priority queue to run the task in. Valid values are 0, 1, and 2. 0 is the default.
+
+From code you can set the priority like it done in snippet below:
+
+```ruby
+client.tasks.create("hello", some_params, priority: 2) # highest priority
 ```
 
 ## Get task status
