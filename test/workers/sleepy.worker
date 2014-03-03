@@ -1,3 +1,4 @@
 runtime 'ruby'
+name 'sleepy'
 exec 'sleepy_worker.rb'
 gem 'stathat'

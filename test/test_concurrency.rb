@@ -18,7 +18,7 @@ class TestTmp < IWNGTest
 
     worker_name = "sleepy"
 
-    code = IronWorkerNG::Code::Base.new(:workerfile => "workers/#{worker_name}.worker")
+    code = IronWorkerNG::Code::Base.new(:workerfile => "test/workers/#{worker_name}.worker")
     @client.codes.create(code)
 
     1.times do |i|

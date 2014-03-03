@@ -31,7 +31,7 @@ end
 
 def inspect_zip(code)
   zip_file = code.create_container
-  yield Zip::File.open(zip_file)
+  yield Zip::ZipFile.open(zip_file)
   File.unlink zip_file
 end
 
