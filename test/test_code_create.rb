@@ -16,6 +16,14 @@ class CodeCreateTest < IWNGTest
     assert_equal nil, code.name
   end
 
+  def test_big_file_upload
+    system "dd if=/dev/urandom of=test/big_file.txt count=10240 bs=1024"
+    code = code_bundle(:exec => 'test/big_file.txt', :name => 'big_file')
+    resp = client.codes_create code
+    assert_equal "Upload successful.", resp.msg
+    assert resp.id =~ /[0-9a-f]{24}/, "has id"
+  end
+
   def test_name
     resp = client.codes_create code_bundle('test/hello.worker')
     assert_equal "Upload successful.", resp.msg

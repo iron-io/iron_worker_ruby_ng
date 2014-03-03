@@ -10,10 +10,10 @@ class TestConfig < IWNGTest
 
   def test_config
 
-    client.codes.create(IronWorkerNG::Code::Base.new('workers/config_worker'), {config: {c1: "some config var"}})
+    client.codes.create(IronWorkerNG::Code::Base.new('test/workers/config_worker'), {config: {c1: "some config var"}})
 
     task_ids = []
-    N_TASKS.times do |i|
+    1.times do |i|
       puts "#{i}"
       task_ids << client.tasks.create('config_worker', {:foo=>"bar"}).id
     end
