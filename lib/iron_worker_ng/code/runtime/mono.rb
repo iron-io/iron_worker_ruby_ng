@@ -4,9 +4,9 @@ module IronWorkerNG
       module Mono
         include IronWorkerNG::Feature::Common::MergeExec::InstanceMethods
 
-        def runtime_run_code(local = false)
+        def runtime_run_code(local, params)
           <<RUN_CODE
-mono #{File.basename(@exec.path)} "$@"
+mono #{File.basename(@exec.path)} #{params}
 RUN_CODE
         end
       end

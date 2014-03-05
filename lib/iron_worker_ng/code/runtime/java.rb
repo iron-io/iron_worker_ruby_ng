@@ -7,7 +7,7 @@ module IronWorkerNG
         include IronWorkerNG::Feature::Common::MergeExec::InstanceMethods
         include IronWorkerNG::Feature::Java::MergeJar::InstanceMethods
 
-        def runtime_run_code(local = false)
+        def runtime_run_code(local, params)
           classpath_array = []
 
           classpath_array << @exec.path
@@ -23,7 +23,7 @@ module IronWorkerNG
           IronCore::Logger.info 'IronWorkerNG', "Collected '#{classpath}' classpath"
 
           <<RUN_CODE
-java -cp #{classpath} #{@exec.arg(:class, 0).nil? ? "-jar #{File.basename(@exec.path)}" : @exec.arg(:class, 0)} "$@"
+java -cp #{classpath} #{@exec.arg(:class, 0).nil? ? "-jar #{File.basename(@exec.path)}" : @exec.arg(:class, 0)} #{params}
 RUN_CODE
         end
       end

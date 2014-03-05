@@ -24,6 +24,7 @@ module IronWorkerNG
       attr_accessor :zip_package
 
       attr_accessor :use_local_iron_worker_ng
+      attr_accessor :fix_params
 
       undef exec
       undef gem
@@ -216,7 +217,7 @@ module IronWorkerNG
       def runtime_bundle(container, local = false)
       end
 
-      def runtime_run_code(local = false)
+      def runtime_run_code(local, params)
         ''
       end
 
@@ -226,6 +227,12 @@ module IronWorkerNG
         end
 
         if local || ((not remote_build_command) && (not full_remote_build))
+          params = "\"$@\""
+
+          if @fix_params
+            params="-`echo \"$@\" | sed \"s/ -/ --/g\"`"
+          end
+
           container.get_output_stream(@dest_dir + '__runner__.sh') do |runner|
             runner.write <<RUNNER
 #!/bin/sh
@@ -252,7 +259,7 @@ export PATH
 
 #{container.runner_additions}
 
-#{runtime_run_code(local)}
+#{runtime_run_code(local, params)}
 RUNNER
           end
 

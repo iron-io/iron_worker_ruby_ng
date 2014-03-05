@@ -116,9 +116,9 @@ RUBY_RUNNER
           end
         end
 
-        def runtime_run_code(local = false)
+        def runtime_run_code(local, params)
           <<RUN_CODE
-ruby __runner__.rb "$@"
+ruby __runner__.rb #{params}
 RUN_CODE
         end
 

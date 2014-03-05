@@ -62,9 +62,9 @@ PHP_RUNNER
           end
         end
 
-        def runtime_run_code(local = false)
+        def runtime_run_code(local, params)
           <<RUN_CODE
-TERM=dumb php __runner__.php "$@"
+TERM=dumb php __runner__.php #{params}
 RUN_CODE
         end
       end

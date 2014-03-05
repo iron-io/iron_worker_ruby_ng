@@ -4,9 +4,9 @@ module IronWorkerNG
       module Perl
         include IronWorkerNG::Feature::Common::MergeExec::InstanceMethods
 
-        def runtime_run_code(local = false)
+        def runtime_run_code(local, params)
           <<RUN_CODE
-perl #{File.basename(@exec.path)} "$@"
+perl #{File.basename(@exec.path)} #{params}
 RUN_CODE
         end
       end

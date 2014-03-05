@@ -36,9 +36,9 @@ NODE_RUNNER
           end
         end
 
-        def runtime_run_code(local = false)
+        def runtime_run_code(local, params)
           <<RUN_CODE
-node #{File.basename(@exec.path)} "$@"
+node #{File.basename(@exec.path)} #{params}
 RUN_CODE
         end
       end

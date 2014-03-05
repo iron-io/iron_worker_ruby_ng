@@ -8,9 +8,9 @@ module IronWorkerNG
         include IronWorkerNG::Feature::Common::MergeExec::InstanceMethods
         include IronWorkerNG::Feature::Python::MergePipDependency::InstanceMethods
 
-        def runtime_run_code(local = false)
+        def runtime_run_code(local, params)
           <<RUN_CODE
-PATH=`pwd`/__pips__/__bin__:$PATH PYTHONPATH=`pwd`/__pips__ python -u #{File.basename(@exec.path)} "$@"
+PATH=`pwd`/__pips__/__bin__:$PATH PYTHONPATH=`pwd`/__pips__ python -u #{File.basename(@exec.path)} #{params}
 RUN_CODE
         end
       end
