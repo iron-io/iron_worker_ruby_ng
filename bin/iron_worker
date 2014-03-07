@@ -41,7 +41,7 @@ if $*.size == 1 && ($*[0] == '-v' || $*[0] == '--version')
   exit 0
 end
 
-commands = ['upload', 'patch', 'queue', 'retry', 'schedule', 'log', 'run', 'install', 'webhook', 'info']
+commands = ['upload', 'patch', 'queue', 'retry', 'schedule', 'log', 'run', 'install', 'webhook', 'info', 'stacks-list']
 
 if $*.size == 0 || (not commands.include?($*[0]))
   puts 'usage: iron_worker COMMAND [OPTIONS]'
@@ -445,4 +445,7 @@ elsif command == 'info'
 
     @cli.info_schedule($*[0], params, options)
   end
+
+elsif command == 'stacks-list'
+  @cli.stacks_list
 end

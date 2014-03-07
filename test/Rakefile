@@ -22,7 +22,7 @@ Rake::TestTask.new do |t|
 
   t.libs << "lib"
 
-  files = FileList['test/**/test_stacks.rb']
+  files = FileList['test/**/test_*.rb']
   t.test_files = files.keep_if do |f|
     f =~ Regexp.new(ENV['TESTP'] || '') and
       not ( r = ENV['EXCLP'] and

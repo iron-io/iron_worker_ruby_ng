@@ -419,6 +419,13 @@ To get list of available stacks you could do:
 ```ruby
 client.stacks_list
 ```
+
+or using cli
+
+```sh
+iron_worker stacks-list
+```
+
 And to specify stack add following line in your .worker file
 
 ```ruby
