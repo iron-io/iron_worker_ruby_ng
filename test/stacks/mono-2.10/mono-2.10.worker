@@ -1,0 +1,3 @@
+runtime 'binary'
+stack 'mono-2.10'
+exec 'mono.sh'

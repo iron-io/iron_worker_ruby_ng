@@ -1,0 +1,3 @@
+runtime 'binary'
+stack 'mono-3.0'
+exec 'mono3.sh'

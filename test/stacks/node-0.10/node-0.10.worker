@@ -1,0 +1,3 @@
+runtime 'binary'
+stack 'node-0.10'
+exec 'node.sh'

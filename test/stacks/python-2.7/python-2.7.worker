@@ -1,0 +1,3 @@
+runtime 'binary'
+stack 'python-2.7'
+exec 'python2.sh'

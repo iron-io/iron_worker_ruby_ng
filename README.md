@@ -411,6 +411,25 @@ for as many tasks as you want.
 client.tasks.create('MyWorker', {:client => 'Joe'})
 ```
 
+# Stacks
+Stack is a docker image based on ubuntu + some custom software(ruby/python/mono/java...)
+You can use different stacks to launch your tasks.
+To get list of available stacks you could do:
+
+```ruby
+client.stacks_list
+```
+And to specify stack add following line in your .worker file
+
+```ruby
+# define the runtime language, this can be ruby, java, node, php, go, etc.
+runtime 'binary'
+stack 'java-1.7'
+exec 'java.sh'
+```
+
+
+
 # The Rest of the IronWorker API
 
 ## IronWorker::Client
