@@ -16,6 +16,11 @@ class CLITest < IWNGTest
       /Scheduled/
   end
 
+  def test_stacks
+    assert cli('stacks-list') =~
+      /mono/
+  end
+
   def test_argument
     assert cli('upload', 'test/workers/wfile_paths/wfile_paths.worker') =~
       /Upload successful/

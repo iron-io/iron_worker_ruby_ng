@@ -64,6 +64,12 @@ module IronWorkerNG
       @client
     end
 
+    def stacks_list
+      client
+      log_group "List of available stacks"
+      print client.stacks_list
+    end
+
     def upload(name, params, options)
       client
 

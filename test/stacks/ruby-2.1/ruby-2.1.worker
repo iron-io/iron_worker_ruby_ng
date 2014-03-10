@@ -1,0 +1,3 @@
+runtime 'binary'
+stack 'ruby-2.1'
+exec 'ruby2.1.sh'

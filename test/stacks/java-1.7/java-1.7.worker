@@ -1,0 +1,3 @@
+runtime 'binary'
+stack 'java-1.7'
+exec 'java.sh'

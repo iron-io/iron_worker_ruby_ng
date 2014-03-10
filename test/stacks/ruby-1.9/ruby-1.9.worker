@@ -1,0 +1,3 @@
+runtime 'binary'
+stack 'ruby-1.9'
+exec 'ruby1.9.sh'

@@ -1,0 +1,3 @@
+runtime 'binary'
+stack 'scala-2.9'
+exec 'scala.sh'

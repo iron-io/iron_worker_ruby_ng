@@ -30,6 +30,10 @@ module IronWorkerNG
       super + @api_version.to_s + '/'
     end
 
+    def stacks_list
+      parse_response(get("stacks"))
+    end
+
     def codes_list(options = {})
       parse_response(get("projects/#{@project_id}/codes", options))
     end

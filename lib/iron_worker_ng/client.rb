@@ -53,6 +53,11 @@ module IronWorkerNG
       end
     end
 
+    def stacks_list
+      @api.stacks_list
+    end
+
+
     def codes_list(options = {})
       IronCore::Logger.debug 'IronWorkerNG', "Calling codes.list with options='#{options.to_s}'"
 
