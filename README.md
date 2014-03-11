@@ -423,7 +423,7 @@ client.stacks_list
 or using cli
 
 ```sh
-iron_worker stacks-list
+iron_worker stacks
 ```
 
 And to specify stack add following line in your .worker file

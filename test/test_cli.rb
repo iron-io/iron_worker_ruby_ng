@@ -17,7 +17,7 @@ class CLITest < IWNGTest
   end
 
   def test_stacks
-    assert cli('stacks-list') =~
+    assert cli('stacks') =~
       /mono/
   end
 
