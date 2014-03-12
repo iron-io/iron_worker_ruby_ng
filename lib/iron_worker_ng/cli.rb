@@ -67,7 +67,7 @@ module IronWorkerNG
     def stacks_list
       client
       log_group "List of available stacks"
-      print client.stacks_list
+      puts client.stacks_list.map{ |stack| "* #{stack}" }.join("\n")
     end
 
     def upload(name, params, options)
