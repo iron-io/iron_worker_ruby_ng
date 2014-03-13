@@ -176,7 +176,7 @@ module IronWorkerNG
         @full_remote_build = true
       end
 
-      def runtime(runtime = nil)
+      def runtime(runtime = nil, version = nil)
         return @runtime unless runtime
 
         unless @runtime.nil?
@@ -185,6 +185,12 @@ module IronWorkerNG
 
         runtime_module = nil
         runtime = runtime.to_s
+
+        if version
+          s = "#{runtime}-#{version}"
+          IronCore::Logger.info 'IronWorkerNG', "Trying to set stack to:#{s}'"
+          stack(s)
+        end
 
         begin
           runtime_module = IronWorkerNG::Code::Runtime.const_get(runtime.capitalize)

@@ -43,7 +43,8 @@ supplementary data, and other dependencies with it. `.worker` files make it easy
 
 ```ruby
 # define the runtime language, this can be ruby, java, node, php, go, etc.
-runtime "ruby"
+# also you could set version of language(check of available versions via iron_worker stacks)
+runtime "ruby","2.1"
 # exec is the file that will be executed:
 exec "hello_worker.rb"
 ```
@@ -429,7 +430,12 @@ iron_worker stacks
 And to specify stack add following line in your .worker file
 
 ```ruby
-# define the runtime language, this can be ruby, java, node, php, go, etc.
+runtime 'ruby', '2.1'
+```
+Or
+
+```ruby
+exec 'java.sh'
 runtime 'binary'
 stack 'java-1.7'
 exec 'java.sh'
