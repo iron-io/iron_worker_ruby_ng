@@ -18,7 +18,7 @@ module IronWorkerNG
 
             @spec = spec
 
-            if @spec.name == 'nokogiri' && @spec.version.to_s.start_with?('1.6.')
+            if @spec.name == 'nokogiri' && @spec.version.to_s.start_with?('1.6.') && (not code.use_build_cache)
               IronCore::Logger.warn 'IronWorkerNG', "WARNING: Building nokogiri version #{@spec.version} will take a lot of time. Switching to version '~> 1.5.9' should fix this"
             end
           end

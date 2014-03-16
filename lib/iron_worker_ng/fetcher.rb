@@ -9,6 +9,31 @@ module IronWorkerNG
       url.start_with?('http://') || url.start_with?('https://')
     end
 
+    def self.exists?(url)
+      if IronWorkerNG::Fetcher.remote?(url)
+        url = IronWorkerNG::Fetcher.fix_github_url(url)
+
+        uri = URI.parse(url)
+
+        http = Net::HTTP.new(uri.host, uri.port)
+
+        if uri.scheme == 'https'
+          http.use_ssl = true
+          http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        end
+
+        response = http.request(Net::HTTP::Head.new(uri.request_uri))
+
+        if response.kind_of?(Net::HTTPRedirection)
+          return IronWorkerNG::Fetcher.exists?(response['location'])
+        end
+
+        return response.code.to_i == 200
+      else
+        File.exists?(url)
+      end
+    end
+
     def self.fix_github_url(url)
       if url.start_with?('http://github.com/') || url.start_with?('https://github.com/')
         fixed_url = url.sub('//github.com/', '//raw.github.com/').sub('/blob/', '/')

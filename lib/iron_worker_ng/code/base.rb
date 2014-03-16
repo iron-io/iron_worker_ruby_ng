@@ -24,6 +24,7 @@ module IronWorkerNG
       attr_accessor :zip_package
 
       attr_accessor :use_local_iron_worker_ng
+      attr_accessor :use_build_cache
       attr_accessor :fix_params
 
       undef exec
@@ -144,6 +145,8 @@ module IronWorkerNG
 
       def stack(stack_name = nil)
         @stack = stack_name if stack_name
+
+        @use_local_iron_worker_ng = true if @stack == 'ruby-2.1'
 
         @stack
       end
