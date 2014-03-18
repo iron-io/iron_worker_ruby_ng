@@ -301,6 +301,7 @@ RUNNER
             builder.builder_remote_build_command = @remote_build_command
 
             builder.use_local_iron_worker_ng = @use_local_iron_worker_ng
+            builder.stack = @stack
 
             if @use_local_iron_worker_ng
               builder.gem('iron_worker_ng')
