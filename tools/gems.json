@@ -1,3 +1,13 @@
-{"gems": [
-  ["nokogiri", ">= 1.5.0"]
-]}
+{
+  "gems": [
+    [
+    "nokogiri", ">= 1.5.0",
+    "mini_magick",
+    "rmagick",
+    "mysql2",
+    "sqlite3",
+    "json",
+    "pg"
+    ]
+  ]
+}
