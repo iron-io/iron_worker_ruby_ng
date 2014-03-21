@@ -6,8 +6,8 @@
     "rmagick",
     "mysql2",
     "sqlite3",
-    "json",
-    "pg"
+    "pg",
+    "atomic"
     ]
   ]
 }
