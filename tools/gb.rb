@@ -2,6 +2,7 @@ require "rubygems"
 require "json"
 require "zip/zip"
 require "s3"
+require "open-uri"
 
 def create_gem(bucket, gem, version)
   begin
@@ -63,7 +64,8 @@ s3_secret_access_key = config["s3_secret_access_key"]
 s3 = S3::Service.new(access_key_id: s3_access_key_id, secret_access_key: s3_secret_access_key)
 bucket = s3.buckets.find("iron_worker_ng_gems")
 
-gems = JSON.parse(File.read("gems.json"))["gems"]
+gems_data = open("https://raw.githubusercontent.com/iron-io/iron_worker_ruby_ng/master/tools/gems.json") { |f| f.read }
+gems = JSON.parse(gems_data)["gems"]
 
 gems.each do |gem|
   deps = [Gem::Dependency.new(gem[0], gem[1])]
@@ -74,7 +76,6 @@ gems.each do |gem|
 
   versions.each do |version|
     begin
-      raise
       bucket.objects.find("#{gem[0]}-#{version}.zip")
       bucket.objects.find("#{gem[0]}-#{version}.deps")
     rescue
