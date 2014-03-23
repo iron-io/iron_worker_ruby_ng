@@ -70,18 +70,22 @@ gems_data = open("https://raw.githubusercontent.com/iron-io/iron_worker_ruby_ng/
 gems = JSON.parse(gems_data)["gems"]
 
 gems.each do |gem|
-  deps = [Gem::Dependency.new(gem[0], gem[1])]
-  spec = Gem::Resolver.new(deps).resolve.first
+  begin
+    deps = [Gem::Dependency.new(gem[0], gem[1])]
+    spec = Gem::Resolver.new(deps).resolve.first
 
-  versions = spec.instance_variable_get("@others_possible").map { |o| o.version.to_s }
-  versions << spec.spec.version.to_s
+    versions = spec.instance_variable_get("@others_possible").map { |o| o.version.to_s }
+    versions << spec.spec.version.to_s
 
-  versions.each do |version|
-    begin
-      bucket.objects.find("#{gem[0]}-#{version}.zip")
-      bucket.objects.find("#{gem[0]}-#{version}.deps")
-    rescue
-      create_gem(bucket, gem[0], version)
+    versions.each do |version|
+      begin
+        bucket.objects.find("#{gem[0]}-#{version}.zip")
+        bucket.objects.find("#{gem[0]}-#{version}.deps")
+      rescue
+        create_gem(bucket, gem[0], version)
+      end
     end
+  rescue
+    puts "Unexpected error while building #{gem[0]} #{gem[1]}"
   end
 end
