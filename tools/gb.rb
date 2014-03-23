@@ -56,13 +56,15 @@ def create_gem(bucket, gem, version)
   end
 end
 
+stack = ARGV.length == 1 ? "-" + ARGV[0] : ""
+
 config = JSON.parse(File.read("gb.json"))
 
 s3_access_key_id = config["s3_access_key_id"]
 s3_secret_access_key = config["s3_secret_access_key"]
 
 s3 = S3::Service.new(access_key_id: s3_access_key_id, secret_access_key: s3_secret_access_key)
-bucket = s3.buckets.find("iron_worker_ng_gems")
+bucket = s3.buckets.find("iron_worker_ng_gems#{stack}")
 
 gems_data = open("https://raw.githubusercontent.com/iron-io/iron_worker_ruby_ng/master/tools/gems.json") { |f| f.read }
 gems = JSON.parse(gems_data)["gems"]
