@@ -34,7 +34,7 @@ All output to `STDOUT` will be logged and available for your review when your wo
 
 # Creating The Code Package
 
-Before you can run use IronWorker, be sure you've [created a free account with Iron.io](http://www.iron.io)
+Before you can use IronWorker, be sure you've [created a free account with Iron.io](http://www.iron.io)
 and [setup your Iron.io credentials on your system](http://dev.iron.io/worker/reference/configuration/) (either in a json
 file or using ENV variables). You only need to do that once for your machine. If you've done that, then you can continue.
 
