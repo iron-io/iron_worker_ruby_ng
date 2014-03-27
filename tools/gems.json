@@ -1,5 +1,6 @@
 {
   "gems": [
+    ["json", ">= 1.4"],
     ["nokogiri", ">= 1.5.0"],
     ["mini_magick", ">= 3.5"],
     ["rmagick", ">= 2.1"],
