@@ -20,6 +20,7 @@
     ["patron", ">= 3.0.0"],
     ["http_parser", ">= 0.6.0"],
     ["bcrypt", ">= 3.0.0"],
-    ["bcrypt-ruby", ">= 3.0.0"]
+    ["digest-sha3", ">= 1.0.0"],
+    ["unf_ext", ">= 0"]
   ]
 }
