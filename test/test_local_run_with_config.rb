@@ -1,8 +1,8 @@
 require_relative 'helpers'
 
 class LocalRunTest < IWNGTest
-	CONFIG_FILE = "local_run_with_config.json" 
-	WORKER_FILE = "local_run_with_config.worker"
+	CONFIG_FILE = File.dirname(__FILE__) + "/local_run_with_config.json" 
+	WORKER_FILE = File.dirname(__FILE__) + "/local_run_with_config.worker"
 	def test_with_inline_config
 		config = {local_run_config: "is present"}.to_json
 		test = /#{config}/
