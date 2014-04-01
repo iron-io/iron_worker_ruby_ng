@@ -295,6 +295,10 @@ elsif command == 'run'
       params[:payload] = File.read(v)
     end
 
+    opts.on('--worker-config CONFIG_FILE', 'config file for worker') do |v|
+      options[:worker_config] = v
+    end
+    
     common_opts(opts)
   end
 
