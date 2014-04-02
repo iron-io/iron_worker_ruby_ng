@@ -1,0 +1,3 @@
+runtime 'ruby'
+
+exec 'local_run_with_config.rb'

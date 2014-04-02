@@ -212,10 +212,14 @@ module IronWorkerNG
       code = IronWorkerNG::Code::Base.new(name)
 
       log "Code package name is '#{code.name}'"
-
       log_group "Running '#{code.name}'"
-
-      code.run(params[:payload] || params['payload'])
+      
+      if options[:worker_config]
+        log "Loading worker_config at #{options[:worker_config]}"
+        c = IO.read(options[:worker_config])
+        options[:config] = c
+      end
+      code.run(params[:payload] || params['payload'], options[:config] || options['config'])
     end
 
     def install(name, params, options)
