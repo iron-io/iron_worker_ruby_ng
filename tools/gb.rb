@@ -9,7 +9,7 @@ def create_gem(bucket, gem, version)
     puts "installing clean copy #{gem} #{version}"
 
     system("mkdir gem")
-    system("gem uninstall #{gem} -q")
+    system("gem uninstall #{gem} -q -I -x")
     res = system("cd gem && gem install #{gem} -v #{version} --no-ri --no-rdoc --ignore-dependencies -i __gems__")
 
     if not res
