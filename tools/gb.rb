@@ -58,6 +58,8 @@ end
 
 stack = ARGV.length == 1 ? "-" + ARGV[0] : ""
 
+puts "Stack:#{stack}"
+
 config = JSON.parse(File.read("gb.json"))
 
 s3_access_key_id = config["s3_access_key_id"]
