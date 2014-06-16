@@ -3,6 +3,7 @@
     ["bson_ext", ">= 1.8"],
     ["json", ">= 1.4"],
     ["nokogiri", ">= 1.5.0"],
+    ["nokogiri", "= 1.6.2.1"],
     ["mini_magick", ">= 3.5"],
     ["rmagick", ">= 2.1"],
     ["mysql2", ">= 0.3"],
