@@ -23,7 +23,7 @@ def create_gem(bucket, gem, version)
 
     Zip.options[:continue_on_exists_proc] = true
 
-    Zip::ZipFile.open("#{gem}-#{version}.zip", Zip::ZipFile::CREATE) do |zip|
+    Zip::File.open("#{gem}-#{version}.zip", Zip::ZipFile::CREATE) do |zip|
       Dir["gem/**/**"].each do |f|
         zip.add(f[4 .. -1], f)
       end
