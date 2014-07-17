@@ -1,0 +1,4 @@
+runtime 'binary'
+stack 'java-1.8'
+file 'java-1.8.sh'
+exec 'java-1.8.sh'
