@@ -17,10 +17,18 @@ var config = null;
 
 process.argv.forEach(function(val, index, array) {
   if (val == "-payload") {
+    params = fs.readFileSync(process.argv[index + 1], 'utf8');
     try {
-      params = JSON.parse(fs.readFileSync(process.argv[index + 1], 'utf8'));
+      params = JSON.parse(params);
     } catch(e) {
-      params = querystring.parse(fs.readFileSync(process.argv[index + 1], 'utf8'))
+      try {
+        var parsed = querystring.parse(params);
+        if (!(Object.keys(parsed).length == 1 && parsed[Object.keys(parsed)[0]] == '')) {
+          params = parsed
+        }
+      } catch(e) {
+
+      }
     }
   }
 
