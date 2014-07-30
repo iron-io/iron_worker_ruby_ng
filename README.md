@@ -101,6 +101,14 @@ From code you can set the priority like it done in snippet below:
 client.tasks.create("hello", some_params, priority: 2) # highest priority
 ```
 
+### Setting additional Options
+
+You can specify not only priority:
+
+  - **priority**: Setting the priority of your job. Valid values are 0, 1, and 2. The default is 0.
+  - **timeout**: The maximum runtime of your task in seconds. No task can exceed 3600 seconds (60 minutes). The default is 3600 but can be set to a shorter duration.
+  - **delay**: The number of seconds to delay before actually queuing the task. Default is 0.
+
 ## Get task status
 
 When you call `iron_worker queue X`, you'll see the task ID in the output which you can use to get the status.
@@ -598,6 +606,14 @@ Create a new scheduled task for the code package specified by `code_name`, passi
 schedule = client.schedules.create('MyWorker', {:client => 'Joe'}, {:start_at => Time.now + 3600})
 puts schedule.id
 ```
+
+#### Scheduling Options
+
+  - **run_every**: The amount of time, in seconds, between runs. By default, the task will only run once. run_every will return a 400 error if it is set to less than 60.
+  - **end_at**: The time tasks will stop being queued.
+  - **run_times**: The number of times a task will run.
+  - **priority**: Setting the priority of your job. Valid values are 0, 1, and 2. The default is 0. Higher values means tasks spend less time in the queue once they come off the schedule.
+  - **start_at**: The time the scheduled task should first be run.
 
 ### schedules.cancel(schedule_id)
 
