@@ -614,6 +614,10 @@ puts schedule.id
   - **run_times**: The number of times a task will run.
   - **priority**: Setting the priority of your job. Valid values are 0, 1, and 2. The default is 0. Higher values means tasks spend less time in the queue once they come off the schedule.
   - **start_at**: The time the scheduled task should first be run.
+  - **timeout**: The maximum runtime of your task in seconds. No task can exceed 3600 seconds (60 minutes). The default is 3600 but can be set to a shorter duration.
+  - **delay**: The number of seconds to delay before scheduling the tasks. Default is 0.
+  - **task_delay**: The number of seconds to delay before actually queuing the task. Default is 0.
+  - **cluster**: cluster name ex: "high-mem" or "dedicated".  This is a premium feature for customers for customers to have access to more powerful or custom built worker solutions. Dedicated worker clusters exist for users who want to reserve a set number of workers just for their queued tasks. If not set default is set to  "default" which is the public IronWorker cluster.
 
 ### schedules.cancel(schedule_id)
 
