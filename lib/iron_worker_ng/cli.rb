@@ -83,6 +83,7 @@ module IronWorkerNG
 
       log "Code package name is '#{code.name}'"
       log "Max concurrency set to '#{options[:max_concurrency]}'" unless options[:max_concurrency].nil?
+      log "Default priority set to '#{options[:default_priority]}'" unless options[:default_priority].nil?
       log "Retries set to '#{options[:retries]}'" unless options[:retries].nil?
       log "Retries delay set to '#{options[:retries_delay]}'" unless options[:retries_delay].nil?
       log "Host set to '#{options[:host]}'" unless options[:host].nil?
