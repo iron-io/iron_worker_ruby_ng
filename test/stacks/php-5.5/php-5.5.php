@@ -1,5 +1,9 @@
 <?php
-$fixed_ext = array('Core','date','ereg','libxml','openssl','pcre','zlib','bcmath','bz2','calendar','ctype','dba','dom','hash','fileinfo','filter','ftp','gettext','SPL','iconv','mbstring','pcntl','session','posix','Reflection','standard','shmop','SimpleXML','soap','sockets','Phar','exif','sysvmsg','sysvsem','sysvshm','tokenizer','wddx','xml','xmlreader','xmlwriter','zip','PDO','curl','gd','json','mysql','mysqli','pdo_mysql','pdo_pgsql','imagick','pgsql','readline','xsl','mongo','mcrypt','mhash','Zend OPcache', 'sqlite3', 'pdo_sqlite');
+$fixed_ext = array('Core','date','ereg','libxml','openssl','pcre','zlib','bcmath','bz2','calendar','ctype','dba','dom','hash','fileinfo',
+                   'filter','ftp','gettext','SPL','iconv','mbstring','pcntl','session','posix','Reflection','standard','shmop','SimpleXML',
+                   'soap','sockets','Phar','exif','sysvmsg','sysvsem','sysvshm','tokenizer','wddx','xml','xmlreader','xmlwriter','zip','PDO',
+                   'curl','gd','json','mysql','mysqli','pdo_mysql','pdo_pgsql','imagick','pgsql','readline','xsl','mongo','mcrypt','mhash',
+                   'Zend OPcache', 'sqlite3', 'pdo_sqlite','mysqlnd', 'tidy', 'xmlrpc', 'xdebug');
 $extensions = get_loaded_extensions();
 foreach ($extensions as $extension) {
     if (!in_array($extension, $fixed_ext)) {
