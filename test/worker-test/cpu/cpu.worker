@@ -1,0 +1,2 @@
+runtime "ruby"
+exec 'cpu.rb'

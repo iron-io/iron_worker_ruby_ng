@@ -1,0 +1,2 @@
+runtime "ruby"
+exec 'mem-kill.rb'

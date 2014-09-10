@@ -1,0 +1,2 @@
+runtime "ruby"
+exec 'network.rb'
