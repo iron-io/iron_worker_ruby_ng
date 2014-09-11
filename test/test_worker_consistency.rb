@@ -11,7 +11,7 @@ class WorkerTest < IWNGTest
       tasks.push client.tasks.create('sleep', {:sleep => 300}).id
     end
 
-    sleep 50
+    sleep 120
     running = 0
     queued = 0
     tasks.each do |task|
