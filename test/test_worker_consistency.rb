@@ -39,7 +39,7 @@ class WorkerTest < IWNGTest
 
       if test_worker == 'mem-kill'
         assert_equal 'error', task.status
-        assert_equal "Killed\n", task.msg
+        assert_equal "ERROR: WORKER RAM LIMIT EXCEEDED (#{mem_mb}M)", task.msg
       else
         assert_equal 'complete', task.status
       end
