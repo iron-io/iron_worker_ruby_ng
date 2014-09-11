@@ -4,6 +4,7 @@ cpu = params['cpu']
 errors = []
 
 #######---CPU CHECK---#######
+puts 'CPU check'
 loop_t1_finished = false
 
 def pi_calc(den_len)
@@ -57,6 +58,7 @@ end
 
 
 #######---HDD CHECK---#######
+puts 'HDD test'
 available = `df -m  2>&1 | head -n 2 | tail -n 1 | awk '{print $2}'`
 
 if available.to_i < max_hdd - 500
@@ -68,6 +70,7 @@ end
 
 #######---NETWORK CHECK---#######
 require 'open-uri'
+puts 'Network test'
 url = 'https://s3.amazonaws.com/iron-examples/video/iron_man_2_trailer_official.flv'
 start = Time.now
 filename = 'video.flv'
@@ -77,7 +80,6 @@ open(filename, 'wb') do |file|
 end
 
 file_size = (File.size(filename).to_f / 2**20).round(2)
-puts file_size
 
 elapsed_time = Time.now - start
 if elapsed_time > 20
@@ -95,5 +97,7 @@ unless errors.empty?
   abort
 end
 
+
 #######---MEM CHECK---#######
+puts 'MEM test'
 a = "x" * (max_mem * 1000 * 1000 - 20_000_000)
