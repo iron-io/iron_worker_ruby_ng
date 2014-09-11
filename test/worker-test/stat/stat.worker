@@ -1,2 +1,2 @@
 runtime "ruby"
-exec 'mem.rb'
+exec 'stat.rb'

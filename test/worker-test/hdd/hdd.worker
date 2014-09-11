@@ -1,2 +1,0 @@
-runtime "ruby"
-exec 'hdd.rb'
