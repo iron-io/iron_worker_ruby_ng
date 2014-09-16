@@ -2,23 +2,30 @@ require_relative 'helpers'
 
 class WorkerTest < IWNGTest
 
+  def self.startup
+    puts 'Please, input cluster:'
+    @@cluster = gets.chomp
+    @@cluster = 'default' if @@cluster == ''
+  end
+
   def test_concurrency
-    puts 'Starting concurrency tests.'
+    puts "Starting concurrency tests for \"#{@@cluster}\" cluster..."
     max_concurrency = gets_in('Please, input maximum concurrency (5 for default cluster):', 5)
-    client.codes.create(IronWorkerNG::Code::Base.new('test/sleep'), {max_concurrency: max_concurrency})
+    code_id = client.codes.create(IronWorkerNG::Code::Base.new('test/sleep'), {max_concurrency: max_concurrency}).id
     tasks = []
     (max_concurrency * 2).times do
-      tasks.push client.tasks.create('sleep', {:sleep => 300}).id
+      tasks.push client.tasks.create('sleep', {:sleep => 1200}, {cluster: @@cluster}).id
     end
 
     sleep 120
     running = 0
     queued = 0
     tasks.each do |task|
-      running +=1 if client.tasks.get(task).status == 'running'
-      queued +=1 if client.tasks.get(task).status == 'queued'
-      client.tasks.cancel(task)
+      task_status = client.tasks.get(task).status
+      running +=1 if task_status == 'running'
+      queued +=1 if task_status == 'queued'
     end
+    client.tasks.cancel_all(code_id)
 
     assert_equal max_concurrency, running
     assert_equal max_concurrency, queued
@@ -28,7 +35,7 @@ class WorkerTest < IWNGTest
   def test_workers
     stats = ''
     test_workers = Dir.entries('test/worker-test/') - %w(. ..)
-    puts 'Starting MEM, CPU, HDD, Network tests.'
+    puts "Starting MEM, CPU, HDD, Network tests for \"#{@@cluster}\"..."
     mem_mb = gets_in('Please, input maximum available memory size in MB (320 for default cluster):', 320)
     hdd_mb = gets_in('Please, input maximum available HDD size in MB (10000 for default cluster):', 10000)
     cpu = gets_in('Please, input CPU performance: "high" - 1, "medium" - 2, "low" - 3  (2 - for default cluster):', 2)
