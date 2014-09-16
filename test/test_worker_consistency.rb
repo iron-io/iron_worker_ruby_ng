@@ -27,7 +27,7 @@ class WorkerTest < IWNGTest
 
   def test_workers
     stats = ''
-    test_workers=Dir.entries('/home/freeman/projects/ironproj/iron_worker_ruby_ng/test/worker-test/'); test_workers.delete('.'); test_workers.delete('..')
+    test_workers = Dir.entries('test/worker-test/') - %w(. ..)
     puts 'Starting MEM, CPU, HDD, Network tests.'
     mem_mb = gets_in('Please, input maximum available memory size in MB (320 for default cluster):', 320)
     hdd_mb = gets_in('Please, input maximum available HDD size in MB (10000 for default cluster):', 10000)
