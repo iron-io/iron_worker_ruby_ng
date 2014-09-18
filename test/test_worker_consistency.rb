@@ -41,7 +41,7 @@ class WorkerTest < IWNGTest
     cpu = gets_in('Please, input CPU performance: "high" - 1, "medium" - 2, "low" - 3  (2 - for default cluster):', 2)
     test_workers.each do |test_worker|
       client.codes.create(IronWorkerNG::Code::Base.new("test/worker-test/#{test_worker}/#{test_worker}"))
-      id = client.tasks.create(test_worker, {max_mem: mem_mb, max_hdd: hdd_mb, cpu: cpu}).id
+      id = client.tasks.create(test_worker, {max_mem: mem_mb, max_hdd: hdd_mb, cpu: cpu}, {cluster: @@cluster}).id
       task = client.tasks.wait_for(id)
 
       if test_worker == 'mem-kill'
