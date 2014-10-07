@@ -300,6 +300,7 @@ module IronWorkerNG
       data << ['id', schedule._id]
       data << ['code package', schedule.code_name]
       data << ['status', schedule.status]
+      data << ['label', schedule.label] if schedule.label
       data << ['created', parse_time(schedule.created_at) || '-']
       data << ['next start', parse_time(schedule.next_start) || '-']
       data << ['run count', schedule.run_count || '-']
