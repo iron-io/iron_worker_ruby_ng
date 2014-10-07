@@ -210,6 +210,10 @@ elsif command == 'queue' || command == 'schedule'
       opts.on('--run-every RUN_EVERY', Integer, 'run task every RUN_EVERY seconds') do |v|
         options[:run_every] = v
       end
+
+      opts.on('--label LABEL', String, 'Label schedule with given name') do |v|
+        options[:label] = v
+      end
     end
 
     common_opts(opts)
