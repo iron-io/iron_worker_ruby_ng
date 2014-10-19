@@ -74,7 +74,7 @@ if config_file
   end
 end
 
-if @params.is_a?(::Hash)
+if params.is_a?(::Hash)
   @params = IronWorkerNGHash.new(params)
 else
   @params = params
