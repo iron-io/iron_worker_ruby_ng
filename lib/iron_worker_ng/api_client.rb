@@ -122,6 +122,11 @@ module IronWorkerNG
       parse_response(post("projects/#{@project_id}/schedules", {:schedules => [{:code_name => code_name, :payload => payload}.merge(options)]}))
     end
 
+    def schedules_update(id, options = {})
+      check_id(id)
+      parse_response(put("projects/#{@project_id}/schedules/#{id}", options))
+    end
+
     def schedules_cancel(id)
       check_id(id)
       parse_response(post("projects/#{@project_id}/schedules/#{id}/cancel"))

@@ -394,6 +394,14 @@ EXEC_FILE
       OpenStruct.new(s)
     end
 
+    def schedules_update(id, options = {})
+      IronCore::Logger.debug 'IronWorkerNG', "Calling schedules.update with id='#{id}', options='#{options.to_s}'"
+
+      res = @api.schedules_update(id, options)
+
+      OpenStruct.new(res)
+    end
+
     def schedules_create_legacy(code_name, params = {}, options = {})
       IronCore::Logger.debug 'IronWorkerNG', "Calling schedules.create_legacy with code_name='#{code_name}', params='#{params.to_s}' and options='#{options.to_s}'"
 
