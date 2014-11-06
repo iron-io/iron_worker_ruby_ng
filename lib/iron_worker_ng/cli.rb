@@ -172,7 +172,7 @@ module IronWorkerNG
 
       log_group "Updating scheduled task with id=#{schedule_id}"
 
-      response = client.schedules.update(schedule_id, eval(params[:schedule]))
+      response = client.schedules.update(schedule_id, JSON.parse(params[:schedule]))
 
       if response.msg == 'Updated'
         log 'Scheduled task updated successfully'
