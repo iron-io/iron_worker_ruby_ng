@@ -488,7 +488,7 @@ elsif command == 'update'
       opts.banner = "usage: iron_worker update SCHEDULED_TASK_ID [OPTIONS]"
 
       opts.on('-s', '--schedule SCHEDULE', String, 'schedule params to pass') do |v|
-        params[:options] = v
+        params[:schedule] = v
       end
 
       common_opts(opts)
