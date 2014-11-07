@@ -630,7 +630,7 @@ client.schedules.update('545b3cb829acd33ea10016e4', {label: 'new_label'})
 
 Or you can update a scheduled task for your worker from the command line using:
 
-    iron_worker update schedule 545b3cb829acd33ea10016e4 -s "{label: 'new_label'}"
+    iron_worker update schedule 545b3cb829acd33ea10016e4 -s '{"label": "new_label"}'
 
 ### schedules.cancel(schedule_id)
 

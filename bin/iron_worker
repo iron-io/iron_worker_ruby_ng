@@ -485,9 +485,9 @@ elsif command == 'update'
     params = {}
 
     opts = OptionParser.new do |opts|
-      opts.banner = "usage: iron_worker update SCHEDULED_TASK_ID [OPTIONS]"
+      opts.banner = "usage: iron_worker update schedule SCHEDULED_TASK_ID [OPTIONS]"
 
-      opts.on('-s', '--schedule SCHEDULE', String, 'schedule params to pass') do |v|
+      opts.on('-s', '--schedule SCHEDULE', String, 'schedule params to pass, JSON string') do |v|
         params[:schedule] = v
       end
 
