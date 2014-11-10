@@ -620,6 +620,18 @@ puts schedule.id
   - **label**: Optional label for adding custom labels to scheduled tasks.
   - **cluster**: cluster name ex: "high-mem" or "dedicated".  This is a premium feature for customers to have access to more powerful or custom built worker solutions. Dedicated worker clusters exist for users who want to reserve a set number of workers just for their queued tasks. If not set default is set to  "default" which is the public IronWorker cluster.
 
+### schedules.update(schedule_id, options = {})
+
+Update a scheduled task specified by id
+
+```ruby
+client.schedules.update('545b3cb829acd33ea10016e4', {label: 'new_label'})
+```
+
+Or you can update a scheduled task for your worker from the command line using:
+
+    iron_worker update schedule 545b3cb829acd33ea10016e4 -s '{"label": "new_label"}'
+
 ### schedules.cancel(schedule_id)
 
 Cancel the scheduled task specified by `schedule_id`.
