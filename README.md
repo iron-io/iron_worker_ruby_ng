@@ -617,7 +617,20 @@ puts schedule.id
   - **timeout**: The maximum runtime of your task in seconds. No task can exceed 3600 seconds (60 minutes). The default is 3600 but can be set to a shorter duration.
   - **delay**: The number of seconds to delay before scheduling the tasks. Default is 0.
   - **task_delay**: The number of seconds to delay before actually queuing the task. Default is 0.
-  - **cluster**: cluster name ex: "high-mem" or "dedicated".  This is a premium feature for customers for customers to have access to more powerful or custom built worker solutions. Dedicated worker clusters exist for users who want to reserve a set number of workers just for their queued tasks. If not set default is set to  "default" which is the public IronWorker cluster.
+  - **label**: Optional label for adding custom labels to scheduled tasks.
+  - **cluster**: cluster name ex: "high-mem" or "dedicated".  This is a premium feature for customers to have access to more powerful or custom built worker solutions. Dedicated worker clusters exist for users who want to reserve a set number of workers just for their queued tasks. If not set default is set to  "default" which is the public IronWorker cluster.
+
+### schedules.update(schedule_id, options = {})
+
+Update a scheduled task specified by id
+
+```ruby
+client.schedules.update('545b3cb829acd33ea10016e4', {label: 'new_label'})
+```
+
+Or you can update a scheduled task for your worker from the command line using:
+
+    iron_worker update schedule 545b3cb829acd33ea10016e4 -s '{"label": "new_label"}'
 
 ### schedules.cancel(schedule_id)
 

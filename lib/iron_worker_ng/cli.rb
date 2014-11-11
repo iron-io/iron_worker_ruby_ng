@@ -167,6 +167,21 @@ module IronWorkerNG
       end
     end
 
+    def update_schedule(schedule_id, params)
+      client
+
+      log_group "Updating scheduled task with id=#{schedule_id}"
+
+      response = client.schedules.update(schedule_id, JSON.parse(params[:schedule], :symbolize_names => true))
+
+      if response.msg == 'Updated'
+        log 'Scheduled task updated successfully'
+        log "Check 'https://hud.iron.io/tq/projects/#{client.api.project_id}/scheduled_jobs/#{schedule_id}' for more info"
+      else
+        log 'Something went wrong'
+      end
+    end
+
     def getlog(task_id, params, options)
       client
 
@@ -214,7 +229,7 @@ module IronWorkerNG
 
       log "Code package name is '#{code.name}'"
       log_group "Running '#{code.name}'"
-      
+
       if options[:worker_config]
         log "Loading worker_config at #{options[:worker_config]}"
         c = IO.read(options[:worker_config])
@@ -300,6 +315,7 @@ module IronWorkerNG
       data << ['id', schedule._id]
       data << ['code package', schedule.code_name]
       data << ['status', schedule.status]
+      data << ['label', schedule.label] if schedule.label
       data << ['created', parse_time(schedule.created_at) || '-']
       data << ['next start', parse_time(schedule.next_start) || '-']
       data << ['run count', schedule.run_count || '-']
