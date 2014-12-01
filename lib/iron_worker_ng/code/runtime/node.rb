@@ -10,13 +10,26 @@ module IronWorkerNG
 /* #{IronWorkerNG.full_version} */
 
 var fs = require('fs');
+var querystring = require('querystring');
 var params = null;
 var task_id = null;
 var config = null;
 
 process.argv.forEach(function(val, index, array) {
   if (val == "-payload") {
-    params = JSON.parse(fs.readFileSync(process.argv[index + 1], 'utf8'));
+    params = fs.readFileSync(process.argv[index + 1], 'utf8');
+    try {
+      params = JSON.parse(params);
+    } catch(e) {
+      try {
+        var parsed = querystring.parse(params);
+        if (!(Object.keys(parsed).length == 1 && parsed[Object.keys(parsed)[0]] == '')) {
+          params = parsed
+        }
+      } catch(e) {
+
+      }
+    }
   }
 
   if (val == "-config") {
