@@ -1,3 +1,8 @@
-runtime 'binary'
+runtime 'python'
 stack 'python-3.2'
-exec 'python3.sh'
+exec 'python3.py'
+pip "requests"
+pip "dj-database-url"
+pip "Django"
+pip "requests"
+remote

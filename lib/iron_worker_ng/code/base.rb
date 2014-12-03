@@ -24,6 +24,7 @@ module IronWorkerNG
       attr_accessor :zip_package
 
       attr_accessor :use_local_iron_worker_ng
+      attr_accessor :use_build_cache
       attr_accessor :fix_params
 
       undef exec
@@ -144,6 +145,8 @@ module IronWorkerNG
 
       def stack(stack_name = nil)
         @stack = stack_name if stack_name
+
+        @use_local_iron_worker_ng = true if @stack == 'ruby-2.1'
 
         @stack
       end
@@ -304,6 +307,7 @@ RUNNER
             builder.builder_remote_build_command = @remote_build_command
 
             builder.use_local_iron_worker_ng = @use_local_iron_worker_ng
+            builder.stack(@stack)
 
             if @use_local_iron_worker_ng
               builder.gem('iron_worker_ng')
@@ -327,18 +331,22 @@ RUNNER
         container.name
       end
 
-      def run(params = {})
+      def run(params = {}, config = {})
         container_name = create_container(true)
 
         payload = File.open("#{container_name}/__payload__", 'wb')
         payload.write(params.is_a?(String) ? params : params.to_json)
         payload.close
 
+        config_file = File.open("#{container_name}/__config__", 'wb')
+        config_file.write(config.is_a?(String) ? config : config.to_json)
+        config_file.close
+
         if @remote_build_command
           system("cd #{container_name} && #{@remote_build_command}")
         end
 
-        system("sh #{container_name}/__runner__.sh -d #{container_name} -payload #{container_name}/__payload__ -id 0")
+        system("sh #{container_name}/__runner__.sh -d #{container_name} -payload #{container_name}/__payload__ -config #{container_name}/__config__ -id 0")
 
         FileUtils.rm_rf(container_name)
       end

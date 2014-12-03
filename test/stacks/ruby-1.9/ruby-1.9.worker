@@ -1,3 +1,38 @@
-runtime 'binary'
+@use_local_iron_worker_ng = true
+runtime "ruby"
 stack 'ruby-1.9'
-exec 'ruby1.9.sh'
+
+exec "ruby-1.9.rb"
+
+gem 'net-http-persistent', '2.9.4'
+gem 'rest'
+gem 'rubyzip', '0.9.9'
+gem 'iron_mq'
+gem 'iron_worker_ng'
+gem 'iron_cache', '>= 1.4.2'
+gem 'typhoeus'
+gem 'mime-types', '~> 1.25.1'
+gem 'retryable'
+gem 'stamp'
+gem 'actionpack'
+gem 'spliner'
+
+gem 'aws-s3'
+gem 'geocoder'
+gem 'rgeo'
+gem 'rgeo-geojson'
+gem 'google_distance_matrix'
+
+gem 'nokogiri', '~> 1.5.10'
+gem 'mechanize'
+gem 'bson_ext'
+gem 'mongoid', '~> 3.1.5'
+gem 'carrierwave', '~> 0.9.0'
+gem 'carrierwave-mongoid', '~> 0.6.3'
+gem 'carrierwave-processing'
+gem 'rmagick'
+gem 'fog', '~> 1.18.0'
+gem 'mongoid-app_settings'
+gem 'aasm', '~> 3.0.26'
+
+full_remote_build true

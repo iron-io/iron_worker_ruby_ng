@@ -1,3 +1,23 @@
-runtime 'binary'
+runtime 'python'
 stack 'python-2.7'
-exec 'python2.sh'
+exec 'python2.py'
+pip 'simples3'
+pip "requests"
+pip "dj-database-url"
+pip "Django"
+pip "boto"
+pip "requests"
+pip "xlwt"
+pip "xlrd"
+pip "xlutils"
+pip "boto"
+pip "html5lib"
+pip "tinycss"
+pip "cssselect"
+pip "pyphen"
+pip "cffi"
+pip "WeasyPrint"
+pip "iso8601"
+pip "six"
+pip "python-dateutil"
+remote

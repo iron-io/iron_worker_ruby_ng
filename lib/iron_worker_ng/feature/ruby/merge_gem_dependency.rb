@@ -44,6 +44,7 @@ module IronWorkerNG
               IronCore::Logger.info 'IronWorkerNG', 'Fixating gems dependencies'
 
               @features.reject! { |f| f.class == IronWorkerNG::Feature::Ruby::MergeGem::Feature }
+              @features.reject! { |f| f.class == IronWorkerNG::Feature::Common::MergeZip::Feature && f.path.start_with?('http://s3.amazonaws.com/iron_worker_ng_gems') }
 
               deps = @features.reject { |f| f.class != IronWorkerNG::Feature::Ruby::MergeGemDependency::Feature }
 
@@ -65,6 +66,18 @@ module IronWorkerNG
 
                 spec_set.to_a.each do |spec|
                   spec.__materialize__
+
+                  if @use_build_cache
+                    cache_url = "http://s3.amazonaws.com/iron_worker_ng_gems#{@stack.nil? ? '' : '-' + @stack}/#{spec.name}-#{spec.version}.zip"
+
+                    if IronWorkerNG::Fetcher.exists?(cache_url)
+                      IronCore::Logger.info 'IronWorkerNG', "Merging cached ruby gem with name='#{spec.name}' and version='#{spec.version}'"
+
+                      @features << IronWorkerNG::Feature::Common::MergeZip::Feature.new(self, cache_url, '')
+
+                      next
+                    end
+                  end
 
                   IronCore::Logger.info 'IronWorkerNG', "Merging ruby gem with name='#{spec.name}' and version='#{spec.version}'"
 

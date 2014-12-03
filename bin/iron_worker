@@ -41,7 +41,7 @@ if $*.size == 1 && ($*[0] == '-v' || $*[0] == '--version')
   exit 0
 end
 
-commands = ['upload', 'patch', 'queue', 'retry', 'schedule', 'log', 'run', 'install', 'webhook', 'info', 'stacks']
+commands = ['upload', 'patch', 'queue', 'retry', 'schedule', 'update', 'log', 'run', 'install', 'webhook', 'info', 'stacks']
 
 if $*.size == 0 || (not commands.include?($*[0]))
   puts 'usage: iron_worker COMMAND [OPTIONS]'
@@ -71,6 +71,10 @@ if command == 'upload'
 
     opts.on('-c', '--max-concurrency CONCURRENCY', Integer, 'max number of concurrent workers for this code package') do |v|
       options[:max_concurrency] = v
+    end
+
+    opts.on('-p', '--default-priority DEFAULT_PRIORITY', Integer, 'default priority of the tasks') do |v|
+      options[:default_priority] = v
     end
 
     opts.on('-r', '--retries NUM_RETRIES', Integer, 'max number of automatic retries on task fail') do |v|
@@ -171,8 +175,13 @@ elsif command == 'queue' || command == 'schedule'
       options[:timeout] = v
     end
 
-    opts.on('--delay DELAY', Integer, 'delay before start in seconds') do |v|
+    desc = command == 'queue' ? 'delay before start in seconds' : 'delay before scheduling tasks in seconds'
+    opts.on('--delay DELAY', Integer, desc) do |v|
       options[:delay] = v
+    end
+
+    opts.on('--cluster CLUSTER', String, 'Run task on selected cluster') do |v|
+      options[:cluster] = v
     end
 
     if command == 'queue'
@@ -182,6 +191,10 @@ elsif command == 'queue' || command == 'schedule'
     end
 
     if command == 'schedule'
+      opts.on('--task-delay DELAY', Integer, 'delay before start of task in seconds') do |v|
+        options[:task_delay] = v
+      end
+
       opts.on('--start-at TIME', 'start task at specified time') do |v|
         options[:start_at] = Time.parse(v)
       end
@@ -196,6 +209,10 @@ elsif command == 'queue' || command == 'schedule'
 
       opts.on('--run-every RUN_EVERY', Integer, 'run task every RUN_EVERY seconds') do |v|
         options[:run_every] = v
+      end
+
+      opts.on('--label LABEL', String, 'Label schedule with given name') do |v|
+        options[:label] = v
       end
     end
 
@@ -293,6 +310,10 @@ elsif command == 'run'
 
     opts.on('-f', '--payload-file PAYLOAD_FILE', String, 'payload file to pass') do |v|
       params[:payload] = File.read(v)
+    end
+
+    opts.on('--worker-config CONFIG_FILE', 'config file for worker') do |v|
+      options[:worker_config] = v
     end
 
     common_opts(opts)
@@ -448,4 +469,44 @@ elsif command == 'info'
 
 elsif command == 'stacks'
   @cli.stacks_list
+elsif command == 'update'
+  entities = ['schedule']
+
+  if $*.size == 0 || (not entities.include?($*[0]))
+    puts 'usage: iron_worker update ENTITY [OPTIONS]'
+    puts "    ENTITY: #{entities.join(', ')}"
+    puts '    run iron_worker update ENTITY --help to get more information about each entity'
+    exit 1
+  end
+
+  entity = $*.shift
+
+  if entity == 'schedule'
+    params = {}
+
+    opts = OptionParser.new do |opts|
+      opts.banner = "usage: iron_worker update schedule SCHEDULED_TASK_ID [OPTIONS]"
+
+      opts.on('-s', '--schedule SCHEDULE', String, 'schedule params to pass, JSON string') do |v|
+        params[:schedule] = v
+      end
+
+      common_opts(opts)
+    end
+
+    begin
+      opts.parse!
+    rescue OptionParser::ParseError
+      puts $!.to_s
+      exit 1
+    end
+
+    unless $*.size == 1
+      puts 'Please specify scheduled task id'
+      puts opts
+      exit 1
+    end
+
+    @cli.update_schedule($*[0], params)
+  end
 end

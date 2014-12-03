@@ -1,0 +1,3 @@
+runtime 'binary'
+stack 'ffmpeg-2.3'
+exec 'ffmpeg-2.3.sh'
