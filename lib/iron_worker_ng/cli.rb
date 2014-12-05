@@ -294,6 +294,7 @@ module IronWorkerNG
       data << ['code package', task.code_name]
       data << ['code revision', task.code_rev]
       data << ['status', task.status]
+      data << ['label', task.label] if task.label
       data << ['priority', task.priority || 2]
       data << ['queued', parse_time(task.created_at) || '-']
       data << ['started', parse_time(task.start_time) || '-']
