@@ -184,6 +184,11 @@ elsif command == 'queue' || command == 'schedule'
       options[:cluster] = v
     end
 
+    desc = command == 'queue' ? 'task' : 'schedule'
+    opts.on('--label LABEL', String, "Label #{desc} with given name") do |v|
+      options[:label] = v
+    end
+
     if command == 'queue'
       opts.on('--wait', Integer, 'wait for task to complete and print log') do |v|
         options[:wait] = true
@@ -211,9 +216,6 @@ elsif command == 'queue' || command == 'schedule'
         options[:run_every] = v
       end
 
-      opts.on('--label LABEL', String, 'Label schedule with given name') do |v|
-        options[:label] = v
-      end
     end
 
     common_opts(opts)
