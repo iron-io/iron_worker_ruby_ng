@@ -41,7 +41,7 @@ if $*.size == 1 && ($*[0] == '-v' || $*[0] == '--version')
   exit 0
 end
 
-commands = ['upload', 'patch', 'queue', 'retry', 'schedule', 'update', 'log', 'run', 'install', 'webhook', 'info', 'stacks']
+commands = ['upload', 'patch', 'queue', 'retry', 'schedule', 'update', 'log', 'run', 'install', 'webhook', 'info', 'stacks', 'pause', 'resume']
 
 if $*.size == 0 || (not commands.include?($*[0]))
   puts 'usage: iron_worker COMMAND [OPTIONS]'
@@ -511,4 +511,29 @@ elsif command == 'update'
 
     @cli.update_schedule($*[0], params)
   end
+
+elsif command == 'pause'
+  params = {}
+  options = {}
+
+  opts = OptionParser.new do |opts|
+    opts.banner = "usage: iron_worker pause CODE_PACKAGE_NAME_OR_PATH_TO_WORKERFILE"
+
+    common_opts(opts)
+  end
+
+  begin
+    opts.parse!
+  rescue OptionParser::ParseError
+    puts $!.to_s
+    exit 1
+  end
+
+  unless $*.size == 1
+    puts 'Please specify code package name or workerfile'
+    puts opts
+    exit 1
+  end
+
+  @cli.pause($*[0], params, options)
 end
