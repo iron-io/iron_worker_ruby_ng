@@ -517,7 +517,7 @@ elsif command == 'pause' || command == 'resume'
   options = {}
 
   opts = OptionParser.new do |opts|
-    opts.banner = "usage: iron_worker #{command} CODE_PACKAGE_NAME_OR_PATH_TO_WORKERFILE"
+    opts.banner = "usage: iron_worker #{command} CODE_PACKAGE_NAME"
 
     common_opts(opts)
   end
@@ -530,7 +530,7 @@ elsif command == 'pause' || command == 'resume'
   end
 
   unless $*.size == 1
-    puts 'Please specify code package name or workerfile'
+    puts 'Please specify code package name'
     puts opts
     exit 1
   end
