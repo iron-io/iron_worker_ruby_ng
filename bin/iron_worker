@@ -512,12 +512,12 @@ elsif command == 'update'
     @cli.update_schedule($*[0], params)
   end
 
-elsif command == 'pause'
+elsif command == 'pause' || command == 'resume'
   params = {}
   options = {}
 
   opts = OptionParser.new do |opts|
-    opts.banner = "usage: iron_worker pause CODE_PACKAGE_NAME_OR_PATH_TO_WORKERFILE"
+    opts.banner = "usage: iron_worker #{command} CODE_PACKAGE_NAME_OR_PATH_TO_WORKERFILE"
 
     common_opts(opts)
   end
@@ -535,5 +535,9 @@ elsif command == 'pause'
     exit 1
   end
 
-  @cli.pause($*[0], params, options)
+  if command == 'resume'
+    @cli.resume($*[0], params, options)
+  else
+    @cli.pause($*[0], params, options)
+  end
 end

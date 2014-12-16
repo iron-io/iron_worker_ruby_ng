@@ -279,13 +279,15 @@ EXEC_FILE
     def codes_pause_task_queue(code_id, options = {})
       IronCore::Logger.debug 'IronWorkerNG', "Calling codes.pause_task_queue with code_id='#{code_id}' and options='#{options.to_s}'"
 
-      @api.codes_pause_task_queue(code_id, options)
+      res = @api.codes_pause_task_queue(code_id, options)
+      OpenStruct.new(res)
     end
 
     def codes_resume_task_queue(code_id, options = {})
       IronCore::Logger.debug 'IronWorkerNG', "Calling codes.resume_task_queue with code_id='#{code_id}' and options='#{options.to_s}'"
 
-      @api.codes_resume_task_queue(code_id, options)
+      res = @api.codes_resume_task_queue(code_id, options)
+      OpenStruct.new(res)
     end
 
     def tasks_list(options = {})

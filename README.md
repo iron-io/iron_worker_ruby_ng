@@ -132,6 +132,21 @@ You can retry task by id using same payload and options:
 or
 ```ruby
 client.tasks.retry('5032f7360a4681382838e082', :delay => 10)
+
+## Pause or Resume task processing
+
+You can temporarily pause or resume queued and scheduled tasks processing by code name:
+
+    iron_worker pause hello
+
+    iron_worker resume hello
+
+or by code:
+Pause or resume for the code package specified by `code_id`.
+
+```ruby
+response = client.codes.pause_task_queue('1234567890')
+response = client.codes.resume_task_queue('1234567890')
 ```
 
 

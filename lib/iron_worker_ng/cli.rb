@@ -330,12 +330,12 @@ module IronWorkerNG
       code = get_code_by_name(name)
       log "Pausing task queue for code '#{code._id}'"
 
-      response = client.codes.codes_pause_task_queue(code._id, options)
+      response = client.codes.pause_task_queue(code._id, options)
 
       if response.msg == 'Paused'
         log "Task queue and schedules for #{name} paused successfully"
       elsif response.msg == 'Already paused'
-        log "Task queue and schedules for #{name} are paused already"
+        log "Task queue and schedules for #{name} are already paused"
       else
         log 'Something went wrong'
       end
@@ -346,12 +346,12 @@ module IronWorkerNG
       code = get_code_by_name(name)
       log "Resuming task queue for code '#{code._id}'"
 
-      response = client.codes.codes_resume_task_queue(code._id, options)
+      response = client.codes.resume_task_queue(code._id, options)
 
       if response.msg == 'Resumed'
         log "Task queue and schedules for #{name} resumed successfully"
       elsif response.msg == 'Already resumed'
-        log "Task queue and schedules for #{name} are resumed already"
+        log "Task queue and schedules for #{name} are already resumed"
       else
         log 'Something went wrong'
       end
