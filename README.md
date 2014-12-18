@@ -110,6 +110,7 @@ You can specify not only priority:
   - **timeout**: The maximum runtime of your task in seconds. No task can exceed 3600 seconds (60 minutes). The default is 3600 but can be set to a shorter duration.
   - **delay**: The number of seconds to delay before actually queuing the task. Default is 0.
   - **label**: Optional text label for your task.
+  - **cluster**: cluster name ex: "high-mem" or "dedicated". If not set default is set to "default" which is the public IronWorker cluster.
 
 ## Get task status
 
