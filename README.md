@@ -647,3 +647,9 @@ Cancel the scheduled task specified by `schedule_id`.
 ```ruby
 client.schedules.cancel('1234567890')
 ```
+
+### patch your worker file using cli
+
+Normally the patched version is put in place of the originals
+
+    iron_worker patch code_package_name -p 'TARGET_FILE=worker.rb,PATCH_FILE=new_worker.rb'

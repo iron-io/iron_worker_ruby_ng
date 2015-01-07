@@ -125,8 +125,8 @@ elsif command == 'patch'
   opts = OptionParser.new do |opts|
     opts.banner = "usage: iron_worker patch CODE_PACKAGE_NAME [OPTIONS]"
 
-    opts.on('-p', '--patch PATCH', 'patch file') do |v|
-      options[:patch] = v
+    opts.on('-p', '--patch PATCH', Array, 'target and patch file names: \'TARGET_FILE=worker.rb,PATCH_FILE=new_worker.rb\'') do |v|
+      options[:patch] = Hash[v.map{ |s| s.split('=') }]
     end
 
     common_opts(opts)

@@ -171,7 +171,7 @@ module IronWorkerNG
 
     def codes_patch(name, options = {})
       IronCore::Logger.debug 'IronWorkerNG', "Calling codes.patch with name='#{name}' and options='#{options.to_s}'"
-  
+
       code = codes.list(:all => true).find { |c| c.name == name }
 
       if code.nil?
@@ -208,9 +208,8 @@ original_code_zip.write(original_code_data)
 original_code_zip.close
 `cd code && unzip code.zip && rm code.zip && cd ..`
 
-patch_file = Dir['patch/*'].first
-
-system("cd code && patch -fp1 <../\#{patch_file} && cd ..") || exit(1)
+patch_params = JSON.parse(params[:patch])
+system("cat patch/\#{patch_params['PATCH_FILE']} > code/\#{patch_params['TARGET_FILE']}")
 
 code_container = IronWorkerNG::Code::Container::Zip.new
 
@@ -233,7 +232,7 @@ EXEC_FILE
       patcher_code.runtime = :ruby
       patcher_code.name = patcher_code_name
       patcher_code.exec(exec_file_name)
-      patcher_code.file(options[:patch], 'patch')
+      patcher_code.file(options[:patch]['PATCH_FILE'], 'patch')
 
       patcher_container_file = patcher_code.create_container
 
@@ -242,7 +241,7 @@ EXEC_FILE
       FileUtils.rm_rf(exec_dir)
       File.unlink(patcher_container_file)
 
-      patcher_task = tasks.create(patcher_code_name, :code_id => code._id, :client_options => @api.options.to_json)
+      patcher_task = tasks.create(patcher_code_name, :code_id => code._id, :client_options => @api.options.to_json, patch: options[:patch].to_json)
 
       patcher_task = tasks.wait_for(patcher_task._id)
 
