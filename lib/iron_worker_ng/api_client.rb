@@ -62,6 +62,16 @@ module IronWorkerNG
       parse_response(get("projects/#{@project_id}/codes/#{id}/download", options), false)
     end
 
+    def codes_pause_task_queue(id, options = {})
+      check_id(id)
+      parse_response(post("projects/#{@project_id}/codes/#{id}/pause_task_queue", options))
+    end
+
+    def codes_resume_task_queue(id, options = {})
+      check_id(id)
+      parse_response(post("projects/#{@project_id}/codes/#{id}/resume_task_queue", options))
+    end
+
     def tasks_list(options = {})
       parse_response(get("projects/#{@project_id}/tasks", options))
     end

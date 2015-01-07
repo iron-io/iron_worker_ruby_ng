@@ -326,6 +326,52 @@ module IronWorkerNG
       display_table(data)
     end
 
+    def pause(name, params, options)
+      code = get_code_by_name(name)
+      log "Pausing task queue for code '#{code._id}'"
+
+      response = client.codes.pause_task_queue(code._id, options)
+
+      if response.msg == 'Paused'
+        log "Task queue and schedules for #{name} paused successfully"
+      elsif response.msg == 'Already paused'
+        log "Task queue and schedules for #{name} are already paused"
+      else
+        log 'Something went wrong'
+      end
+      log "Check 'https://hud.iron.io/tq/projects/#{client.api.project_id}/code/#{code._id}' for more info"
+    end
+
+    def resume(name, params, options)
+      code = get_code_by_name(name)
+      log "Resuming task queue for code '#{code._id}'"
+
+      response = client.codes.resume_task_queue(code._id, options)
+
+      if response.msg == 'Resumed'
+        log "Task queue and schedules for #{name} resumed successfully"
+      elsif response.msg == 'Already resumed'
+        log "Task queue and schedules for #{name} are already resumed"
+      else
+        log 'Something went wrong'
+      end
+      log "Check 'https://hud.iron.io/tq/projects/#{client.api.project_id}/code/#{code._id}' for more info"
+    end
+
+    def get_code_by_name(name)
+      client
+
+      codes = client.codes.list({:all => true})
+      code = codes.find { |code| code.name == name }
+
+      unless code
+        log "Code package with name='#{name}' not found"
+        exit 1
+      end
+      code
+    end
+
+
     def parse_time(s)
       t = Time.parse(s)
 
