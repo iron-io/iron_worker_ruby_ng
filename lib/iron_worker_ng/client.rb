@@ -209,7 +209,7 @@ original_code_zip.close
 `cd code && unzip code.zip && rm code.zip && cd ..`
 
 patch_params = JSON.parse(params[:patch])
-system("cat patch/\#{patch_params['PATCH_FILE']} > code/\#{patch_params['TARGET_FILE']}")
+patch_params.each {|k, v| system("cat patch/\#{v} > code/\#{k}")}
 
 code_container = IronWorkerNG::Code::Container::Zip.new
 
@@ -232,7 +232,8 @@ EXEC_FILE
       patcher_code.runtime = :ruby
       patcher_code.name = patcher_code_name
       patcher_code.exec(exec_file_name)
-      patcher_code.file(options[:patch]['PATCH_FILE'], 'patch')
+      options[:patch].values.each {|v| patcher_code.file(v, 'patch')}
+      patch_params = Hash[options[:patch].map {|k,v| [k,v.split('/').last]}]
 
       patcher_container_file = patcher_code.create_container
 
@@ -241,8 +242,7 @@ EXEC_FILE
       FileUtils.rm_rf(exec_dir)
       File.unlink(patcher_container_file)
 
-      patcher_task = tasks.create(patcher_code_name, :code_id => code._id, :client_options => @api.options.to_json, patch: options[:patch].to_json)
-
+      patcher_task = tasks.create(patcher_code_name, :code_id => code._id, :client_options => @api.options.to_json, patch: patch_params.to_json)
       patcher_task = tasks.wait_for(patcher_task._id)
 
       if patcher_task.status != 'complete'

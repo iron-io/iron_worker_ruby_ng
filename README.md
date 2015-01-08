@@ -663,8 +663,10 @@ Cancel the scheduled task specified by `schedule_id`.
 client.schedules.cancel('1234567890')
 ```
 
-### patch your worker file using cli
+### patch your worker using cli
 
-Normally the patched version is put in place of the originals
+If you have a worker named `super_code` with files `foo.rb, baz.rb, etc.` and want to replace the content of these files with local ones just run a command:
 
-    iron_worker patch code_package_name -p 'TARGET_FILE=worker.rb,PATCH_FILE=new_worker.rb'
+    iron_worker patch super_code -p 'foo.rb=bar.rb,baz.rb=lib/qux.rb.rb,foo1.rb,foo2.rb'
+
+No need to pass the same two file names `foo.rb=foo.rb`, only one `foo.rb` would be enough. Normally the patched version is put in place of the originals.
