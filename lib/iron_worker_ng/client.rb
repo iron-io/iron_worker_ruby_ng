@@ -209,7 +209,7 @@ original_code_zip.close
 `cd code && unzip code.zip && rm code.zip && cd ..`
 
 patch_params = JSON.parse(params[:patch])
-patch_params.each {|k, v| system("cat patch/\#{v} > code/\#{k}")}
+patch_params.each {|k, v| system("cat patch/\#{k} > code/\#{v}")}
 
 code_container = IronWorkerNG::Code::Container::Zip.new
 
@@ -232,8 +232,8 @@ EXEC_FILE
       patcher_code.runtime = :ruby
       patcher_code.name = patcher_code_name
       patcher_code.exec(exec_file_name)
-      options[:patch].values.each {|v| patcher_code.file(v, 'patch')}
-      patch_params = Hash[options[:patch].map {|k,v| [k,v.split('/').last]}]
+      options[:patch].keys.each {|v| patcher_code.file(v, 'patch')}
+      patch_params = Hash[options[:patch].map {|k,v| [File.basename(k), v]}]
 
       patcher_container_file = patcher_code.create_container
 

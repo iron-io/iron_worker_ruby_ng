@@ -665,8 +665,8 @@ client.schedules.cancel('1234567890')
 
 ### patch your worker using cli
 
-If you have a worker named `super_code` with files `foo.rb, baz.rb, etc.` and want to replace the content of these files with local ones just run a command:
+If you have an uploaded worker named `super_code` with files `qux.rb, bar.rb, etc.` and want to replace the content of `bar.rb` with a local file `foo.rb`, `qux.rb` with `baz.rb` just run a command:
 
-    iron_worker patch super_code -p 'foo.rb=bar.rb,baz.rb=lib/qux.rb.rb,foo1.rb,foo2.rb'
+    iron_worker patch super_code -p 'foo.rb=bar.rb,baz.rb=lib/qux.rb.rb,foo.rb,foo2.rb'
 
 No need to pass the same two file names `foo.rb=foo.rb`, only one `foo.rb` would be enough. Normally the patched version is put in place of the originals.
