@@ -172,7 +172,7 @@ module IronWorkerNG
     def codes_patch(name, options = {})
       IronCore::Logger.debug 'IronWorkerNG', "Calling codes.patch with name='#{name}' and options='#{options.to_s}'"
 
-      code = codes.list(:all => true).find { |c| c.name == name }
+      code = codes.list(per_page: 100).find { |c| c.name == name }
 
       if code.nil?
         IronCore::Logger.error 'IronWorkerNG', "Can't find code with name='#{name}' to patch", IronCore::Error
