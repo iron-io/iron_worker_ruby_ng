@@ -1,0 +1,3 @@
+runtime 'binary'
+stack 'phantom-2.0'
+exec 'phantom-2.0.sh'
