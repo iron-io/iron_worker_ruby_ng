@@ -32,12 +32,20 @@ class BasicTest < IWNGTest
 
   def test_pause_task_queue
     code_id = create_code('test_paused_task')
-    client.tasks.create('test_paused_task')
+    client.codes.resume_task_queue(code_id)
+    task_ids = []
+    5.times do
+      task_ids << client.tasks.create('test_paused_task').id
+    end
     response = client.codes.pause_task_queue(code_id)
     paused_code = client.codes.get(code_id)
-    assert_equal response['msg'], 'Paused'
-    assert_equal paused_code.max_concurrency, -1
-    client.codes.resume_task_queue(code_id)
+    assert_equal 'Paused', response['msg']
+    assert_equal -1, paused_code.max_concurrency
+    sleep 5
+    task_ids.each do |id|
+      task = client.tasks.get(id)
+      assert_equal 'queued', task.status
+    end
   end
 
   def test_resume_task_queue
