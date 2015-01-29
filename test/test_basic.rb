@@ -58,8 +58,8 @@ class BasicTest < IWNGTest
     sleep 5
     response = client.codes.resume_task_queue(code_id)
     resumed_code = client.codes.get(code_id)
-    assert_equal response['msg'], 'Resumed'
-    assert_not_equal resumed_code.max_concurrency, -1
+    assert_equal 'Resumed', response['msg']
+    assert_not_equal -1, resumed_code.max_concurrency
     sleep 5
     task_ids.each do |id|
       task = client.tasks.get(id)
