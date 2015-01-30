@@ -1,0 +1,4 @@
+runtime 'binary'
+stack 'php-5.6'
+file 'php-5.6.php'
+exec 'php-5.6.sh'

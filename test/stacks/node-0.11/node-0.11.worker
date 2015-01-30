@@ -1,0 +1,3 @@
+runtime 'node'
+stack 'node-0.11'
+exec 'node.js'
