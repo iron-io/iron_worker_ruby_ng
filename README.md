@@ -299,7 +299,7 @@ Specific methods for binary (freeform) runtime.
 ### merge_exec(path)
 ### exec(path)
 
-Merge the exec located at `path`. 
+Merge the exec located at `path`.
 
 ```ruby
 code.merge_exec 'my_worker.sh'
@@ -312,7 +312,7 @@ Specific methods for go runtime. It'll run provided exec via 'go run'.
 ### merge_exec(path)
 ### exec(path)
 
-Merge the exec located at `path`. 
+Merge the exec located at `path`.
 
 ```ruby
 code.merge_exec 'my_worker.go'
@@ -347,7 +347,7 @@ Specific methods for mono (.net) runtime.
 ### merge_exec(path)
 ### exec(path)
 
-Merge the exec located at `path`. 
+Merge the exec located at `path`.
 
 ```ruby
 code.merge_exec 'my_worker.exe'
@@ -360,7 +360,7 @@ Specific methods for node runtime.
 ### merge_exec(path)
 ### exec(path)
 
-Merge the exec located at `path`. 
+Merge the exec located at `path`.
 
 ```ruby
 code.merge_exec 'my_worker.js'
@@ -373,7 +373,7 @@ Specific methods for perl runtime.
 ### merge_exec(path)
 ### exec(path)
 
-Merge the exec located at `path`. 
+Merge the exec located at `path`.
 
 ```ruby
 code.merge_exec 'my_worker.pl'
@@ -386,7 +386,7 @@ Specific methods for PHP runtime.
 ### merge_exec(path)
 ### exec(path)
 
-Merge the exec located at `path`. 
+Merge the exec located at `path`.
 
 ```ruby
 code.merge_exec 'my_worker.php'
@@ -399,7 +399,7 @@ Specific methods for python runtime.
 ### merge_exec(path)
 ### exec(path)
 
-Merge the exec located at `path`. 
+Merge the exec located at `path`.
 
 ```ruby
 code.merge_exec 'my_worker.py'
@@ -559,7 +559,23 @@ Queue a new task for the code package specified by `code_name`, passing the `par
 ```ruby
 task = client.tasks.create('MyWorker', {:client => 'Joe'}, {:delay => 180})
 puts task.id
+# => #<OpenStruct id="54cc1638855dc73d920a0870", _id="54cc1638855dc73d920a0870">
 ```
+
+```ruby
+task = client.tasks.create('MyWorker', {:client => 'Joe'}, {:delay => 180})
+puts task.id
+```
+
+### tasks.bulk_create(code_name, array_of_params = [], options = {})
+
+```ruby
+task_ids = client.tasks.bulk_create('hello_ruby', [{:hello => "world"}, {:hello => "world"}, {:hello => "world"}], {:cluster => "mem1"} )
+puts tasks_ids
+# => #<OpenStruct tasks=[{"id"=>"54cc11b8855dc73d9209ce0d"}, {"id"=>"54cc11b8855dc73d9209ce0e"}, {"id"=>"54cc11b8855dc73d9209ce0f"}}], msg="Queued up">
+```
+
+Queue more than 1 tasks in a single api call for the code package specified by `code_name`, passing an array of params/payloads and returning a tasks object with the ids of each task queued. Visit http://dev.iron.io/worker/reference/api/#queue_a_task for more information about the available options.
 
 ### tasks.cancel(task_id)
 
