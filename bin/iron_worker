@@ -41,7 +41,7 @@ if $*.size == 1 && ($*[0] == '-v' || $*[0] == '--version')
   exit 0
 end
 
-commands = ['upload', 'patch', 'queue', 'retry', 'schedule', 'update', 'log', 'run', 'install', 'webhook', 'info', 'stacks']
+commands = ['upload', 'patch', 'queue', 'retry', 'schedule', 'update', 'log', 'run', 'install', 'webhook', 'info', 'stacks', 'pause', 'resume']
 
 if $*.size == 0 || (not commands.include?($*[0]))
   puts 'usage: iron_worker COMMAND [OPTIONS]'
@@ -125,8 +125,8 @@ elsif command == 'patch'
   opts = OptionParser.new do |opts|
     opts.banner = "usage: iron_worker patch CODE_PACKAGE_NAME [OPTIONS]"
 
-    opts.on('-p', '--patch PATCH', 'patch file') do |v|
-      options[:patch] = v
+    opts.on('-p', '--patch PATCH', Array, 'target and patch file names: \'foo.rb=bar.rb,baz.rb=lib/qux.rb,foo1.rb,foo2.rb\'') do |v|
+      options[:patch] = Hash[v.map{|s| s.include?('=') ? s.split('='): [s, s]}]
     end
 
     common_opts(opts)
@@ -184,6 +184,11 @@ elsif command == 'queue' || command == 'schedule'
       options[:cluster] = v
     end
 
+    desc = command == 'queue' ? 'task' : 'schedule'
+    opts.on('--label LABEL', String, "Label #{desc} with given name") do |v|
+      options[:label] = v
+    end
+
     if command == 'queue'
       opts.on('--wait', Integer, 'wait for task to complete and print log') do |v|
         options[:wait] = true
@@ -211,9 +216,6 @@ elsif command == 'queue' || command == 'schedule'
         options[:run_every] = v
       end
 
-      opts.on('--label LABEL', String, 'Label schedule with given name') do |v|
-        options[:label] = v
-      end
     end
 
     common_opts(opts)
@@ -508,5 +510,34 @@ elsif command == 'update'
     end
 
     @cli.update_schedule($*[0], params)
+  end
+
+elsif command == 'pause' || command == 'resume'
+  params = {}
+  options = {}
+
+  opts = OptionParser.new do |opts|
+    opts.banner = "usage: iron_worker #{command} CODE_PACKAGE_NAME"
+
+    common_opts(opts)
+  end
+
+  begin
+    opts.parse!
+  rescue OptionParser::ParseError
+    puts $!.to_s
+    exit 1
+  end
+
+  unless $*.size == 1
+    puts 'Please specify code package name'
+    puts opts
+    exit 1
+  end
+
+  if command == 'resume'
+    @cli.resume($*[0], params, options)
+  else
+    @cli.pause($*[0], params, options)
   end
 end

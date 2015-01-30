@@ -43,7 +43,8 @@ supplementary data, and other dependencies with it. `.worker` files make it easy
 
 ```ruby
 # define the runtime language, this can be ruby, java, node, php, go, etc.
-runtime "ruby"
+# also you could set version of language(check of available versions via iron_worker stacks)
+runtime "ruby","2.1"
 # exec is the file that will be executed:
 exec "hello_worker.rb"
 ```
@@ -90,7 +91,7 @@ You can specify priority of the task using `--priority` parameter:
 
 ```ruby
 iron_worker queue hello --priority 0 # default value, lowest priority
-iron_worker queue hello --priority 1 # medium priority
+iron_worker queue hello --priority 1 --label 'medium priority task' # medium priority
 ```
 
 Value of priority parameter means the priority queue to run the task in. Valid values are 0, 1, and 2. 0 is the default.
@@ -108,6 +109,8 @@ You can specify not only priority:
   - **priority**: Setting the priority of your job. Valid values are 0, 1, and 2. The default is 0.
   - **timeout**: The maximum runtime of your task in seconds. No task can exceed 3600 seconds (60 minutes). The default is 3600 but can be set to a shorter duration.
   - **delay**: The number of seconds to delay before actually queuing the task. Default is 0.
+  - **label**: Optional text label for your task.
+  - **cluster**: cluster name ex: "high-mem" or "dedicated". If not set default is set to "default" which is the public IronWorker cluster.
 
 ## Get task status
 
@@ -130,6 +133,21 @@ You can retry task by id using same payload and options:
 or
 ```ruby
 client.tasks.retry('5032f7360a4681382838e082', :delay => 10)
+
+## Pause or Resume task processing
+
+You can temporarily pause or resume queued and scheduled tasks processing by code name:
+
+    iron_worker pause hello
+
+    iron_worker resume hello
+
+or by code:
+Pause or resume for the code package specified by `code_id`.
+
+```ruby
+response = client.codes.pause_task_queue('1234567890')
+response = client.codes.resume_task_queue('1234567890')
 ```
 
 
@@ -437,7 +455,12 @@ iron_worker stacks
 And to specify stack add following line in your .worker file
 
 ```ruby
-# define the runtime language, this can be ruby, java, node, php, go, etc.
+runtime 'ruby', '2.1'
+```
+Or
+
+```ruby
+exec 'java.sh'
 runtime 'binary'
 stack 'java-1.7'
 exec 'java.sh'
@@ -603,7 +626,7 @@ puts client.schedules.get('1234567890').last_run_time
 Create a new scheduled task for the code package specified by `code_name`, passing the params hash to it as a data payload and returning a scheduled task object with only the `id` field filled. Visit http://dev.iron.io/worker/reference/api/#schedule_a_task for more information about the available options.
 
 ```ruby
-schedule = client.schedules.create('MyWorker', {:client => 'Joe'}, {:start_at => Time.now + 3600})
+schedule = client.schedules.create('MyWorker', {:client => 'Joe'}, {:start_at => Time.now + 3600, :run_every =>60, :priority => 0, :run_times => 100, :end_at: Time.now + 2592000, Time.now + 84600})
 puts schedule.id
 ```
 
@@ -639,3 +662,11 @@ Cancel the scheduled task specified by `schedule_id`.
 ```ruby
 client.schedules.cancel('1234567890')
 ```
+
+### patch your worker using cli
+
+If you have an uploaded worker named `super_code` with files `qux.rb, bar.rb, etc.` and want to replace the content of `bar.rb` with a local file `foo.rb`, `qux.rb` with `baz.rb` just run a command:
+
+    iron_worker patch super_code -p 'foo.rb=bar.rb,baz.rb=lib/qux.rb.rb,foo.rb,foo2.rb'
+
+No need to pass the same two file names `foo.rb=foo.rb`, only one `foo.rb` would be enough. Normally the patched version is put in place of the originals.

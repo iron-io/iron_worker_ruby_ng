@@ -10,7 +10,7 @@ module IronWorkerNG
 <?php
 /* #{IronWorkerNG.full_version} */
 
-function getArgs() {
+function getArgs($assoc = true) {
   global $argv;
 
   $args = array('task_id' => null, 'dir' => null, 'payload' => array(), 'config' => null);
@@ -24,7 +24,7 @@ function getArgs() {
     if ($v == '-payload' && file_exists($argv[$k + 1])) {
       $args['payload'] = file_get_contents($argv[$k + 1]);
 
-      $parsed_payload = json_decode($args['payload']);
+      $parsed_payload = json_decode($args['payload'], $assoc);
 
       if ($parsed_payload != null) {
         $args['payload'] = $parsed_payload;
@@ -34,7 +34,7 @@ function getArgs() {
     if ($v == '-config' && file_exists($argv[$k + 1])) {
       $args['config'] = file_get_contents($argv[$k + 1]);
 
-      $parsed_config = json_decode($args['config'], true);
+      $parsed_config = json_decode($args['config'], $assoc);
 
       if ($parsed_config != null) {
           $args['config'] = $parsed_config;
@@ -45,14 +45,14 @@ function getArgs() {
   return $args;
 }
 
-function getPayload() {
-  $args = getArgs();
+function getPayload($assoc = false) {
+  $args = getArgs($assoc);
 
   return $args['payload'];
 }
 
-function getConfig(){
-  $args = getArgs();
+function getConfig($assoc = true){
+  $args = getArgs($assoc);
 
   return $args['config'];
 }
