@@ -82,7 +82,20 @@ module IronWorkerNG
     end
 
     def tasks_create(code_name, payload, options = {})
+      # creates single task
+      # could not make tasks_create(code_name, payload, options = {}) backwards compatible for batch tasks an array payload value could potentially be a legitimate payload rather than an array of tasks @stephenitis
       parse_response(post("projects/#{@project_id}/tasks", {:tasks => [{:code_name => code_name, :payload => payload}.merge(options)]}))
+    end
+
+    def tasks_bulk_create(code_name, array_of_payloads, options)
+      # batch post tasks
+      array_of_tasks = array_of_payloads.map! do |payload|
+        {
+          :code_name => code_name,
+          :payload => payload.is_a?(String) ? payload : payload.to_json
+        } .merge(options)
+      end
+        parse_response(post("projects/#{@project_id}/tasks", {:tasks => array_of_tasks}))
     end
 
     def tasks_cancel(id)
