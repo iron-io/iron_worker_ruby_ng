@@ -10,7 +10,7 @@ module IronWorkerNG
 <?php
 /* #{IronWorkerNG.full_version} */
 
-function getArgs($assoc = true) {
+function getArgs($assoc = false) {
   global $argv;
 
   $args = array('task_id' => null, 'dir' => null, 'payload' => array(), 'config' => null);
@@ -51,7 +51,7 @@ function getPayload($assoc = false) {
   return $args['payload'];
 }
 
-function getConfig($assoc = true){
+function getConfig($assoc = false){
   $args = getArgs($assoc);
 
   return $args['config'];
