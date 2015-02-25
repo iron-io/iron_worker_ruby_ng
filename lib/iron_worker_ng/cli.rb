@@ -10,6 +10,7 @@ module IronWorkerNG
       @env = nil
       @project_id = nil
       @token = nil
+      @http_proxy = nil
     end
 
     def beta?
@@ -41,6 +42,11 @@ module IronWorkerNG
 
       @token = token
     end
+    
+    def http_proxy=(http_proxy)
+      @client = nil
+      @http_proxy = http_proxy
+    end
 
     def log(msg)
       IronCore::Logger.info 'IronWorkerNG', msg
@@ -54,7 +60,9 @@ module IronWorkerNG
       if @client.nil?
         log_group "Creating client"
 
-        @client = IronWorkerNG::Client.new(:config => @config, :env => @env, :project_id => @project_id, :token => @token)
+        @client = IronWorkerNG::Client.new(:config => @config, :env => @env, :project_id => @project_id, :token => @token,
+                                           :http_proxy => @http_proxy
+        )
 
         project = client.projects.get
 
