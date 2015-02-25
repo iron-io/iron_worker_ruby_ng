@@ -16,7 +16,7 @@ Gem::Specification.new do |gem|
   gem.required_rubygems_version = '>= 1.3.6'
   gem.required_ruby_version = Gem::Requirement.new('>= 1.9')
 
-  gem.add_runtime_dependency 'iron_core', '>= 1.0.5'
+  gem.add_runtime_dependency 'iron_core', '>= 1.0.6'
   gem.add_runtime_dependency 'bundler'
   gem.add_runtime_dependency 'rubyzip', '>= 1.0.0'
 
