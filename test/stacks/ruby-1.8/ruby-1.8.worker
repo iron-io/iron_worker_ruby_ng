@@ -1,0 +1,4 @@
+runtime "ruby"
+stack 'ruby-1.8'
+
+exec "ruby-1.8.rb"
