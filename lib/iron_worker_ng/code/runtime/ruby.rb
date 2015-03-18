@@ -32,12 +32,14 @@ root = nil
 payload_file = nil
 config_file = nil
 task_id = nil
+schedule_id = nil
 
 0.upto($*.length - 2) do |i|
   root = $*[i + 1] if $*[i] == '-d'
   payload_file = $*[i + 1] if $*[i] == '-payload'
   config_file = $*[i + 1] if $*[i] == '-config'
   task_id = $*[i + 1] if $*[i] == '-id'
+  schedule_id = $*[i + 1] if $*[i] == '-schedule_id'
 end
 
 ENV['GEM_PATH'] = ([root + '__gems__'] + (ENV['GEM_PATH'] || '').split(':')).join(':')
@@ -49,6 +51,7 @@ require 'json'
 require 'yaml'
 
 @iron_task_id = task_id
+@iron_schedule_id = schedule_id
 
 @payload = File.read(payload_file)
 
@@ -92,6 +95,10 @@ def iron_task_id
   @iron_task_id
 end
 
+def iron_schedule_id
+  @iron_schedule_id
+end
+
 require '#{File.basename(@exec.path)}'
 
 unless #{@exec.arg(:class, 0) == nil}
@@ -108,6 +115,10 @@ unless #{@exec.arg(:class, 0) == nil}
 
   if exec_inst.respond_to?(:iron_task_id=)
     exec_inst.send(:iron_task_id=, iron_task_id)
+  end
+
+  if exec_inst.respond_to?(:iron_schedule_id=)
+    exec_inst.send(:iron_schedule_id=, iron_schedule_id)
   end
 
   exec_inst.run
