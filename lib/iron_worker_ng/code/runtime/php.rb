@@ -13,13 +13,14 @@ module IronWorkerNG
 function getArgs($assoc = true) {
   global $argv;
 
-  $args = array('task_id' => null, 'dir' => null, 'payload' => array(), 'config' => null);
+  $args = array('task_id' => null, 'dir' => null, 'payload' => array(), 'config' => null, 'schedule_id' => null);
 
   foreach ($argv as $k => $v) {
     if (empty($argv[$k + 1])) continue;
 
     if ($v == '-id') $args['task_id'] = $argv[$k + 1];
     if ($v == '-d')  $args['dir']     = $argv[$k + 1];
+    if ($v == '-schedule_id') $args['schedule_id'] = $argv[$k + 1];
 
     if ($v == '-payload' && file_exists($argv[$k + 1])) {
       $args['payload'] = file_get_contents($argv[$k + 1]);
