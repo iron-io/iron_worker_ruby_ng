@@ -13,6 +13,7 @@ var fs = require('fs');
 var querystring = require('querystring');
 var params = null;
 var task_id = null;
+var schedule_id = null;
 var config = null;
 
 process.argv.forEach(function(val, index, array) {
@@ -39,11 +40,16 @@ process.argv.forEach(function(val, index, array) {
   if (val == "-id") {
     task_id = process.argv[index + 1];
   }
+
+  if (val == "-schedule_id") {
+    schedule_id = process.argv[index + 1];
+  }
 });
 
 exports.params = params;
 exports.config = config;
 exports.task_id = task_id;
+exports.schedule_id = schedule_id;
 
 NODE_RUNNER
           end
