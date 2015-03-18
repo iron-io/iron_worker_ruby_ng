@@ -1,0 +1,4 @@
+runtime 'binary'
+stack 'newrelic'
+exec 'newrelic.sh'
+

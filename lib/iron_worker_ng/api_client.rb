@@ -17,6 +17,10 @@ module IronWorkerNG
 
       super('iron', 'worker', options, default_options, [:project_id, :token, :api_version])
 
+      #puts "nhp.proxy yo #{rest.wrapper.http.proxy_uri}" if defined? Net::HTTP::Persistent
+      #puts "RestClient.proxy yo #{RestClient.proxy}" if defined? RestClient
+      #puts "InternalClient.proxy yo #{Rest::InternalClient.proxy}" if defined? Rest::InternalClient
+
       IronCore::Logger.error 'IronWorkerNG', "Token is not set", IronCore::Error if @token.nil?
 
       check_id(@project_id, 'project_id')
@@ -60,6 +64,16 @@ module IronWorkerNG
     def codes_download(id, options = {})
       check_id(id)
       parse_response(get("projects/#{@project_id}/codes/#{id}/download", options), false)
+    end
+
+    def codes_pause_task_queue(id, options = {})
+      check_id(id)
+      parse_response(post("projects/#{@project_id}/codes/#{id}/pause_task_queue", options))
+    end
+
+    def codes_resume_task_queue(id, options = {})
+      check_id(id)
+      parse_response(post("projects/#{@project_id}/codes/#{id}/resume_task_queue", options))
     end
 
     def tasks_list(options = {})
@@ -120,6 +134,11 @@ module IronWorkerNG
       options[:end_at] = options[:end_at].iso8601 if (not options[:end_at].nil?) && options[:end_at].respond_to?(:iso8601)
 
       parse_response(post("projects/#{@project_id}/schedules", {:schedules => [{:code_name => code_name, :payload => payload}.merge(options)]}))
+    end
+
+    def schedules_update(id, options = {})
+      check_id(id)
+      parse_response(put("projects/#{@project_id}/schedules/#{id}", options))
     end
 
     def schedules_cancel(id)

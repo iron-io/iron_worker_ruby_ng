@@ -1,0 +1,4 @@
+runtime 'binary'
+stack 'go-1.4'
+file 'go-1.4.sh'
+exec 'go-1.4.sh'

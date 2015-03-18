@@ -34,6 +34,10 @@ def common_opts(opts)
   opts.on('--token TOKEN', 'token') do |v|
     @cli.token = v
   end
+
+  opts.on('--http-proxy HTTP_PROXY', 'http proxy') do |v|
+    @cli.http_proxy = v
+  end
 end
 
 if $*.size == 1 && ($*[0] == '-v' || $*[0] == '--version')
@@ -41,7 +45,7 @@ if $*.size == 1 && ($*[0] == '-v' || $*[0] == '--version')
   exit 0
 end
 
-commands = ['upload', 'patch', 'queue', 'retry', 'schedule', 'log', 'run', 'install', 'webhook', 'info', 'stacks']
+commands = ['upload', 'patch', 'queue', 'retry', 'schedule', 'update', 'log', 'run', 'install', 'webhook', 'info', 'stacks', 'pause', 'resume']
 
 if $*.size == 0 || (not commands.include?($*[0]))
   puts 'usage: iron_worker COMMAND [OPTIONS]'
@@ -125,8 +129,8 @@ elsif command == 'patch'
   opts = OptionParser.new do |opts|
     opts.banner = "usage: iron_worker patch CODE_PACKAGE_NAME [OPTIONS]"
 
-    opts.on('-p', '--patch PATCH', 'patch file') do |v|
-      options[:patch] = v
+    opts.on('-p', '--patch PATCH', Array, 'target and patch file names: \'foo.rb=bar.rb,baz.rb=lib/qux.rb,foo1.rb,foo2.rb\'') do |v|
+      options[:patch] = Hash[v.map{|s| s.include?('=') ? s.split('='): [s, s]}]
     end
 
     common_opts(opts)
@@ -184,6 +188,11 @@ elsif command == 'queue' || command == 'schedule'
       options[:cluster] = v
     end
 
+    desc = command == 'queue' ? 'task' : 'schedule'
+    opts.on('--label LABEL', String, "Label #{desc} with given name") do |v|
+      options[:label] = v
+    end
+
     if command == 'queue'
       opts.on('--wait', Integer, 'wait for task to complete and print log') do |v|
         options[:wait] = true
@@ -210,6 +219,7 @@ elsif command == 'queue' || command == 'schedule'
       opts.on('--run-every RUN_EVERY', Integer, 'run task every RUN_EVERY seconds') do |v|
         options[:run_every] = v
       end
+
     end
 
     common_opts(opts)
@@ -311,7 +321,7 @@ elsif command == 'run'
     opts.on('--worker-config CONFIG_FILE', 'config file for worker') do |v|
       options[:worker_config] = v
     end
-    
+
     common_opts(opts)
   end
 
@@ -465,4 +475,73 @@ elsif command == 'info'
 
 elsif command == 'stacks'
   @cli.stacks_list
+elsif command == 'update'
+  entities = ['schedule']
+
+  if $*.size == 0 || (not entities.include?($*[0]))
+    puts 'usage: iron_worker update ENTITY [OPTIONS]'
+    puts "    ENTITY: #{entities.join(', ')}"
+    puts '    run iron_worker update ENTITY --help to get more information about each entity'
+    exit 1
+  end
+
+  entity = $*.shift
+
+  if entity == 'schedule'
+    params = {}
+
+    opts = OptionParser.new do |opts|
+      opts.banner = "usage: iron_worker update schedule SCHEDULED_TASK_ID [OPTIONS]"
+
+      opts.on('-s', '--schedule SCHEDULE', String, 'schedule params to pass, JSON string') do |v|
+        params[:schedule] = v
+      end
+
+      common_opts(opts)
+    end
+
+    begin
+      opts.parse!
+    rescue OptionParser::ParseError
+      puts $!.to_s
+      exit 1
+    end
+
+    unless $*.size == 1
+      puts 'Please specify scheduled task id'
+      puts opts
+      exit 1
+    end
+
+    @cli.update_schedule($*[0], params)
+  end
+
+elsif command == 'pause' || command == 'resume'
+  params = {}
+  options = {}
+
+  opts = OptionParser.new do |opts|
+    opts.banner = "usage: iron_worker #{command} CODE_PACKAGE_NAME"
+
+    common_opts(opts)
+  end
+
+  begin
+    opts.parse!
+  rescue OptionParser::ParseError
+    puts $!.to_s
+    exit 1
+  end
+
+  unless $*.size == 1
+    puts 'Please specify code package name'
+    puts opts
+    exit 1
+  end
+
+  if command == 'resume'
+    @cli.resume($*[0], params, options)
+  else
+    @cli.pause($*[0], params, options)
+  end
 end

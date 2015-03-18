@@ -10,6 +10,7 @@ module IronWorkerNG
       @env = nil
       @project_id = nil
       @token = nil
+      @http_proxy = nil
     end
 
     def beta?
@@ -41,6 +42,11 @@ module IronWorkerNG
 
       @token = token
     end
+    
+    def http_proxy=(http_proxy)
+      @client = nil
+      @http_proxy = http_proxy
+    end
 
     def log(msg)
       IronCore::Logger.info 'IronWorkerNG', msg
@@ -54,7 +60,9 @@ module IronWorkerNG
       if @client.nil?
         log_group "Creating client"
 
-        @client = IronWorkerNG::Client.new(:config => @config, :env => @env, :project_id => @project_id, :token => @token)
+        @client = IronWorkerNG::Client.new(:config => @config, :env => @env, :project_id => @project_id, :token => @token,
+                                           :http_proxy => @http_proxy
+        )
 
         project = client.projects.get
 
@@ -167,6 +175,21 @@ module IronWorkerNG
       end
     end
 
+    def update_schedule(schedule_id, params)
+      client
+
+      log_group "Updating scheduled task with id=#{schedule_id}"
+
+      response = client.schedules.update(schedule_id, JSON.parse(params[:schedule], :symbolize_names => true))
+
+      if response.msg == 'Updated'
+        log 'Scheduled task updated successfully'
+        log "Check 'https://hud.iron.io/tq/projects/#{client.api.project_id}/scheduled_jobs/#{schedule_id}' for more info"
+      else
+        log 'Something went wrong'
+      end
+    end
+
     def getlog(task_id, params, options)
       client
 
@@ -214,7 +237,7 @@ module IronWorkerNG
 
       log "Code package name is '#{code.name}'"
       log_group "Running '#{code.name}'"
-      
+
       if options[:worker_config]
         log "Loading worker_config at #{options[:worker_config]}"
         c = IO.read(options[:worker_config])
@@ -279,6 +302,7 @@ module IronWorkerNG
       data << ['code package', task.code_name]
       data << ['code revision', task.code_rev]
       data << ['status', task.status]
+      data << ['label', task.label] if task.label
       data << ['priority', task.priority || 2]
       data << ['queued', parse_time(task.created_at) || '-']
       data << ['started', parse_time(task.start_time) || '-']
@@ -300,6 +324,7 @@ module IronWorkerNG
       data << ['id', schedule._id]
       data << ['code package', schedule.code_name]
       data << ['status', schedule.status]
+      data << ['label', schedule.label] if schedule.label
       data << ['created', parse_time(schedule.created_at) || '-']
       data << ['next start', parse_time(schedule.next_start) || '-']
       data << ['run count', schedule.run_count || '-']
@@ -308,6 +333,52 @@ module IronWorkerNG
 
       display_table(data)
     end
+
+    def pause(name, params, options)
+      code = get_code_by_name(name)
+      log "Pausing task queue for code '#{code._id}'"
+
+      response = client.codes.pause_task_queue(code._id, options)
+
+      if response.msg == 'Paused'
+        log "Task queue and schedules for #{name} paused successfully"
+      elsif response.msg == 'Already paused'
+        log "Task queue and schedules for #{name} are already paused"
+      else
+        log 'Something went wrong'
+      end
+      log "Check 'https://hud.iron.io/tq/projects/#{client.api.project_id}/code/#{code._id}' for more info"
+    end
+
+    def resume(name, params, options)
+      code = get_code_by_name(name)
+      log "Resuming task queue for code '#{code._id}'"
+
+      response = client.codes.resume_task_queue(code._id, options)
+
+      if response.msg == 'Resumed'
+        log "Task queue and schedules for #{name} resumed successfully"
+      elsif response.msg == 'Already resumed'
+        log "Task queue and schedules for #{name} are already resumed"
+      else
+        log 'Something went wrong'
+      end
+      log "Check 'https://hud.iron.io/tq/projects/#{client.api.project_id}/code/#{code._id}' for more info"
+    end
+
+    def get_code_by_name(name)
+      client
+
+      codes = client.codes.list({:all => true})
+      code = codes.find { |code| code.name == name }
+
+      unless code
+        log "Code package with name='#{name}' not found"
+        exit 1
+      end
+      code
+    end
+
 
     def parse_time(s)
       t = Time.parse(s)

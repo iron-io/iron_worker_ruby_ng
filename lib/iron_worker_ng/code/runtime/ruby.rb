@@ -66,18 +66,22 @@ if config_file
   @config = File.read(config_file)
   begin
     @config = JSON.parse(@config)
-    @config = IronWorkerNGHash.new(@config)
+    @config = IronWorkerNGHash.new(@config) if @config.is_a?(::Hash)
   rescue
     # try yaml
     begin
       @config = YAML.load(@config)
-      @config = IronWorkerNGHash.new(@config)
+      @config = IronWorkerNGHash.new(@config) if @config.is_a?(::Hash)
     rescue
     end
   end
 end
 
-@params = IronWorkerNGHash.new(params)
+if params.is_a?(::Hash)
+  @params = IronWorkerNGHash.new(params)
+else
+  @params = params
+end
 
 def payload
   @payload

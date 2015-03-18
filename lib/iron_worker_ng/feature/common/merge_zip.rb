@@ -22,7 +22,7 @@ module IronWorkerNG
               ::Dir.mkdir(tmp_dir_name)
 
               IronWorkerNG::Fetcher.fetch_to_file(rebase(@path)) do |zip|
-                zipf = ::Zip::ZipFile.open(zip)
+                zipf = ::Zip::File.open(zip)
                 zipf.restore_permissions = true
 
                 zipf.each do |f|
