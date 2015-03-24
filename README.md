@@ -418,8 +418,9 @@ code.merge_pip 'iron_worker', '==0.2'
 ### merge_requirements(path)
 ### requirements(path)
 
-Merge all libraries from a python standard requirements.txt
+Merge all libraries from a python standard requirements.txt.
 The requirements.txt example file after freezing may look like as follows:
+
 ```txt
 Flask==0.8
 Jinja2==2.6
