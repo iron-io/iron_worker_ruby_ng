@@ -1,9 +1,9 @@
 PATH
   remote: .
   specs:
-    iron_worker_ng (1.6.0)
+    iron_worker_ng (1.6.3)
       bundler
-      iron_core (>= 1.0.0)
+      iron_core (>= 1.0.6)
       rubyzip (>= 1.0.0)
 
 GEM
@@ -45,8 +45,8 @@ GEM
     i18n (0.6.11)
     iron_cache (1.4.2)
       iron_core (>= 0.5.1)
-    iron_core (1.0.5)
-      rest (>= 2.6.4)
+    iron_core (1.0.7)
+      rest (>= 3.0.4)
     json (1.8.1)
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
@@ -62,19 +62,17 @@ GEM
     multipart-post (2.0.0)
     naught (1.0.0)
     net-http-persistent (2.9.4)
-    netrc (0.7.9)
+    netrc (0.10.3)
     power_assert (0.2.2)
     rack (1.5.2)
     rack-test (0.6.2)
       rack (>= 1.0)
     rake (10.4.0)
-    rest (2.7.2)
+    rest (3.0.6)
       net-http-persistent (>= 2.9.1)
-      rest_client (>= 1.7.1)
-    rest_client (1.8.2)
-      netrc (~> 0.7.7)
+      netrc
     ruby-progressbar (1.7.0)
-    rubyzip (1.1.6)
+    rubyzip (1.1.7)
     simple_oauth (0.3.0)
     test-unit (3.0.7)
       power_assert
