@@ -179,11 +179,6 @@ elsif command == 'queue' || command == 'schedule'
       options[:timeout] = v
     end
 
-    desc = command == 'queue' ? 'delay before start in seconds' : 'delay before scheduling tasks in seconds'
-    opts.on('--delay DELAY', Integer, desc) do |v|
-      options[:delay] = v
-    end
-
     opts.on('--cluster CLUSTER', String, 'Run task on selected cluster') do |v|
       options[:cluster] = v
     end
@@ -194,16 +189,16 @@ elsif command == 'queue' || command == 'schedule'
     end
 
     if command == 'queue'
+      opts.on('--delay DELAY', Integer, 'delay before start in seconds') do |v|
+        options[:delay] = v
+      end
+
       opts.on('--wait', Integer, 'wait for task to complete and print log') do |v|
         options[:wait] = true
       end
     end
 
     if command == 'schedule'
-      opts.on('--task-delay DELAY', Integer, 'delay before start of task in seconds') do |v|
-        options[:task_delay] = v
-      end
-
       opts.on('--start-at TIME', 'start task at specified time') do |v|
         options[:start_at] = Time.parse(v)
       end
