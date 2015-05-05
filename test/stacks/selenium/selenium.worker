@@ -1,0 +1,3 @@
+runtime 'binary'
+stack 'selenium'
+exec 'selenium.sh'
