@@ -1,4 +1,4 @@
-runtime "ruby"
+runtime 'binary'
 stack 'ruby-1.8'
 
-exec "ruby-1.8.rb"
+exec "ruby-1.8.sh"
