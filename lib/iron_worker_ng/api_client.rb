@@ -48,7 +48,7 @@ module IronWorkerNG
     end
 
     def codes_create(name, file, runtime, runner, options)
-      file_instance = file.to_s.strip ==  "" || runner.to_s.strip == "" ? "" : File.new(file, 'rb')
+      file_instance = file.to_s.strip ==  '' ? '' : File.new(file, 'rb')
       options = {:name => name, :runtime => runtime, :file_name => runner}.merge(options)
       parse_response(post_file("projects/#{@project_id}/codes", :file, file_instance, :data, options))
     end
