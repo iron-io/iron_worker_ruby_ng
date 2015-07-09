@@ -442,7 +442,37 @@ EXEC_FILE
       OpenStruct.new(res)
     end
 
-    def params_for_legacy(code_name, params)
+    def clusters_list
+      IronCore::Logger.debug 'IronWorkerNG', "Calling clusters.list"
+      @api.clusters_list.map { |s| OpenStruct.new(s.merge('_id' => s['id'])) }
+    end
+
+    def clusters_get(id)
+      IronCore::Logger.debug 'IronWorkerNG', "Calling projects.get"
+      res = @api.clusters_get(id)
+      res['_id'] = res['id']
+      OpenStruct.new(res)
+    end
+
+    def clusters_create(params = {})
+      IronCore::Logger.debug 'IronWorkerNG', "Calling clusters.create with params='#{params.to_s}'"
+      res = @api.clusters_create(params)
+      res['id'].to_s
+    end
+
+    def clusters_update(cluster_id, params = {})
+      IronCore::Logger.debug 'IronWorkerNG', "Calling clusters.update with params='#{params.to_s}'"
+      res = @api.clusters_update(cluster_id, params)
+      OpenStruct.new(res)
+    end
+
+    def clusters_delete(cluster_id)
+      IronCore::Logger.debug 'IronWorkerNG', "Calling clusters.delete with cluster_id='#{cluster_id}'"
+      res = @api.clusters_delete(cluster_id)
+      OpenStruct.new(res)
+    end
+
+    def params_for_legacy(code_name, params = {})
       if params.is_a?(String)
         params = JSON.parse(params)
       end

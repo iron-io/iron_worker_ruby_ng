@@ -151,5 +151,25 @@ module IronWorkerNG
     def projects_get
       parse_response(get("projects/#{@project_id}"))
     end
+
+    def clusters_list
+      parse_response(get("clusters"))
+    end
+
+    def clusters_get(cluster_id)
+      parse_response(get("clusters/#{cluster_id}"))
+    end
+
+    def clusters_create(options = {})
+      parse_response(post("clusters", options))
+    end
+
+    def clusters_update(cluster_id, options = {})
+      parse_response(put("clusters/#{cluster_id}", options))
+    end
+
+    def clusters_delete(cluster_id)
+      parse_response(delete("clusters/#{cluster_id}"))
+    end
   end
 end
