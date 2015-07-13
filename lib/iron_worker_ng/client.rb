@@ -444,12 +444,13 @@ EXEC_FILE
 
     def clusters_list
       IronCore::Logger.debug 'IronWorkerNG', "Calling clusters.list"
-      @api.clusters_list.map { |s| OpenStruct.new(s.merge('_id' => s['id'])) }
+      res = @api.clusters_list
+      res['clusters'].map { |s| OpenStruct.new(s.merge('_id' => s['id'])) }
     end
 
     def clusters_get(id)
       IronCore::Logger.debug 'IronWorkerNG', "Calling projects.get"
-      res = @api.clusters_get(id)
+      res = @api.clusters_get(id)['cluster']
       res['_id'] = res['id']
       OpenStruct.new(res)
     end
@@ -457,7 +458,7 @@ EXEC_FILE
     def clusters_create(params = {})
       IronCore::Logger.debug 'IronWorkerNG', "Calling clusters.create with params='#{params.to_s}'"
       res = @api.clusters_create(params)
-      res['id'].to_s
+      res['cluster']['id'].to_s
     end
 
     def clusters_update(cluster_id, params = {})
