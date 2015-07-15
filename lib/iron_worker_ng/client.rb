@@ -458,7 +458,7 @@ EXEC_FILE
     def clusters_create(params = {})
       IronCore::Logger.debug 'IronWorkerNG', "Calling clusters.create with params='#{params.to_s}'"
       res = @api.clusters_create(params)
-      res['cluster']['id'].to_s
+      OpenStruct.new(res)
     end
 
     def clusters_update(cluster_id, params = {})
