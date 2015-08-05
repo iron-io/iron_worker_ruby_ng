@@ -1,3 +1,5 @@
+## This gem is deprecated, use the [iron_worker](https://github.com/iron-io/iron_worker_ruby) gem in your Ruby code and [IronCLI](https://github.com/iron-io/ironcli) for command line tools. 
+
 # Introduction
 
 To run your code in cloud you need to do three things:
