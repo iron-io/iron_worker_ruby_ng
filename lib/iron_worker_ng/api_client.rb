@@ -160,6 +160,10 @@ module IronWorkerNG
       parse_response(get("clusters/#{cluster_id}"))
     end
 
+    def clusters_credentials(cluster_id)
+      parse_response(get("clusters/#{cluster_id}/credentials"))
+    end
+
     def clusters_create(options = {})
       parse_response(post("clusters", options))
     end

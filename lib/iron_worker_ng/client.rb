@@ -455,6 +455,13 @@ EXEC_FILE
       OpenStruct.new(res)
     end
 
+    def clusters_credentials(id)
+      IronCore::Logger.debug 'IronWorkerNG', "Calling projects.get"
+      res = @api.clusters_credentials(id)['cluster']
+      res['_id'] = res['id']
+      OpenStruct.new(res)
+    end
+
     def clusters_create(params = {})
       IronCore::Logger.debug 'IronWorkerNG', "Calling clusters.create with params='#{params.to_s}'"
       res = @api.clusters_create(params)
