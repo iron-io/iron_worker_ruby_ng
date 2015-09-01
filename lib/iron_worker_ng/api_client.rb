@@ -175,5 +175,9 @@ module IronWorkerNG
     def clusters_delete(cluster_id)
       parse_response(delete("clusters/#{cluster_id}"))
     end
+
+    def clusters_share(cluster_id, options = {})
+      parse_response(post("clusters/#{cluster_id}/share", options))
+    end
   end
 end

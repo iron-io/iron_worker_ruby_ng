@@ -480,6 +480,12 @@ EXEC_FILE
       OpenStruct.new(res)
     end
 
+    def clusters_share(cluster_id, params = {})
+      IronCore::Logger.debug 'IronWorkerNG', "Calling clusters.share with params='#{params.to_s}'"
+      res = @api.clusters_share(cluster_id, params)
+      OpenStruct.new(res)
+    end
+
     def params_for_legacy(code_name, params = {})
       if params.is_a?(String)
         params = JSON.parse(params)
