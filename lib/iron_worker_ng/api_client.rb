@@ -179,5 +179,9 @@ module IronWorkerNG
     def clusters_share(cluster_id, options = {})
       parse_response(post("clusters/#{cluster_id}/share", options))
     end
+
+    def clusters_shared_list
+      parse_response(get("clusters/shared"))
+    end
   end
 end
