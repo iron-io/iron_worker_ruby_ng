@@ -489,7 +489,7 @@ EXEC_FILE
     def clusters_shared_list
       IronCore::Logger.debug 'IronWorkerNG', "Calling clusters.shared.list"
       res = @api.clusters_shared_list
-      OpenStruct.new(res)
+      res['clusters'].map { |s| OpenStruct.new(s.merge('_id' => s['id'])) }
     end
 
     def params_for_legacy(code_name, params = {})
