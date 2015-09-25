@@ -183,5 +183,9 @@ module IronWorkerNG
     def clusters_shared_list
       parse_response(get("clusters/shared"))
     end
+
+    def clusters_unshare(cluster_id, user_id)
+      parse_response(post("clusters/#{cluster_id}/unshare/#{user_id}"))
+    end
   end
 end

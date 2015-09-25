@@ -492,6 +492,12 @@ EXEC_FILE
       res['clusters'].map { |s| OpenStruct.new(s.merge('_id' => s['id'])) }
     end
 
+    def clusters_unshare(cluster_id, user_id)
+      IronCore::Logger.debug 'IronWorkerNG', "Calling clusters.unshare with cluster_id='#{cluster_id}', user_id='#{user_id}'"
+      res = @api.clusters_unshare(cluster_id, user_id)
+      OpenStruct.new(res)
+    end
+
     def params_for_legacy(code_name, params = {})
       if params.is_a?(String)
         params = JSON.parse(params)
