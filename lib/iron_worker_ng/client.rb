@@ -442,7 +442,63 @@ EXEC_FILE
       OpenStruct.new(res)
     end
 
-    def params_for_legacy(code_name, params)
+    def clusters_list
+      IronCore::Logger.debug 'IronWorkerNG', "Calling clusters.list"
+      res = @api.clusters_list
+      res['clusters'].map { |s| OpenStruct.new(s.merge('_id' => s['id'])) }
+    end
+
+    def clusters_get(id)
+      IronCore::Logger.debug 'IronWorkerNG', "Calling projects.get"
+      res = @api.clusters_get(id)['cluster']
+      res['_id'] = res['id']
+      OpenStruct.new(res)
+    end
+
+    def clusters_credentials(id)
+      IronCore::Logger.debug 'IronWorkerNG', "Calling projects.get"
+      res = @api.clusters_credentials(id)['cluster']
+      res['_id'] = res['id']
+      OpenStruct.new(res)
+    end
+
+    def clusters_create(params = {})
+      IronCore::Logger.debug 'IronWorkerNG', "Calling clusters.create with params='#{params.to_s}'"
+      res = @api.clusters_create(params)
+      OpenStruct.new(res)
+    end
+
+    def clusters_update(cluster_id, params = {})
+      IronCore::Logger.debug 'IronWorkerNG', "Calling clusters.update with params='#{params.to_s}'"
+      res = @api.clusters_update(cluster_id, params)
+      OpenStruct.new(res)
+    end
+
+    def clusters_delete(cluster_id)
+      IronCore::Logger.debug 'IronWorkerNG', "Calling clusters.delete with cluster_id='#{cluster_id}'"
+      res = @api.clusters_delete(cluster_id)
+      OpenStruct.new(res)
+    end
+
+    def clusters_share(cluster_id, params = {})
+      IronCore::Logger.debug 'IronWorkerNG', "Calling clusters.share with params='#{params.to_s}'"
+      res = @api.clusters_share(cluster_id, params)
+      OpenStruct.new(res)
+    end
+
+    def clusters_shared_list
+      IronCore::Logger.debug 'IronWorkerNG', "Calling clusters.shared.list"
+      res = @api.clusters_shared_list
+      res['clusters'].map { |s| OpenStruct.new(s.merge('_id' => s['id'])) }
+    end
+
+    def clusters_unshare(cluster_id, user_id)
+      IronCore::Logger.debug 'IronWorkerNG', "Calling clusters.unshare with cluster_id='#{cluster_id}', user_id='#{user_id}'"
+      res = @api.clusters_unshare(cluster_id, user_id)
+      OpenStruct.new(res)
+    end
+
+    def params_for_legacy(code_name, params = {})
       if params.is_a?(String)
         params = JSON.parse(params)
       end
