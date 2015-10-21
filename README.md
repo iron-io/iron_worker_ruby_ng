@@ -1,4 +1,12 @@
-## This gem is deprecated, use the [iron_worker](https://github.com/iron-io/iron_worker_ruby) gem in your Ruby code and [IronCLI](https://github.com/iron-io/ironcli) for command line tools. 
+# DEPRECATED
+
+## This gem is deprecated! Please find the new tools at the links below.
+
+* Use the new [Docker Workflow](https://github.com/iron-io/dockerworker/) for creating/packaging your workers. 
+* Use the new [IronCLI](https://github.com/iron-io/ironcli) for command line tools. 
+* Use the [iron_worker](https://github.com/iron-io/iron_worker_ruby) gem in your Ruby code.
+
+# Please read above for changes to the Iron.io tooling, only use the below documentation if you need it for legacy apps
 
 # Introduction
 
