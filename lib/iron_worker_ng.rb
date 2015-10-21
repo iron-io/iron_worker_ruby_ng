@@ -1,3 +1,5 @@
+puts 'This gem is deprecated. Please see this page  https://github.com/iron-io/iron_worker_ruby_ng/ for more information about new tools.'
+
 begin
   require 'json'
 rescue LoadError
