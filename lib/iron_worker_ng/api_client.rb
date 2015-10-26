@@ -15,19 +15,23 @@ module IronWorkerNG
         :user_agent => IronWorkerNG.full_version
       }
 
-      super('iron', 'worker', options, default_options, [:project_id, :token, :api_version])
+      super('iron', 'worker', options, default_options, [:project_id, :token, :jwt, :api_version])
 
       #puts "nhp.proxy yo #{rest.wrapper.http.proxy_uri}" if defined? Net::HTTP::Persistent
       #puts "RestClient.proxy yo #{RestClient.proxy}" if defined? RestClient
       #puts "InternalClient.proxy yo #{Rest::InternalClient.proxy}" if defined? Rest::InternalClient
 
-      IronCore::Logger.error 'IronWorkerNG', "Token is not set", IronCore::Error if @token.nil?
+      IronCore::Logger.error 'IronWorkerNG', "Token is not set", IronCore::Error if @token.nil? && @jwt.nil?
 
       check_id(@project_id, 'project_id')
     end
 
     def headers
-      super.merge({'Authorization' => "OAuth #{@token}"})
+      if !@jwt.nil?
+        super.merge({'Authorization' => "JWT #{@token}"})
+      else
+        super.merge({'Authorization' => "OAuth #{@token}"})
+      end
     end
 
     def base_url

@@ -41,6 +41,10 @@ module IronWorkerNG
       @api.token
     end
 
+    def jwt
+      @api.jwt
+    end
+
     def project_id
       @api.project_id
     end
