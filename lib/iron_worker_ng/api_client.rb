@@ -28,7 +28,7 @@ module IronWorkerNG
 
     def headers
       if !@jwt.nil?
-        super.merge({'Authorization' => "JWT #{@token}"})
+        super.merge({'Authorization' => "JWT #{@jwt}"})
       else
         super.merge({'Authorization' => "OAuth #{@token}"})
       end
