@@ -453,16 +453,15 @@ EXEC_FILE
     end
 
     def clusters_get(id)
-      IronCore::Logger.debug 'IronWorkerNG', "Calling projects.get"
+      IronCore::Logger.debug 'IronWorkerNG', "Calling clusters.get"
       res = @api.clusters_get(id)['cluster']
       res['_id'] = res['id']
       OpenStruct.new(res)
     end
 
     def clusters_credentials(id)
-      IronCore::Logger.debug 'IronWorkerNG', "Calling projects.get"
-      res = @api.clusters_credentials(id)['cluster']
-      res['_id'] = res['id']
+      IronCore::Logger.debug 'IronWorkerNG', "Calling clusters.credentials"
+      res = @api.clusters_credentials(id)
       OpenStruct.new(res)
     end
 
