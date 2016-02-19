@@ -446,10 +446,9 @@ EXEC_FILE
       OpenStruct.new(res)
     end
 
-    def clusters_list
+    def clusters_list(options = {})
       IronCore::Logger.debug 'IronWorkerNG', "Calling clusters.list"
-      res = @api.clusters_list
-      res['clusters'].map { |s| OpenStruct.new(s.merge('_id' => s['id'])) }
+      clusters_list_base(options)
     end
 
     def clusters_get(id)
@@ -491,8 +490,12 @@ EXEC_FILE
 
     def clusters_shared_list
       IronCore::Logger.debug 'IronWorkerNG', "Calling clusters.shared.list"
-      res = @api.clusters_shared_list
-      res['clusters'].map { |s| OpenStruct.new(s.merge('_id' => s['id'])) }
+      clusters_list_base(shared: true)
+    end
+
+    def clusters_internal_list
+      IronCore::Logger.debug 'IronWorkerNG', "Calling clusters.internal.list"
+      clusters_list_base(internal: true)
     end
 
     def clusters_unshare(cluster_id, user_id)
@@ -515,6 +518,12 @@ EXEC_FILE
       attrs = attrs.to_json
 
       {:class_name => code_name, :attr_encoded => Base64.encode64(attrs), :sw_config => {:project_id => project_id, :token => token}}.to_json
+    end
+
+  private
+    def clusters_list_base(options = {})
+      res = @api.clusters_list(options)
+      (res['clusters'] || []).map { |s| OpenStruct.new(s.merge('_id' => s['id'])) }
     end
   end
 end
