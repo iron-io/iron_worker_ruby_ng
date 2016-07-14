@@ -429,10 +429,10 @@ EXEC_FILE
       OpenStruct.new(s)
     end
 
-    def schedules_cancel(schedule_id)
-      IronCore::Logger.debug 'IronWorkerNG', "Calling schedules.cancel with schedule_id='#{schedule_id}"
+    def schedules_cancel(schedule_id, options = {})
+      IronCore::Logger.debug 'IronWorkerNG', "Calling schedules.cancel with schedule_id='#{schedule_id}, options='#{options.to_s}'"
 
-      @api.schedules_cancel(schedule_id)
+      @api.schedules_cancel(schedule_id, options)
 
       true
     end
