@@ -116,6 +116,17 @@ module IronWorkerNG
       end
     end
 
+    def tasks_stdout(id)
+      check_id(id)
+      if block_given?
+        stream_get("projects/#{@project_id}/tasks/#{id}/outlog") do |chunk|
+          yield chunk
+        end
+      else
+        parse_response(get("projects/#{@project_id}/tasks/#{id}/outlog"), false)
+      end
+    end
+
     def tasks_set_progress(id, options = {})
       check_id(id)
       parse_response(post("projects/#{@project_id}/tasks/#{id}/progress", options))
