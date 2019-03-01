@@ -318,6 +318,14 @@ EXEC_FILE
       OpenStruct.new(t)
     end
 
+    def tasks_bulk_create(code_name, params = [], options = {})
+      IronCore::Logger.debug 'IronWorkerNG', "Calling tasks.bulk_create_legacy with code_name='#{code_name}', params='#{params.to_s}' and options='#{options.to_s}'"
+
+      res = @api.tasks_bulk_create(code_name, params.is_a?(Array) ? params : params.to_json, options)
+
+      OpenStruct.new(res)
+    end
+
     def tasks_create_legacy(code_name, params = {}, options = {})
       IronCore::Logger.debug 'IronWorkerNG', "Calling tasks.create_legacy with code_name='#{code_name}', params='#{params.to_s}' and options='#{options.to_s}'"
 
