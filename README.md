@@ -63,11 +63,7 @@ You can read more about `.worker` files here: http://dev.iron.io/worker/referenc
 
 ## Uploading the Code Package
 
-If your .worker file is called `hello.worker`, then run:
-
-    iron_worker upload hello
-
-This will upload your worker with the name "hello" so you can reference it like that when queuing up tasks for it.
+See here for how to build a Ruby worker and upload it to Iron.io: https://github.com/iron-io/dockerworker/tree/master/ruby
 
 ## Queue Up a Task for your Worker
 
